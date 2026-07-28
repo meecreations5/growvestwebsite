@@ -1,0 +1,1049 @@
+@import "tailwindcss";
+@source "../**/*.{js,jsx}";
+@import "../styles/theme.css";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  outline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 2px solid #1F4ED8;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: -5rem;
+  z-index: 100;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: #0b0b0f;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: top 150ms ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Improve the contrast of faint supporting text inherited from the prototype. */
+.text-white\/15,
+.text-white\/18,
+.text-white\/20,
+.text-white\/25,
+.text-white\/28,
+.text-white\/30 {
+  color: rgb(255 255 255 / 0.6) !important;
+}
+
+.text-white\/35,
+.text-white\/38,
+.text-white\/40 {
+  color: rgb(255 255 255 / 0.65) !important;
+}
+
+.text-white\/45,
+.text-white\/50 {
+  color: rgb(255 255 255 / 0.72) !important;
+}
+
+@media (max-width: 639px) {
+  .px-8 {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+
+  .text-\[72px\],
+  .text-\[70px\],
+  .text-\[68px\],
+  .text-\[66px\],
+  .text-\[64px\],
+  .text-\[60px\],
+  .text-\[58px\],
+  .text-\[56px\],
+  .text-\[54px\],
+  .text-\[52px\],
+  .text-\[50px\],
+  .text-\[48px\],
+  .text-\[44px\],
+  .text-\[40px\] {
+    font-size: 2.35rem !important;
+    line-height: 1.08 !important;
+  }
+
+  .text-\[38px\],
+  .text-\[36px\] {
+    font-size: 2rem !important;
+    line-height: 1.12 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* GrowVest motion language: calm progress, restrained depth and purposeful movement. */
+.gv-logo-enter {
+  animation: gv-logo-enter 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: left center;
+}
+
+.gv-header-logo img {
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), filter 300ms ease;
+}
+
+.gv-header-logo:hover img {
+  transform: translate3d(0, -1px, 0) scale(1.015);
+  filter: drop-shadow(0 7px 16px rgb(31 78 216 / 0.22));
+}
+
+.gv-mark {
+  display: block;
+  overflow: visible;
+  color: inherit;
+}
+
+.gv-mark__flow,
+.gv-mark__bridge,
+.gv-mark__arrow {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.gv-mark--animated .gv-mark__flow {
+  animation: gv-mark-flow 1.05s cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
+}
+
+.gv-mark--animated .gv-mark__bridge {
+  animation: gv-mark-bridge 820ms cubic-bezier(0.22, 1, 0.36, 1) 480ms both;
+}
+
+.gv-mark--animated .gv-mark__arrow {
+  animation: gv-mark-arrow 900ms cubic-bezier(0.22, 1, 0.36, 1) 680ms both;
+}
+
+.gv-hero-intro {
+  opacity: 0;
+  animation: gv-hero-rise 760ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.gv-hero-intro--1 { animation-delay: 100ms; }
+.gv-hero-intro--2 { animation-delay: 210ms; }
+.gv-hero-intro--3 { animation-delay: 330ms; }
+.gv-hero-intro--4 { animation-delay: 450ms; }
+.gv-hero-intro--5 { animation-delay: 570ms; }
+
+.gv-rotating-copy {
+  display: inline-block;
+  animation: gv-copy-reveal 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* CSS-only section reveal. No DOM classes are injected during hydration. */
+@keyframes gv-section-scroll-reveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Progressive enhancement: unsupported browsers simply show static sections. */
+@supports (animation-timeline: view()) {
+  #main-content section:not(:first-of-type) {
+    animation-name: gv-section-scroll-reveal;
+    animation-duration: 1ms;
+    animation-fill-mode: both;
+    animation-timing-function: linear;
+    animation-timeline: view();
+    animation-range: entry 5% cover 22%;
+  }
+}
+
+.gv-parallax {
+  transform: translate3d(0, var(--gv-parallax-y, 0px), 0);
+  will-change: transform;
+}
+
+@keyframes gv-logo-enter {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+    transform: translate3d(-8px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes gv-mark-flow {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+    transform: translate3d(-5px, 2px, 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes gv-mark-bridge {
+  from {
+    opacity: 0;
+    transform: translate3d(-4px, 5px, 0) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes gv-mark-arrow {
+  from {
+    opacity: 0;
+    transform: translate3d(-8px, 10px, 0) scale(0.9);
+  }
+  70% {
+    opacity: 1;
+    transform: translate3d(2px, -2px, 0) scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes gv-hero-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes gv-copy-reveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+@media (max-width: 767px) {
+  .gv-parallax {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gv-logo-enter,
+  .gv-mark--animated .gv-mark__flow,
+  .gv-mark--animated .gv-mark__bridge,
+  .gv-mark--animated .gv-mark__arrow,
+  .gv-hero-intro,
+  .gv-rotating-copy {
+    animation: none !important;
+    opacity: 1 !important;
+    clip-path: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  #main-content section,
+  .gv-parallax {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* v6 brand motion: the full wordmark gently collapses into the animated GrowVest mark after scroll. */
+.gv-header-logo {
+  position: relative;
+  width: 136px;
+  height: 44px;
+  flex: 0 0 auto;
+  transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gv-header-wordmark,
+.gv-header-icon {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  transform-origin: left center;
+  transition: opacity 320ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1), filter 320ms ease;
+}
+
+.gv-header-wordmark {
+  width: 136px;
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+.gv-header-icon {
+  width: 39px;
+  opacity: 0;
+  color: #1F4ED8;
+  transform: translate3d(-8px, -50%, 0) scale(0.78) rotate(-5deg);
+  filter: drop-shadow(0 8px 20px rgb(31 78 216 / 0));
+  pointer-events: none;
+}
+
+.gv-header-logo--compact {
+  width: 42px;
+}
+
+.gv-header-logo--compact .gv-header-wordmark {
+  opacity: 0;
+  transform: translate3d(-10px, -50%, 0) scale(0.93);
+  pointer-events: none;
+}
+
+.gv-header-logo--compact .gv-header-icon {
+  opacity: 1;
+  transform: translate3d(0, -50%, 0) scale(1) rotate(0deg);
+  filter: drop-shadow(0 8px 20px rgb(31 78 216 / 0.26));
+}
+
+.gv-header-logo--compact:hover .gv-header-icon {
+  transform: translate3d(0, calc(-50% - 1px), 0) scale(1.04);
+}
+
+/* v9 brand motion: continuous, synchronized GrowVest brand-colour transition. */
+.gv-mark {
+  --gv-mark-primary: #1F4ED8;
+  --gv-mark-gold: #F5B301;
+  --gv-mark-white: #FFFFFF;
+  --gv-mark-red: #E53935;
+}
+
+.gv-mark--ambient {
+  color: var(--gv-mark-primary);
+  animation:
+    gv-mark-brand-colour-cycle 10s linear infinite,
+    gv-mark-brand-glow 10s linear infinite;
+}
+
+.gv-mark--ambient .gv-mark__flow,
+.gv-mark--ambient .gv-mark__bridge,
+.gv-mark--ambient .gv-mark__arrow {
+  fill: currentColor;
+  will-change: transform, opacity, filter, color;
+}
+
+.gv-mark--ambient .gv-mark__flow {
+  color: inherit;
+  animation: gv-mark-flow-breathe 4.8s ease-in-out infinite;
+}
+
+.gv-mark--ambient .gv-mark__bridge {
+  color: inherit;
+  animation: gv-mark-bridge-breathe 4.8s ease-in-out 120ms infinite;
+}
+
+.gv-mark--ambient .gv-mark__arrow {
+  color: inherit;
+  animation: gv-mark-arrow-progress 3.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+/* Entry animation followed by the continuous brand-motion loop. */
+.gv-mark--animated.gv-mark--ambient .gv-mark__flow {
+  animation: gv-mark-flow 1.05s cubic-bezier(0.22, 1, 0.36, 1) 120ms both,
+    gv-mark-flow-breathe 4.8s ease-in-out 1.35s infinite;
+}
+
+.gv-mark--animated.gv-mark--ambient .gv-mark__bridge {
+  animation: gv-mark-bridge 820ms cubic-bezier(0.22, 1, 0.36, 1) 480ms both,
+    gv-mark-bridge-breathe 4.8s ease-in-out 1.45s infinite;
+}
+
+.gv-mark--animated.gv-mark--ambient .gv-mark__arrow {
+  animation: gv-mark-arrow 900ms cubic-bezier(0.22, 1, 0.36, 1) 680ms both,
+    gv-mark-arrow-progress 3.6s cubic-bezier(0.22, 1, 0.36, 1) 1.7s infinite;
+}
+
+/* When the header collapses, replay a distinct icon reveal so the movement is visible. */
+.gv-header-logo--compact .gv-header-icon {
+  animation: gv-header-icon-reveal 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.gv-header-logo--compact .gv-header-icon .gv-mark__flow {
+  animation-delay: 80ms;
+}
+
+.gv-header-logo--compact .gv-header-icon .gv-mark__bridge {
+  animation-delay: 160ms;
+}
+
+.gv-header-logo--compact .gv-header-icon .gv-mark__arrow {
+  animation-delay: 240ms;
+}
+
+.gv-mark--outline {
+  color: var(--gv-mark-primary);
+}
+
+.gv-mark--outline path {
+  fill: transparent !important;
+  stroke: currentColor;
+  stroke-width: 0.72;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+@keyframes gv-header-icon-reveal {
+  0% {
+    opacity: 0;
+    transform: translate3d(-8px, -44%, 0) scale(0.82) rotate(-4deg);
+    filter: drop-shadow(0 0 0 rgb(31 78 216 / 0));
+  }
+  70% {
+    opacity: 1;
+    transform: translate3d(1px, -52%, 0) scale(1.035) rotate(0deg);
+    filter: drop-shadow(0 9px 22px rgb(31 78 216 / 0.30));
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, -50%, 0) scale(1) rotate(0deg);
+    filter: drop-shadow(0 8px 20px rgb(31 78 216 / 0.24));
+  }
+}
+
+@keyframes gv-mark-brand-colour-cycle {
+  0%, 14% {
+    color: var(--gv-mark-primary);
+  }
+  30%, 43% {
+    color: var(--gv-mark-gold);
+  }
+  55%, 62% {
+    color: var(--gv-mark-white);
+  }
+  69%, 74% {
+    color: var(--gv-mark-red);
+  }
+  88%, 100% {
+    color: var(--gv-mark-primary);
+  }
+}
+
+@keyframes gv-mark-brand-glow {
+  0%, 14%, 88%, 100% {
+    filter: drop-shadow(0 7px 18px rgb(31 78 216 / 0.28));
+    opacity: 0.98;
+  }
+  30%, 43% {
+    filter: drop-shadow(0 7px 18px rgb(245 179 1 / 0.28));
+    opacity: 1;
+  }
+  55%, 62% {
+    filter: drop-shadow(0 7px 18px rgb(255 255 255 / 0.20));
+    opacity: 1;
+  }
+  69%, 74% {
+    filter: drop-shadow(0 7px 18px rgb(229 57 53 / 0.22));
+    opacity: 1;
+  }
+}
+
+@keyframes gv-mark-flow-breathe {
+  0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.96; }
+  48% { transform: translate3d(0.35px, -0.25px, 0); opacity: 1; }
+}
+
+@keyframes gv-mark-bridge-breathe {
+  0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.94; }
+  50% { transform: translate3d(0.55px, -0.55px, 0); opacity: 1; }
+}
+
+@keyframes gv-mark-arrow-progress {
+  0%, 58%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: drop-shadow(0 0 0 currentColor);
+  }
+  70% {
+    transform: translate3d(1.35px, -1.9px, 0) scale(1.035);
+    filter: drop-shadow(0 4px 10px currentColor);
+  }
+  82% {
+    transform: translate3d(0.35px, -0.55px, 0) scale(1.01);
+    filter: drop-shadow(0 3px 8px currentColor);
+  }
+}
+
+/* The full logo keeps the GrowVest wordmark stable while only the central
+   GrowVest symbol uses the continuous brand-colour animation. */
+.gv-full-logo {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 10 / 3;
+  overflow: visible;
+}
+
+.gv-full-logo__wordmark {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left center;
+  user-select: none;
+  pointer-events: none;
+}
+
+.gv-full-logo__mark {
+  position: absolute;
+  left: 39.265%;
+  top: 19.705%;
+  width: 28.273%;
+  height: auto;
+  overflow: visible;
+}
+
+.gv-footer-wordmark {
+  width: 142px;
+}
+
+/* Stable CSS-only pointer interaction for pill buttons. */
+:where(
+  a.rounded-full,
+  button.rounded-full,
+  .gv-btn-primary,
+  .gv-btn-secondary,
+  .gv-mobile-action-bar__primary,
+  .gv-mobile-action-bar__portal
+) {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: box-shadow 280ms ease, border-color 280ms ease, filter 280ms ease,
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:where(
+  a.rounded-full,
+  button.rounded-full,
+  .gv-btn-primary,
+  .gv-btn-secondary,
+  .gv-mobile-action-bar__primary,
+  .gv-mobile-action-bar__portal
+)::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    120px circle at 50% 50%,
+    rgb(255 255 255 / 0.22),
+    rgb(31 78 216 / 0.14) 40%,
+    rgb(245 179 1 / 0.08) 58%,
+    transparent 74%
+  );
+  opacity: 0;
+  transition: opacity 240ms ease;
+}
+
+:where(
+  a.rounded-full,
+  button.rounded-full,
+  .gv-btn-primary,
+  .gv-btn-secondary,
+  .gv-mobile-action-bar__primary,
+  .gv-mobile-action-bar__portal
+)::after {
+  content: "";
+  position: absolute;
+  inset: -45% -35%;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 37%,
+    rgb(255 255 255 / 0.08) 45%,
+    rgb(255 255 255 / 0.34) 50%,
+    rgb(255 255 255 / 0.08) 55%,
+    transparent 63%
+  );
+  transform: translate3d(-70%, 0, 0) rotate(5deg);
+  opacity: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :where(
+    a.rounded-full,
+    button.rounded-full,
+    .gv-btn-primary,
+    .gv-btn-secondary,
+    .gv-mobile-action-bar__primary,
+    .gv-mobile-action-bar__portal
+  ):hover::before,
+  :where(
+    a.rounded-full,
+    button.rounded-full,
+    .gv-btn-primary,
+    .gv-btn-secondary,
+    .gv-mobile-action-bar__primary,
+    .gv-mobile-action-bar__portal
+  ):focus-visible::before {
+    opacity: 1;
+  }
+
+  :where(
+    a.rounded-full,
+    button.rounded-full,
+    .gv-btn-primary,
+    .gv-btn-secondary,
+    .gv-mobile-action-bar__primary,
+    .gv-mobile-action-bar__portal
+  ):hover::after,
+  :where(
+    a.rounded-full,
+    button.rounded-full,
+    .gv-btn-primary,
+    .gv-btn-secondary,
+    .gv-mobile-action-bar__primary,
+    .gv-mobile-action-bar__portal
+  ):focus-visible::after {
+    opacity: 1;
+    animation: gv-button-sheen 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  :where(
+    a.rounded-full,
+    button.rounded-full,
+    .gv-btn-primary,
+    .gv-btn-secondary,
+    .gv-mobile-action-bar__primary,
+    .gv-mobile-action-bar__portal
+  ):hover {
+    filter: brightness(1.045) saturate(1.04);
+    box-shadow: 0 10px 28px rgb(31 78 216 / 0.2);
+    transform: translate3d(0, -1px, 0);
+  }
+
+  :where(
+    a.rounded-full,
+    button.rounded-full,
+    .gv-btn-primary,
+    .gv-btn-secondary,
+    .gv-mobile-action-bar__primary,
+    .gv-mobile-action-bar__portal
+  ) svg {
+    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  :where(
+    a.rounded-full,
+    button.rounded-full,
+    .gv-btn-primary,
+    .gv-btn-secondary,
+    .gv-mobile-action-bar__primary,
+    .gv-mobile-action-bar__portal
+  ):hover svg,
+  :where(
+    a.rounded-full,
+    button.rounded-full,
+    .gv-btn-primary,
+    .gv-btn-secondary,
+    .gv-mobile-action-bar__primary,
+    .gv-mobile-action-bar__portal
+  ):focus-visible svg {
+    transform: translate3d(3px, -1px, 0);
+  }
+}
+
+@keyframes gv-button-sheen {
+  from { transform: translate3d(-70%, 0, 0) rotate(5deg); }
+  to { transform: translate3d(70%, 0, 0) rotate(5deg); }
+}
+
+/* Calm route entrance for App Router page changes. */
+.gv-page-transition {
+  animation: gv-page-enter 440ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: top center;
+}
+
+@keyframes gv-page-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+@media (max-width: 639px) {
+  .gv-header-logo {
+    width: 124px;
+  }
+
+  .gv-header-wordmark {
+    width: 124px;
+  }
+
+  .gv-header-logo--compact {
+    width: 40px;
+  }
+
+  .gv-header-icon {
+    width: 37px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gv-header-logo,
+  .gv-header-wordmark,
+  .gv-header-icon,
+  .gv-full-logo,
+  .gv-page-transition {
+
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .gv-header-wordmark,
+  .gv-header-icon {
+    top: 50%;
+    transform: translateY(-50%) !important;
+  }
+
+  .gv-header-logo--compact .gv-header-wordmark {
+    opacity: 0;
+  }
+
+  .gv-header-logo--compact .gv-header-icon {
+    opacity: 1;
+  }
+
+  .gv-mark--ambient {
+    animation: none !important;
+    color: #1F4ED8 !important;
+    filter: none !important;
+  }
+
+  .gv-mark--ambient .gv-mark__flow,
+  .gv-mark--ambient .gv-mark__bridge,
+  .gv-mark--ambient .gv-mark__arrow,
+  .gv-mark--animated.gv-mark--ambient .gv-mark__flow,
+  .gv-mark--animated.gv-mark--ambient .gv-mark__bridge,
+  .gv-mark--animated.gv-mark--ambient .gv-mark__arrow {
+    animation: none !important;
+    fill: currentColor !important;
+    translate: none !important;
+  }
+
+  :where(
+    a.rounded-full,
+    button.rounded-full,
+    .gv-btn-primary,
+    .gv-btn-secondary,
+    .gv-mobile-action-bar__primary,
+    .gv-mobile-action-bar__portal
+  )::before,
+  :where(
+    a.rounded-full,
+    button.rounded-full,
+    .gv-btn-primary,
+    .gv-btn-secondary,
+    .gv-mobile-action-bar__primary,
+    .gv-mobile-action-bar__portal
+  )::after {
+    display: none !important;
+  }
+
+  :where(
+    a.rounded-full,
+    button.rounded-full,
+    .gv-btn-primary,
+    .gv-btn-secondary,
+    .gv-mobile-action-bar__primary,
+    .gv-mobile-action-bar__portal
+  ) svg {
+    transform: none !important;
+  }
+
+  .gv-page-transition {
+    animation: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+}
+
+/* v11 conversion and storytelling system */
+.gv-btn-primary,
+.gv-btn-secondary {
+  min-height: 48px;
+  border-radius: 9999px;
+  padding: 0.9rem 1.75rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 260ms ease,
+    background-color 260ms ease,
+    border-color 260ms ease,
+    color 260ms ease;
+}
+
+.gv-btn-primary {
+  border: 1px solid #1F4ED8;
+  background: #1F4ED8;
+  color: #FFFFFF;
+  box-shadow: 0 10px 30px rgb(31 78 216 / 0.28);
+}
+
+.gv-btn-primary:hover {
+  transform: translate3d(0, -2px, 0);
+  background: #183FB5;
+  border-color: #183FB5;
+  box-shadow: 0 14px 36px rgb(31 78 216 / 0.34);
+}
+
+.gv-btn-primary--compact {
+  min-height: 40px;
+  padding: 0.72rem 1.1rem;
+  font-size: 0.78125rem;
+}
+
+.gv-btn-secondary {
+  border: 1px solid rgb(31 78 216 / 0.34);
+  background: #FFFFFF;
+  color: #1F4ED8;
+}
+
+.gv-btn-secondary:hover {
+  transform: translate3d(0, -2px, 0);
+  border-color: #1F4ED8;
+  background: #1F4ED8;
+  color: #FFFFFF;
+  box-shadow: 0 12px 30px rgb(31 78 216 / 0.18);
+}
+
+.gv-btn-secondary--dark {
+  border-color: rgb(245 179 1 / 0.44);
+  background: transparent;
+  color: #F5B301;
+}
+
+.gv-btn-secondary--dark:hover {
+  border-color: #F5B301;
+  background: rgb(245 179 1 / 0.10);
+  color: #FFD45D;
+  box-shadow: 0 12px 30px rgb(245 179 1 / 0.10);
+}
+
+.gv-scroll-progress {
+  --gv-scroll-progress: 0;
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 70;
+  height: 3px;
+  pointer-events: none;
+  transform: scaleX(var(--gv-scroll-progress));
+  transform-origin: left center;
+  background: linear-gradient(90deg, #1F4ED8 0%, #1F4ED8 68%, #F5B301 100%);
+  box-shadow: 0 0 16px rgb(31 78 216 / 0.35);
+  will-change: transform;
+}
+
+.gv-mobile-action-bar {
+  position: fixed;
+  left: 50%;
+  bottom: max(0.75rem, env(safe-area-inset-bottom));
+  z-index: 58;
+  display: grid;
+  width: min(calc(100% - 1rem), 560px);
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem;
+  padding: 0.45rem;
+  border: 1px solid rgb(255 255 255 / 0.11);
+  border-radius: 9999px;
+  background: rgb(11 11 15 / 0.94);
+  box-shadow: 0 20px 55px rgb(0 0 0 / 0.34);
+  backdrop-filter: blur(20px);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(-50%, calc(100% + 2rem), 0);
+  transition: opacity 260ms ease, transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gv-mobile-action-bar--visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate3d(-50%, 0, 0);
+}
+
+.gv-mobile-action-bar__portal,
+.gv-mobile-action-bar__primary {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  padding: 0.75rem 0.95rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.gv-mobile-action-bar__portal {
+  border: 1px solid rgb(255 255 255 / 0.14);
+  color: rgb(255 255 255 / 0.82);
+}
+
+.gv-mobile-action-bar__portal svg:first-child {
+  color: #F5B301;
+}
+
+.gv-mobile-action-bar__primary {
+  background: #1F4ED8;
+  color: #FFFFFF;
+  box-shadow: 0 8px 24px rgb(31 78 216 / 0.28);
+}
+
+.gv-portal-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgb(11 11 15 / 0.92);
+  backdrop-filter: blur(18px);
+  animation: gv-portal-overlay-in 240ms ease both;
+}
+
+.gv-portal-transition__card {
+  display: grid;
+  width: min(100%, 620px);
+  grid-template-columns: 90px 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, rgb(20 27 53 / 0.96), rgb(11 11 15 / 0.98));
+  box-shadow: 0 28px 90px rgb(0 0 0 / 0.5);
+  animation: gv-portal-card-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.gv-portal-transition__mark {
+  display: grid;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid rgb(31 78 216 / 0.28);
+  border-radius: 1.5rem;
+  padding: 1rem;
+  background: rgb(31 78 216 / 0.10);
+}
+
+@keyframes gv-portal-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes gv-portal-card-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@media (max-width: 520px) {
+  .gv-portal-transition__card {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .gv-portal-transition__mark {
+    width: 84px;
+    margin-inline: auto;
+  }
+
+  .gv-portal-transition__card > div:last-child > div:first-child {
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gv-btn-primary,
+  .gv-btn-secondary,
+  .gv-mobile-action-bar,
+  .gv-portal-transition,
+  .gv-portal-transition__card {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .gv-mobile-action-bar {
+    left: 0.5rem;
+    width: calc(100% - 1rem);
+  }
+}
