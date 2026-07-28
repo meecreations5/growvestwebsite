@@ -4,6 +4,7 @@ import { COMPANY } from "../../lib/brand";
 import { createOrUpdateBrevoContact } from "../../lib/server/brevo";
 import { writeCommunicationLog } from "../../lib/server/communications";
 import { getAdminDb, isFirebaseAdminConfigured } from "../../lib/server/firebaseAdmin";
+import { createLeadActivityForPublicSubmission } from "../../lib/server/enquiriesRepository";
 import {
   ApiError,
   assertAllowedOrigin,
@@ -38,6 +39,14 @@ export async function POST(request) {
     const email = cleanText(body.email, 160).toLowerCase();
     const consent = body.consent === true;
     const honeypot = cleanText(body.website, 100);
+    const sourcePage = cleanText(body.sourcePage, 400);
+    const campaign = {
+      source: cleanText(body.campaign?.source, 120),
+      medium: cleanText(body.campaign?.medium, 120),
+      campaign: cleanText(body.campaign?.campaign, 180),
+      term: cleanText(body.campaign?.term, 180),
+      content: cleanText(body.campaign?.content, 180),
+    };
 
     if (honeypot) return apiResponse({ ok: true });
     if (!email || !consent || !EMAIL_PATTERN.test(email)) {
@@ -67,6 +76,12 @@ export async function POST(request) {
       consentAccepted: true,
       consentAcceptedAt: FieldValue.serverTimestamp(),
       source: "growvest_website",
+      sourcePage: sourcePage || "website_footer",
+      campaign,
+      priority: "low",
+      assignedTo: null,
+      assignedToName: "",
+      assignedToEmail: "",
       status: "pending_provider_sync",
       provider: "brevo",
       ipHash: rateLimit.ipHash,
@@ -76,6 +91,13 @@ export async function POST(request) {
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
     }, { merge: true });
+
+    const leadKey = `newsletter--${subscriberId}`;
+    await createLeadActivityForPublicSubmission({
+      leadKey,
+      summary: "Received a new newsletter subscription.",
+      details: { sourcePage: sourcePage || "website_footer" },
+    }).catch(() => {});
 
     try {
       await createOrUpdateBrevoContact({
@@ -95,6 +117,9 @@ export async function POST(request) {
 
       await writeCommunicationLog(db, {
         subscriberId,
+        leadKey,
+        entityType: "newsletterSubscriber",
+        entityId: subscriberId,
         type: "newsletter_subscription_sync",
         recipient: email,
         status: "sent",
@@ -110,6 +135,9 @@ export async function POST(request) {
 
       await writeCommunicationLog(db, {
         subscriberId,
+        leadKey,
+        entityType: "newsletterSubscriber",
+        entityId: subscriberId,
         type: "newsletter_subscription_sync",
         recipient: email,
         status: "failed",

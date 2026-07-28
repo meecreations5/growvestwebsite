@@ -7,6 +7,7 @@ import { ArrowUpRight, ChevronDown, LockKeyhole, Menu, X } from "lucide-react";
 import { NAV_GROUPS, COMPANY } from "../lib/brand";
 import { GrowVestMark } from "./GrowVestMark";
 import { GrowVestLogo } from "./GrowVestLogo";
+import { SocialLinks } from "./SocialLinks";
 
 function DesktopDropdown({ group, pathname, open, onOpen, onClose, onToggle, align = "center" }) {
   const buttonRef = useRef(null);
@@ -122,7 +123,21 @@ function DesktopDropdown({ group, pathname, open, onOpen, onClose, onToggle, ali
   );
 }
 
-export function SiteHeader() {
+export function SiteHeader({ socialLinks = [], navigation = null, settings = null }) {
+  const sourceGroups = navigation?.groups?.length ? navigation.groups : NAV_GROUPS;
+  const navGroups = [...sourceGroups]
+    .map((group) => ({
+      ...group,
+      children: (group.children || [])
+        .map((item) => ({ ...item, path: item.path || item.href || "" }))
+        .filter((item) => item.label && item.path),
+    }))
+    .filter((group) => group.label && group.children.length)
+    .sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+  const homeLabel = navigation?.homeLabel || "Home";
+  const investorPortalLabel = navigation?.investorPortalLabel || "Investor Portal";
+  const investorPortalUrl = settings?.investorPortalUrl || COMPANY.investorPortalUrl;
+  const headerCta = navigation?.headerPrimaryCta || { label: "Begin Your Journey", href: "/contact" };
   const [desktopGroup, setDesktopGroup] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileGroup, setMobileGroup] = useState(null);
@@ -158,11 +173,28 @@ export function SiteHeader() {
   }, []);
 
   useEffect(() => {
+    document.body.classList.toggle("gv-mobile-menu-open", mobileOpen);
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => {
+      document.body.classList.remove("gv-mobile-menu-open");
       document.body.style.overflow = "";
     };
   }, [mobileOpen]);
+
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1280px)");
+    const closeDesktopMenu = (event) => {
+      if (event.matches) {
+        setMobileOpen(false);
+        setMobileGroup(null);
+      }
+    };
+
+    closeDesktopMenu(media);
+    media.addEventListener?.("change", closeDesktopMenu);
+    return () => media.removeEventListener?.("change", closeDesktopMenu);
+  }, []);
 
   useEffect(() => {
     let frame = null;
@@ -192,8 +224,8 @@ export function SiteHeader() {
       }`}
     >
       <div
-        className={`mx-auto flex max-w-[1500px] items-center justify-between px-5 transition-[height] duration-300 sm:px-6 lg:px-8 ${
-          scrolled ? "h-[64px]" : "h-[72px]"
+        className={`mx-auto flex max-w-[1500px] items-center justify-between px-4 transition-[height] duration-300 sm:px-6 lg:px-8 ${
+          scrolled ? "h-[60px] sm:h-[64px]" : "h-[64px] sm:h-[72px]"
         }`}
       >
         <Link
@@ -207,7 +239,7 @@ export function SiteHeader() {
           <span className="gv-header-icon" aria-hidden={!scrolled ? "true" : undefined}>
             <GrowVestMark ambient decorative className="h-auto w-full" />
           </span>
-          <span className="sr-only">{COMPANY.positioning}</span>
+          <span className="sr-only">{settings?.positioning || COMPANY.positioning}</span>
         </Link>
 
         <nav aria-label="Primary navigation" className="hidden items-center gap-2.5 xl:flex">
@@ -218,10 +250,10 @@ export function SiteHeader() {
               pathname === "/" ? "text-amber-400" : "text-white/70 hover:text-white"
             }`}
           >
-            Home
+            {homeLabel}
           </Link>
 
-          {NAV_GROUPS.map((group, index) => (
+          {navGroups.map((group, index) => (
             <DesktopDropdown
               key={group.label}
               group={group}
@@ -230,31 +262,31 @@ export function SiteHeader() {
               onOpen={() => setDesktopGroup(group.label)}
               onClose={() => setDesktopGroup((current) => (current === group.label ? null : current))}
               onToggle={() => setDesktopGroup((current) => (current === group.label ? null : group.label))}
-              align={index === NAV_GROUPS.length - 1 ? "right" : index === 0 ? "left" : "center"}
+              align={index === navGroups.length - 1 ? "right" : index === 0 ? "left" : "center"}
             />
           ))}
         </nav>
 
         <div className="hidden items-center gap-2.5 xl:flex">
           <a
-            href={COMPANY.investorPortalUrl}
+            href={investorPortalUrl}
             data-investor-portal="true"
             data-analytics-event="investor_portal_click"
             data-analytics-location="desktop_header"
             className="group inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3.5 py-2.5 text-[12px] font-semibold text-white/80 transition-all hover:border-[#1F4ED8]/60 hover:bg-[#1F4ED8]/[0.10] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1F4ED8]"
           >
             <LockKeyhole size={13} aria-hidden="true" className="text-[#F5B301]" />
-            Investor Portal
+            {investorPortalLabel}
             <ArrowUpRight size={12} aria-hidden="true" className="text-white/35 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </a>
 
           <Link
-            href="/contact"
+            href={headerCta.href || "/contact"}
             data-analytics-event="primary_cta_click"
             data-analytics-location="desktop_header"
             className="gv-btn-primary gv-btn-primary--compact"
           >
-            Begin Your Journey
+            {headerCta.label || "Begin Your Journey"}
           </Link>
         </div>
 
@@ -263,7 +295,7 @@ export function SiteHeader() {
           aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={mobileOpen}
           aria-controls="mobile-navigation"
-          className="rounded-lg p-2 text-white focus-visible:outline-2 focus-visible:outline-[#1F4ED8] xl:hidden"
+          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/10 p-2 text-white transition hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-[#1F4ED8] xl:hidden"
           onClick={() => setMobileOpen((value) => !value)}
         >
           {mobileOpen ? <X size={23} /> : <Menu size={23} />}
@@ -274,10 +306,10 @@ export function SiteHeader() {
         <nav
           id="mobile-navigation"
           aria-label="Mobile navigation"
-          className="overflow-y-auto border-t border-white/10 bg-[#0B0B0F] xl:hidden"
-          style={{ maxHeight: `calc(100vh - ${scrolled ? 64 : 72}px)` }}
+          className="gv-mobile-navigation overflow-y-auto overscroll-contain border-t border-white/10 bg-[#0B0B0F] xl:hidden"
+          style={{ maxHeight: `calc(100dvh - ${scrolled ? 60 : 64}px)` }}
         >
-          <div className="px-5 pb-7 pt-4 sm:px-6">
+          <div className="px-4 pb-[calc(1.75rem+env(safe-area-inset-bottom))] pt-3 sm:px-6">
             <Link
               href="/"
               aria-current={pathname === "/" ? "page" : undefined}
@@ -286,10 +318,10 @@ export function SiteHeader() {
                 pathname === "/" ? "font-semibold text-amber-300" : "text-white/75 hover:text-white"
               }`}
             >
-              Home
+              {homeLabel}
             </Link>
 
-            {NAV_GROUPS.map((group) => {
+            {navGroups.map((group) => {
               const groupOpen = mobileGroup === group.label;
               const groupActive = group.children.some((item) => pathname === item.path);
               const groupId = `mobile-${group.label.toLowerCase().replaceAll(" ", "-")}`;
@@ -341,7 +373,7 @@ export function SiteHeader() {
             })}
 
             <a
-              href={COMPANY.investorPortalUrl}
+              href={investorPortalUrl}
               data-investor-portal="true"
               data-analytics-event="investor_portal_click"
               data-analytics-location="mobile_menu"
@@ -349,19 +381,26 @@ export function SiteHeader() {
               className="mt-5 flex items-center justify-center gap-2 rounded-full border border-[#1F4ED8]/45 py-3.5 text-center text-[14px] font-semibold text-white"
             >
               <LockKeyhole size={15} aria-hidden="true" className="text-[#F5B301]" />
-              Investor Portal
+              {investorPortalLabel}
               <ArrowUpRight size={14} aria-hidden="true" className="text-white/40" />
             </a>
 
             <Link
-              href="/contact"
+              href={headerCta.href || "/contact"}
               data-analytics-event="primary_cta_click"
               data-analytics-location="mobile_menu"
               onClick={() => setMobileOpen(false)}
               className="gv-btn-primary mt-3 block text-center"
             >
-              Begin Your Journey
+              {headerCta.label || "Begin Your Journey"}
             </Link>
+
+            {socialLinks.some((item) => item.locations?.mobileMenu === true && item.isVisible !== false) ? (
+              <div className="mt-5 border-t border-white/10 pt-5">
+                <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/45">Connect with GrowVest</p>
+                <SocialLinks links={socialLinks} location="mobileMenu" theme="dark" />
+              </div>
+            ) : null}
           </div>
         </nav>
       )}

@@ -4,12 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronDown, HelpCircle } from "lucide-react";
 import { BLACK, BLUE, GOLD, MGRAY, serif, dotGrid } from "../lib/brand";
-import { FAQS, FAQ_CATEGORIES } from "../data/faqs";
+import { FAQS } from "../data/faqs";
 
-export default function FAQs() {
+export default function FAQs({ items = [] }) {
+  const faqs = (items.length ? items : FAQS).map((item) => ({ ...item, q: item.q || item.question, a: item.a || item.answer }));
+  const categories = ["All", ...Array.from(new Set(faqs.map((item) => item.category).filter(Boolean)))];
   const [category, setCategory] = useState("All");
   const [openQuestion, setOpenQuestion] = useState(null);
-  const filtered = FAQS.filter((item) => category === "All" || item.category === category);
+  const filtered = faqs.filter((item) => category === "All" || item.category === category);
 
   return (
     <>
@@ -31,7 +33,7 @@ export default function FAQs() {
       <section className="bg-[#F4F6F9] py-16 lg:py-24">
         <div className="mx-auto max-w-[1100px] px-5 sm:px-6 lg:px-8">
           <div className="mb-10 flex flex-wrap gap-2" aria-label="FAQ categories">
-            {FAQ_CATEGORIES.map((item) => (
+            {categories.map((item) => (
               <button
                 key={item}
                 type="button"

@@ -5,6 +5,8 @@ import { GrowVestMark } from "../components/GrowVestMark";
 import { HeroPromise } from "../components/HeroPromise";
 import { HomeBucketListPreview } from "../components/HomeBucketListPreview";
 import { GrowVestJourney } from "../components/GrowVestJourney";
+import { InvestorTestimonials } from "../components/InvestorTestimonials";
+import { listCategories, listInsights } from "../lib/server/insightsRepository";
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 const heroGoals = [
     { Icon: GraduationCap, label: "Child Education", color: GOLD },
@@ -16,7 +18,8 @@ const heroGoals = [
     { Icon: TrendingUp, label: "Loan Closure", color: "#3B82F6" },
     { Icon: Globe, label: "Legacy Planning", color: "#EC4899" },
 ];
-function Hero() {
+function Hero({ content = {} }) {
+    const hero = content.hero || {};
     return (<section className="relative flex min-h-screen items-center overflow-hidden" style={{ background: BLACK, ...dotGrid, paddingTop: "72px" }}>
       <div className="absolute inset-0 pointer-events-none" style={{
             background: `radial-gradient(ellipse 60% 70% at 22% 60%, rgba(31,78,216,0.22) 0%, transparent 65%),
@@ -25,31 +28,31 @@ function Hero() {
       <div data-parallax-speed="-0.035" className="gv-parallax absolute -right-[9%] top-[16%] hidden w-[560px] text-[#1F4ED8]/[0.20] pointer-events-none lg:block xl:w-[700px]">
         <GrowVestMark animated ambient outlined decorative className="h-auto w-full"/>
       </div>
-      <div className="relative mx-auto w-full max-w-[1320px] px-8 py-24 lg:py-32">
+      <div className="relative mx-auto w-full max-w-[1320px] px-5 sm:px-6 lg:px-8 py-24 lg:py-32">
         <div className="grid items-center gap-14 lg:grid-cols-[1fr_460px] xl:grid-cols-[1fr_500px] xl:gap-20">
           <div className="relative z-10">
             <div className="gv-hero-intro gv-hero-intro--1 mb-9 flex items-center gap-3">
               <div className="h-px w-8" style={{ background: GOLD }}/>
-              <span className="text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: GOLD }}>{COMPANY.positioning}</span>
+              <span className="text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: GOLD }}>{hero.eyebrow || COMPANY.positioning}</span>
             </div>
             <h1 className="gv-hero-intro gv-hero-intro--2 mb-7 text-[42px] font-bold leading-[1.04] text-white sm:text-[52px] xl:text-[72px]" style={serif}>
-              Your Bucket List<br/><em style={{ color: GOLD, fontStyle: "italic" }}>Deserves</em> a<br/>Financial Roadmap.
+              {hero.headlineTop || "Your Bucket List"}<br/><em style={{ color: GOLD, fontStyle: "italic" }}>{hero.headlineAccent || "Deserves"}</em><br/>{hero.headlineBottom || "a Financial Roadmap."}
             </h1>
             <p className="gv-hero-intro gv-hero-intro--3 mb-5 max-w-[540px] text-[17px] leading-relaxed text-white/55">
-              GrowVest helps individuals and families protect what matters today and grow toward what is possible tomorrow through human understanding, disciplined planning and thoughtful financial guidance.
+              {hero.description || "GrowVest helps individuals and families protect what matters today and grow toward what is possible tomorrow through human understanding, disciplined planning and thoughtful financial guidance."}
             </p>
             <div className="gv-hero-intro gv-hero-intro--4">
               <HeroPromise/>
             </div>
             <div className="gv-hero-intro gv-hero-intro--5 flex flex-col gap-4 sm:flex-row">
-              <Link href="/contact" data-analytics-event="primary_cta_click" data-analytics-location="home_hero" className="gv-btn-primary inline-flex items-center justify-center gap-2.5">
-                Begin Your Journey <ArrowRight size={17}/>
+              <Link href={hero.primaryCtaHref || "/contact"} data-analytics-event="primary_cta_click" data-analytics-location="home_hero" className="gv-btn-primary inline-flex items-center justify-center gap-2.5">
+                {hero.primaryCtaLabel || "Begin Your Journey"} <ArrowRight size={17}/>
               </Link>
-              <Link href="/your-goals" data-analytics-event="secondary_cta_click" data-analytics-location="home_hero" className="gv-btn-secondary gv-btn-secondary--dark inline-flex items-center justify-center gap-2">
-                Explore Your Goals
+              <Link href={hero.secondaryCtaHref || "/your-goals"} data-analytics-event="secondary_cta_click" data-analytics-location="home_hero" className="gv-btn-secondary gv-btn-secondary--dark inline-flex items-center justify-center gap-2">
+                {hero.secondaryCtaLabel || "Explore Your Goals"}
               </Link>
             </div>
-            <p className="gv-hero-intro gv-hero-intro--5 mt-7 text-[10px] font-bold uppercase tracking-[0.2em] text-white/45">{COMPANY.vision}</p>
+            <p className="gv-hero-intro gv-hero-intro--5 mt-7 text-[10px] font-bold uppercase tracking-[0.2em] text-white/45">{hero.footerLine || COMPANY.vision}</p>
           </div>
 
           <div data-parallax-speed="0.018" className="gv-parallax relative">
@@ -79,8 +82,9 @@ function Hero() {
     </section>);
 }
 // ─── VERIFIED TRUST STRIP ────────────────────────────────────────────────────
-function TrustProofStrip() {
-    const proof = [
+function TrustProofStrip({ content = {} }) {
+    const trust = content.trust || {};
+    const proof = trust.items?.length ? trust.items : [
         { value: COMPANY.clientsSupported, label: "Clients Supported" },
         { value: COMPANY.reviewsCompleted, label: "Structured Reviews" },
         { value: COMPANY.coverage, label: "Service Coverage" },
@@ -97,8 +101,8 @@ function TrustProofStrip() {
             </div>))}
         </div>
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-black/[0.06] pt-4">
-          <p className="text-[11px] leading-relaxed text-[#6B7280]">GrowVest is not registered with SEBI as an Investment Adviser. Certification and compensation details are explained transparently.</p>
-          <Link href="/how-we-charge" className="text-[11px] font-semibold text-[#1F4ED8] hover:underline">How GrowVest works →</Link>
+          <p className="text-[11px] leading-relaxed text-[#6B7280]">{trust.disclosure || "GrowVest is not registered with SEBI as an Investment Adviser. Certification and compensation details are explained transparently."}</p>
+          <Link href={trust.disclosureLinkHref || "/how-we-charge"} className="text-[11px] font-semibold text-[#1F4ED8] hover:underline">{trust.disclosureLinkLabel || "How GrowVest works"} →</Link>
         </div>
       </div>
     </section>);
@@ -113,7 +117,7 @@ const pillars = [
 const trustChips = ["Goal-Based Guidance", "Risk-Aware Planning", "Monthly Reviews", "Transparent Communication", "Consent-Based Process", "Long-Term Relationship"];
 function TrustOperatingSystem() {
     return (<section className="py-24 lg:py-32 bg-white">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>How We Work</p>
           <h2 className="text-[40px] lg:text-[52px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
@@ -148,41 +152,43 @@ function TrustOperatingSystem() {
     </section>);
 }
 // ─── BRAND BELIEF ─────────────────────────────────────────────────────────────
-function BrandBelief() {
+function BrandBelief({ content = {} }) {
+    const belief = content.brandBelief || {};
+    const beliefParagraphs = belief.paragraphs?.length ? belief.paragraphs : ["Before any financial direction, GrowVest understands your responsibilities, aspirations, family priorities, risk comfort, and future milestones.", "Then we turn those goals into a structured financial roadmap — built with clarity, reviewed with discipline, and guided with care."];
     return (<section className="py-28 lg:py-40 bg-[#F4F6F9]">
-      <div className="max-w-[1000px] mx-auto px-8">
+      <div className="max-w-[1000px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 mb-12">
           <div className="h-px flex-1 max-w-[60px]" style={{ background: `linear-gradient(90deg, transparent, ${BLUE}40)` }}/>
-          <p className="text-[11px] font-bold tracking-[0.22em] uppercase" style={{ color: MGRAY }}>Our Belief</p>
+          <p className="text-[11px] font-bold tracking-[0.22em] uppercase" style={{ color: MGRAY }}>{belief.eyebrow || "Our Belief"}</p>
         </div>
         <h2 className="text-[48px] lg:text-[64px] xl:text-[72px] font-bold text-[#0B0B0F] leading-[1.06] mb-10" style={serif}>
-          We Do Not Start<br />With Products.<br />We Start With{" "}
+          {belief.headingLine1 || "We Do Not Start"}<br />{belief.headingLine2 || "With Products."}<br />{belief.headingLine3 || "We Start With"}{" "}
           <span className="relative inline-block" style={{ color: BLUE }}>
-            Your Life.
+            {belief.headingAccent || "Your Life."}
             <span className="absolute left-0 right-0 block rounded-full" style={{ bottom: "-5px", height: "4px", background: GOLD }}/>
           </span>
         </h2>
         <div className="grid lg:grid-cols-2 gap-10 mt-14">
-          <p className="text-[#6B7280] text-[17px] leading-relaxed">Before any financial direction, GrowVest understands your responsibilities, aspirations, family priorities, risk comfort, and future milestones.</p>
-          <p className="text-[#6B7280] text-[17px] leading-relaxed">Then we turn those goals into a structured financial roadmap — built with clarity, reviewed with discipline, and guided with care.</p>
+          {beliefParagraphs.map((paragraph) => <p key={paragraph} className="text-[#6B7280] text-[17px] leading-relaxed">{paragraph}</p>)}
         </div>
       </div>
     </section>);
 }
 // ─── VISION & MISSION ────────────────────────────────────────────────────────
-function VisionMission() {
+function VisionMission({ content = {} }) {
+    const vm = content.visionMission || {};
     return (<section className="py-24 lg:py-32 bg-white">
-      <div className="max-w-[1120px] mx-auto px-8">
+      <div className="max-w-[1120px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-6">
           <article data-parallax-speed="-0.018" className="gv-parallax rounded-3xl border border-gray-200 p-8 lg:p-10">
             <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: BLUE }}>Our Vision</p>
-            <h2 className="text-[32px] sm:text-[40px] font-bold text-[#0B0B0F] leading-tight mb-5" style={serif}>{COMPANY.vision}</h2>
-            <p className="text-[#5B6472] leading-7">To create a future where people experience wealth not only as financial growth, but also as confidence, freedom, peace of mind and meaningful life opportunities every day.</p>
+            <h2 className="text-[32px] sm:text-[40px] font-bold text-[#0B0B0F] leading-tight mb-5" style={serif}>{vm.visionTitle || COMPANY.vision}</h2>
+            <p className="text-[#5B6472] leading-7">{vm.visionCopy || "To create a future where people experience wealth not only as financial growth, but also as confidence, freedom, peace of mind and meaningful life opportunities every day."}</p>
           </article>
           <article data-parallax-speed="0.018" className="gv-parallax rounded-3xl border border-white/10 p-8 lg:p-10 text-white" style={{ background: `linear-gradient(135deg, ${BLACK}, #142044)` }}>
             <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: GOLD }}>Our Mission</p>
-            <h2 className="text-[32px] sm:text-[40px] font-bold leading-tight mb-5" style={serif}>{COMPANY.mission}</h2>
-            <p className="text-white/70 leading-7">To help individuals and families transform their life aspirations into structured financial journeys through disciplined planning, intelligent decision-making and trusted guidance.</p>
+            <h2 className="text-[32px] sm:text-[40px] font-bold leading-tight mb-5" style={serif}>{vm.missionTitle || COMPANY.mission}</h2>
+            <p className="text-white/70 leading-7">{vm.missionCopy || "To help individuals and families transform their life aspirations into structured financial journeys through disciplined planning, intelligent decision-making and trusted guidance."}</p>
           </article>
         </div>
       </div>
@@ -194,7 +200,7 @@ const SYSTEM_PTS = ["Investor Assessment", "Bucket List Mapping", "Risk Profile 
 function HumanGuidance() {
     return (<section className="py-28 lg:py-36 bg-[#0B0B0F] relative" style={dotGrid}>
       <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 50% 60% at 15% 50%, rgba(31,78,216,0.10) 0%, transparent 70%)` }}/>
-      <div className="max-w-[1320px] mx-auto px-8 relative">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8 relative">
         <div className="mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: GOLD }}>Our Approach</p>
           <h2 className="text-[40px] lg:text-[54px] font-bold text-white leading-tight mb-4" style={serif}>
@@ -253,7 +259,7 @@ const SERVICES = [
 ];
 function WealthGuidanceBento() {
     return (<section className="py-28 lg:py-36 bg-white">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>Wealth Guidance</p>
           <h2 className="text-[40px] lg:text-[52px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
@@ -261,8 +267,8 @@ function WealthGuidanceBento() {
           </h2>
           <p className="text-[#6B7280] text-[16px] max-w-[540px] mx-auto leading-relaxed">GrowVest supports investors across planning, protection, guidance, review, and coordination — always connected to life goals and suitability.</p>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="col-span-2 row-span-2 p-8 lg:p-10 rounded-3xl flex flex-col justify-between min-h-[260px] group hover:-translate-y-1 transition-all" style={{ background: `linear-gradient(140deg, ${BLUE} 0%, #1A3FB8 100%)`, boxShadow: `0 8px 40px ${BLUE}35` }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="col-span-1 row-span-1 sm:col-span-2 sm:row-span-2 p-8 lg:p-10 rounded-3xl flex flex-col justify-between min-h-[260px] group hover:-translate-y-1 transition-all" style={{ background: `linear-gradient(140deg, ${BLUE} 0%, #1A3FB8 100%)`, boxShadow: `0 8px 40px ${BLUE}35` }}>
             <div className="flex items-center justify-between">
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.15)" }}>
                 <Target size={22} color={WHITE}/>
@@ -274,14 +280,14 @@ function WealthGuidanceBento() {
               <p className="text-white/60 text-[14px] leading-relaxed">Every investment decision anchored to your life goals and personal timeline — not a product pitch.</p>
             </div>
           </div>
-          {SERVICES.slice(1).map(({ Icon, title, desc, tag }) => (<div key={title} className="p-5 lg:p-6 rounded-3xl border hover:border-blue-200 hover:-translate-y-0.5 transition-all group cursor-default" style={{ background: "#F4F6F9", borderColor: "rgba(0,0,0,0.06)" }}>
+          {SERVICES.slice(1).map(({ Icon, title, desc, tag }) => (<div key={title} className="min-w-0 p-5 lg:p-6 rounded-3xl border hover:border-blue-200 hover:-translate-y-0.5 transition-all group cursor-default" style={{ background: "#F4F6F9", borderColor: "rgba(0,0,0,0.06)" }}>
               <div className="flex items-start justify-between mb-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform" style={{ background: `${BLUE}12` }}>
                   <Icon size={18} style={{ color: BLUE }}/>
                 </div>
                 <span className="text-[10px] font-bold tracking-wide px-2 py-0.5 rounded-full" style={lightTagStyles[tag]}>{tag}</span>
               </div>
-              <h4 className="font-bold text-[#0B0B0F] text-[13.5px] mb-1.5 leading-snug" style={serif}>{title}</h4>
+              <h4 className="break-normal font-bold text-[#0B0B0F] text-[13.5px] mb-1.5 leading-snug" style={serif}>{title}</h4>
               <p className="text-[#6B7280] text-[12px] leading-relaxed line-clamp-2">{desc}</p>
             </div>))}
         </div>
@@ -303,7 +309,7 @@ const HIGHLIGHTS = [
 ];
 function ProgressReviews() {
     return (<section className="py-28 lg:py-36 bg-[#F4F6F9]">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-[1fr_420px] gap-14 items-start">
           <div className="lg:sticky lg:top-24">
             <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>Progress Reviews</p>
@@ -378,7 +384,7 @@ const VALUES = [
 ];
 function WhyGrowVest() {
     return (<section className="py-28 lg:py-36 bg-white">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>Our Values</p>
           <h2 className="text-[40px] lg:text-[52px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
@@ -386,7 +392,7 @@ function WhyGrowVest() {
           </h2>
           <p className="text-[#6B7280] text-[16px] max-w-[480px] mx-auto leading-relaxed">GrowVest works with clarity, care, and responsibility because financial decisions affect real lives, real families, and real futures.</p>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {VALUES.map(({ label, desc }, i) => (<div key={label} className="p-7 lg:p-8 rounded-3xl border border-gray-100 hover:border-yellow-300 hover:-translate-y-1 hover:shadow-[0_8px_40px_rgba(31,78,216,0.10)] transition-all group cursor-default" style={{ background: WHITE, boxShadow: "0 2px 20px rgba(0,0,0,0.05)" }}>
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-white" style={{ background: BLUE }}>{String(i + 1).padStart(2, "0")}</div>
@@ -412,31 +418,31 @@ const PAIRS = [
 ];
 function ComparisonSection() {
     return (<section className="py-28 lg:py-36 bg-[#F4F6F9]">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>A Different Way</p>
           <h2 className="text-[40px] lg:text-[52px] font-bold text-[#0B0B0F] leading-tight" style={serif}>A Different Way to Experience<br />Wealth Guidance.</h2>
         </div>
         <div className="bg-white rounded-3xl overflow-hidden" style={{ boxShadow: "0 4px 32px rgba(0,0,0,0.07)" }}>
-          <div className="grid grid-cols-2 border-b border-gray-100">
-            <div className="px-8 py-5 bg-[#F4F6F9]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 border-b border-gray-100">
+            <div className="border-b border-gray-100 px-5 py-4 sm:border-b-0 sm:px-8 sm:py-5 bg-[#F4F6F9]">
               <div className="flex items-center gap-3">
                 <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center"><X size={13} className="text-gray-400"/></div>
                 <span className="font-bold text-[#6B7280] text-[15px]" style={serif}>Traditional Finance</span>
               </div>
             </div>
-            <div className="px-8 py-5" style={{ background: `${BLUE}07` }}>
+            <div className="px-5 py-4 sm:px-8 sm:py-5" style={{ background: `${BLUE}07` }}>
               <div className="flex items-center gap-3">
                 <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: BLUE }}><Check size={13} color={WHITE}/></div>
                 <span className="font-bold text-[#0B0B0F] text-[15px]" style={serif}>The GrowVest Way</span>
               </div>
             </div>
           </div>
-          {PAIRS.map(([t, g], i) => (<div key={i} className="grid grid-cols-2 border-b border-gray-50 last:border-0 hover:bg-blue-50/20 transition-colors">
-              <div className="px-8 py-5 flex items-center gap-3 bg-[#F4F6F9]/40">
+          {PAIRS.map(([t, g], i) => (<div key={i} className="grid grid-cols-1 border-b border-gray-50 last:border-0 sm:grid-cols-2 hover:bg-blue-50/20 transition-colors">
+              <div className="flex items-center gap-3 border-b border-gray-100 bg-[#F4F6F9]/40 px-5 py-4 sm:border-b-0 sm:px-8 sm:py-5">
                 <X size={12} className="text-gray-300 flex-shrink-0"/><span className="text-[#9CA3AF] text-[13.5px]">{t}</span>
               </div>
-              <div className="px-8 py-5 flex items-center gap-3">
+              <div className="flex items-center gap-3 px-5 py-4 sm:px-8 sm:py-5">
                 <Check size={12} style={{ color: BLUE }} className="flex-shrink-0"/><span className="text-[#0B0B0F] text-[13.5px] font-medium">{g}</span>
               </div>
             </div>))}
@@ -445,14 +451,18 @@ function ComparisonSection() {
     </section>);
 }
 // ─── INSIGHTS ─────────────────────────────────────────────────────────────────
-const INSIGHTS = [
-    { title: "How to Start Goal-Based Wealth Planning", category: "Wealth Planning", read: "5 min", date: "July 2026", color: BLUE },
-    { title: "Why Regular Reviews Matter for Long-Term Goals", category: "Planning", read: "4 min", date: "July 2026", color: GOLD },
-    { title: "Building a Family Protection Plan That Lasts", category: "Protection", read: "6 min", date: "June 2026", color: "#10B981" },
-];
-function InsightsPreview() {
+function formatInsightDate(value) {
+    if (!value) return "";
+    return new Intl.DateTimeFormat("en-IN", { month: "short", year: "numeric" }).format(new Date(value));
+}
+async function InsightsPreview() {
+    const [{ items }, categories] = await Promise.all([
+      listInsights({ publicOnly: true, featuredOnly: false, pageSize: 3 }),
+      listCategories(),
+    ]);
+    const categoryMap = Object.fromEntries(categories.map((item) => [item.id, item]));
     return (<section className="py-28 lg:py-36 bg-white">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-14 gap-4">
           <div>
             <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>Insights</p>
@@ -463,30 +473,35 @@ function InsightsPreview() {
           </Link>
         </div>
         <div className="grid lg:grid-cols-3 gap-6">
-          {INSIGHTS.map(({ title, category, read, date, color }) => (<Link href="/insights#all-insights" key={title} className="group block bg-white border border-gray-100 rounded-3xl overflow-hidden hover:border-blue-100 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+          {items.map((post, index) => {
+            const category = categoryMap[post.categoryIds?.[0]];
+            const color = category?.color || [BLUE, GOLD, "#10B981"][index % 3];
+            return (<Link href={`/insights/${post.slug}`} key={post.id} className="group block bg-white border border-gray-100 rounded-3xl overflow-hidden hover:border-blue-100 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
               <div className="h-[3px]" style={{ background: color }}/>
               <div className="p-7 lg:p-8">
                 <div className="flex items-center gap-3 mb-5">
-                  <span className="text-[11px] font-bold tracking-wider uppercase" style={{ color }}>{category}</span>
+                  <span className="text-[11px] font-bold tracking-wider uppercase" style={{ color }}>{category?.name || "GrowVest Insight"}</span>
                   <span className="text-gray-200">·</span>
-                  <span className="text-[#9CA3AF] text-[12px]">{read} read</span>
+                  <span className="text-[#9CA3AF] text-[12px]">{post.readingTime || 5} min read</span>
                 </div>
-                <h4 className="font-bold text-[#0B0B0F] text-[19px] mb-5 leading-snug group-hover:text-blue-700 transition-colors" style={serif}>{title}</h4>
+                <h4 className="font-bold text-[#0B0B0F] text-[19px] mb-5 leading-snug group-hover:text-blue-700 transition-colors" style={serif}>{post.title}</h4>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#9CA3AF] text-[12px]">{date}</span>
+                  <span className="text-[#9CA3AF] text-[12px]">{formatInsightDate(post.publishedAt)}</span>
                   <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:translate-x-0.5 transition-transform" style={{ background: `${color}15` }}>
                     <ArrowRight size={14} style={{ color }}/>
                   </div>
                 </div>
                 <div className="mt-5 h-0.5 rounded-full w-0 group-hover:w-full transition-all duration-500" style={{ background: `linear-gradient(90deg, ${GOLD}, transparent)` }}/>
               </div>
-            </Link>))}
+            </Link>);
+          })}
         </div>
       </div>
     </section>);
 }
 // ─── FINAL CTA ────────────────────────────────────────────────────────────────
-function FinalCTA() {
+function FinalCTA({ content = {} }) {
+    const cta = content.finalCta || {};
     return (<section className="relative overflow-hidden border-t border-white/[0.07] py-28 sm:py-32 lg:py-40" style={{ background: BLACK, ...dotGrid }}>
       <div
         className="absolute inset-0 pointer-events-none"
@@ -502,40 +517,41 @@ function FinalCTA() {
       <div className="relative mx-auto max-w-[800px] px-5 text-center sm:px-8">
         <div className="mb-9 flex items-center justify-center gap-4 sm:mb-10">
           <div className="h-px w-8 sm:w-10" style={{ background: `${GOLD}45` }}/>
-          <span className="text-[11px] font-bold uppercase tracking-[0.22em]" style={{ color: GOLD }}>Begin Your Journey</span>
+          <span className="text-[11px] font-bold uppercase tracking-[0.22em]" style={{ color: GOLD }}>{cta.eyebrow || "Begin Your Journey"}</span>
           <div className="h-px w-8 sm:w-10" style={{ background: `${GOLD}45` }}/>
         </div>
         <h2 className="mb-6 text-[42px] font-bold leading-[1.04] text-white sm:text-[54px] lg:text-[72px]" style={serif}>
-          Start With a<br /><em style={{ fontStyle: "italic", color: GOLD }}>Conversation.</em>
+          {cta.headingTop || "Start With a"}<br /><em style={{ fontStyle: "italic", color: GOLD }}>{cta.headingAccent || "Conversation."}</em>
         </h2>
-        <p className="mx-auto mb-10 max-w-[560px] text-[16px] leading-relaxed text-white/65 sm:mb-12 sm:text-[17px]">Your financial journey does not need to begin with confusion. Share your goals with GrowVest, and we will help you see the next right step with clarity.</p>
+        <p className="mx-auto mb-10 max-w-[560px] text-[16px] leading-relaxed text-white/65 sm:mb-12 sm:text-[17px]">{cta.description || "Your financial journey does not need to begin with confusion. Share your goals with GrowVest, and we will help you see the next right step with clarity."}</p>
         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Link href="/contact" data-analytics-event="primary_cta_click" data-analytics-location="home_final_cta" className="gv-btn-primary inline-flex items-center gap-3">
-            Begin Your Journey <ArrowRight size={19}/>
+          <Link href={cta.primaryCtaHref || "/contact"} data-analytics-event="primary_cta_click" data-analytics-location="home_final_cta" className="gv-btn-primary inline-flex items-center gap-3">
+            {cta.primaryCtaLabel || "Begin Your Journey"} <ArrowRight size={19}/>
           </Link>
-          <Link href="/your-goals" data-analytics-event="secondary_cta_click" data-analytics-location="home_final_cta" className="gv-btn-secondary gv-btn-secondary--dark inline-flex items-center gap-2">
-            Explore Your Goals
+          <Link href={cta.secondaryCtaHref || "/your-goals"} data-analytics-event="secondary_cta_click" data-analytics-location="home_final_cta" className="gv-btn-secondary gv-btn-secondary--dark inline-flex items-center gap-2">
+            {cta.secondaryCtaLabel || "Explore Your Goals"}
           </Link>
         </div>
       </div>
     </section>);
 }
 // ─── HOME PAGE ────────────────────────────────────────────────────────────────
-export default function Home() {
+export default function Home({ content = {}, testimonials = [] }) {
     return (<>
-      <Hero />
-      <TrustProofStrip />
+      <Hero content={content} />
+      <TrustProofStrip content={content} />
       <TrustOperatingSystem />
-      <BrandBelief />
+      <BrandBelief content={content} />
       <HomeBucketListPreview />
       <GrowVestJourney />
       <HumanGuidance />
-      <VisionMission />
+      <VisionMission content={content} />
       <WealthGuidanceBento />
       <ProgressReviews />
       <WhyGrowVest />
       <ComparisonSection />
+      <InvestorTestimonials items={testimonials} location="homepage" />
       <InsightsPreview />
-      <FinalCTA />
+      <FinalCTA content={content} />
     </>);
 }

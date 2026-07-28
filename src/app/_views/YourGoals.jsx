@@ -147,7 +147,7 @@ function GoalsHero() {
           `,
         }}/>
 
-      <div className="max-w-[1320px] mx-auto px-8 w-full py-24 lg:py-32">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8 w-full py-24 lg:py-32">
         <div className="grid lg:grid-cols-[1fr_440px] gap-14 items-center">
 
           {/* Left */}
@@ -173,10 +173,10 @@ function GoalsHero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href="#explore-goals" className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90 hover:-translate-y-0.5" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}50` }}>
+              <a href="#explore-goals" className="inline-flex items-center justify-center gap-2.5 px-5 sm:px-6 lg:px-8 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90 hover:-translate-y-0.5" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}50` }}>
                 Explore Your Goals <ArrowRight size={17}/>
               </a>
-              <Link href="/" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-[15px] border transition-all hover:bg-white/5" style={{ borderColor: `${GOLD}45`, color: GOLD }}>
+              <Link href="/" className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 lg:px-8 py-4 rounded-full font-semibold text-[15px] border transition-all hover:bg-white/5" style={{ borderColor: `${GOLD}45`, color: GOLD }}>
                 Back to Home
               </Link>
             </div>
@@ -217,7 +217,7 @@ function GoalsHero() {
 // ─── SECTION 2: CATEGORY STRIPS ───────────────────────────────────────────────
 function GoalCategories() {
     return (<section className="py-24 lg:py-32 bg-white">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>
             Goal Framework
@@ -274,7 +274,7 @@ function GoalExplorer() {
             background: `radial-gradient(ellipse 60% 55% at 50% 50%, rgba(31,78,216,0.10) 0%, transparent 70%)`,
         }}/>
 
-      <div className="max-w-[1320px] mx-auto px-8 relative">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: GOLD }}>
             Explore Goals
@@ -368,7 +368,7 @@ function GoalExplorer() {
           <p className="text-white/20 text-[13px] mb-5">
             Ready to map these goals to your financial roadmap?
           </p>
-          <Link href="/contact" className="gv-btn-primary inline-flex items-center gap-2.5 px-8 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90 hover:-translate-y-0.5" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}50` }}>
+          <Link href="/contact" className="gv-btn-primary inline-flex items-center gap-2.5 px-5 sm:px-6 lg:px-8 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90 hover:-translate-y-0.5" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}50` }}>
             Begin Your Journey <ArrowRight size={17}/>
           </Link>
         </div>
@@ -384,7 +384,7 @@ const MAPPING_STEPS = [
 ];
 function GoalMappingJourney() {
     return (<section className="py-28 lg:py-36 bg-[#F4F6F9]">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-[420px_1fr] gap-14 lg:gap-20 items-start">
 
           {/* Left sticky */}
@@ -437,7 +437,7 @@ const BELIEF_POINTS = [
 ];
 function WhyGoalsFirst() {
     return (<section className="py-28 lg:py-40 bg-white">
-      <div className="max-w-[1100px] mx-auto px-8">
+      <div className="max-w-[1100px] mx-auto px-5 sm:px-6 lg:px-8">
         {/* Editorial headline */}
         <div className="mb-16">
           <div className="flex items-center gap-4 mb-10">
@@ -511,7 +511,7 @@ const TESTIMONIALS = [
 ];
 function InvestorVoices() {
     return (<section className="py-24 lg:py-32 bg-[#F4F6F9]">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>
             Investor Voices
@@ -561,7 +561,7 @@ function GoalsCTA() {
 
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-px h-24 pointer-events-none" style={{ background: `linear-gradient(to bottom, transparent, ${GOLD}50)` }}/>
 
-      <div className="max-w-[800px] mx-auto px-8 text-center relative">
+      <div className="max-w-[800px] mx-auto px-5 sm:px-6 lg:px-8 text-center relative">
         <div className="flex items-center justify-center gap-4 mb-10">
           <div className="h-px w-10" style={{ background: `${GOLD}40` }}/>
           <span className="text-[11px] font-bold tracking-[0.22em] uppercase" style={{ color: GOLD }}>

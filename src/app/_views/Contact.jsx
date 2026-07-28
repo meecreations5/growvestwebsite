@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Calendar, Check, Clock, Mail, MapPin, Phone, Target, Users } from "lucide-react";
 import { BLACK, BLUE, GOLD, MGRAY, COMPANY, serif, dotGrid } from "../lib/brand";
 import { trackEvent } from "../lib/analytics";
+import { SocialLinks } from "../components/SocialLinks";
 
 const SERVICES = [
   "Goal and Bucket List Mapping",
@@ -49,7 +50,7 @@ function buildSlots() {
   return slots;
 }
 
-export default function Contact() {
+export default function Contact({ socialLinks = [] }) {
   const [slots, setSlots] = useState([]);
   const [step, setStep] = useState(1);
   const [status, setStatus] = useState("idle");
@@ -92,7 +93,17 @@ export default function Contact() {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          sourcePage: window.location.pathname,
+          campaign: {
+            source: new URLSearchParams(window.location.search).get("utm_source") || "",
+            medium: new URLSearchParams(window.location.search).get("utm_medium") || "",
+            campaign: new URLSearchParams(window.location.search).get("utm_campaign") || "",
+            term: new URLSearchParams(window.location.search).get("utm_term") || "",
+            content: new URLSearchParams(window.location.search).get("utm_content") || "",
+          },
+        }),
       });
       const data = await response.json();
 
@@ -144,6 +155,12 @@ export default function Contact() {
                   <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl" style={{ background: `${BLUE}20` }}><Clock size={13} style={{ color: BLUE }} /></span>
                   <span><span className="block text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: MGRAY }}>Meetings</span><span className="text-[14px] text-white/75">By appointment</span></span>
                 </div>
+                {socialLinks.some((item) => item.locations?.contact === true && item.isVisible !== false) ? (
+                  <div className="pt-2">
+                    <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">Stay connected</p>
+                    <SocialLinks links={socialLinks} location="contact" theme="dark" />
+                  </div>
+                ) : null}
               </div>
             </div>
 

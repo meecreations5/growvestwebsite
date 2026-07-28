@@ -908,6 +908,109 @@ textarea {
   will-change: transform;
 }
 
+
+/* GrowVest Guide launcher stays aligned with the viewport and remains visible
+   against both light page sections and the dark website footer. */
+.gv-guide-launcher {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: calc(5.125rem + env(safe-area-inset-bottom));
+  z-index: 65;
+  display: inline-flex;
+  max-width: calc(100vw - 2rem);
+  min-height: 50px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 0.45rem 1.05rem 0.45rem 0.45rem;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 9999px;
+  background: #0B0B0F;
+  color: #FFFFFF;
+  box-shadow: 0 16px 42px rgb(11 11 15 / 0.3);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  isolation: isolate;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: bottom 260ms ease, background-color 220ms ease, border-color 220ms ease,
+    color 220ms ease, box-shadow 220ms ease, opacity 180ms ease,
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gv-guide-launcher:hover,
+.gv-guide-launcher:focus-visible {
+  border-color: rgb(31 78 216 / 0.55);
+  background: #1F4ED8;
+  box-shadow: 0 18px 46px rgb(31 78 216 / 0.32);
+  transform: translate3d(0, -2px, 0);
+}
+
+.gv-guide-launcher:focus-visible {
+  outline: 3px solid rgb(245 179 1 / 0.45);
+  outline-offset: 3px;
+}
+
+.gv-guide-launcher__icon {
+  display: inline-grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  place-items: center;
+  border-radius: 9999px;
+  background: rgb(245 179 1 / 0.14);
+  color: #F5B301;
+}
+
+.gv-guide-launcher__label {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.1;
+}
+
+.gv-guide-launcher--footer {
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  border-color: rgb(255 255 255 / 0.78);
+  background: #FFFFFF;
+  color: #0B0B0F;
+  box-shadow: 0 18px 50px rgb(0 0 0 / 0.38);
+}
+
+.gv-guide-launcher--footer .gv-guide-launcher__icon {
+  background: #1F4ED8;
+  color: #F5B301;
+}
+
+.gv-guide-launcher--hidden {
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(0, 10px, 0) scale(0.98);
+}
+
+@media (min-width: 640px) {
+  .gv-guide-launcher,
+  .gv-guide-launcher--footer {
+    right: max(1.5rem, env(safe-area-inset-right));
+    bottom: max(1.5rem, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 359px) {
+  .gv-guide-launcher {
+    width: 50px;
+    max-width: 50px;
+    padding: 0.4rem;
+  }
+
+  .gv-guide-launcher__label {
+    display: none;
+  }
+}
+
 .gv-mobile-action-bar {
   position: fixed;
   left: 50%;
@@ -1045,5 +1148,243 @@ textarea {
   .gv-mobile-action-bar {
     left: 0.5rem;
     width: calc(100% - 1rem);
+  }
+}
+
+/* v22.2 mobile optimisation
+   Keeps the public website, floating actions and core Admin workspace stable
+   across narrow phones, browser chrome changes, safe areas and virtual keyboards. */
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+body {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+#main-content,
+#main-content > * {
+  min-width: 0;
+}
+
+img,
+video,
+canvas {
+  max-width: 100%;
+}
+
+:where(h1, h2, h3, h4, p, li, a, button, label) {
+  overflow-wrap: break-word;
+}
+
+.gv-mobile-navigation {
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gv-guide-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  flex-direction: column;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: #F4F6F9;
+  box-shadow: 0 30px 90px rgb(11 11 15 / 0.32);
+}
+
+.gv-guide-dialog__header {
+  flex: 0 0 auto;
+  padding-top: max(1rem, env(safe-area-inset-top));
+}
+
+.gv-guide-dialog__body {
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.gv-guide-dialog__footer {
+  flex: 0 0 auto;
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+.gv-mobile-action-bar__primary {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .gv-guide-dialog {
+    inset: auto 1.5rem 1.5rem auto;
+    width: 410px;
+    height: 680px;
+    max-height: calc(100dvh - 3rem);
+    border: 1px solid rgb(0 0 0 / 0.1);
+    border-radius: 24px;
+  }
+
+  .gv-guide-dialog__header {
+    padding-top: 1rem;
+  }
+
+  .gv-guide-dialog__footer {
+    padding-bottom: 0.75rem;
+  }
+}
+
+@media (max-width: 639px) {
+  #main-content section {
+    scroll-margin-top: 4.5rem;
+  }
+
+  #main-content :where(.py-20, .py-24, .py-28, .py-32) {
+    padding-top: 4.5rem !important;
+    padding-bottom: 4.5rem !important;
+  }
+
+  #main-content :where(.pt-20, .pt-24, .pt-28, .pt-32) {
+    padding-top: 4.5rem !important;
+  }
+
+  #main-content :where(.pb-20, .pb-24, .pb-28, .pb-32) {
+    padding-bottom: 4.5rem !important;
+  }
+
+  #main-content :where(.gap-12, .gap-14, .gap-16, .gap-20) {
+    gap: 2rem !important;
+  }
+
+  #main-content :where(.mb-12, .mb-14, .mb-16, .mb-20) {
+    margin-bottom: 2.5rem !important;
+  }
+
+  #main-content :where(.rounded-\[40px\], .rounded-\[36px\], .rounded-\[32px\]) {
+    border-radius: 1.5rem !important;
+  }
+
+  #main-content :where(.p-8, .p-10, .p-12) {
+    padding: 1.25rem !important;
+  }
+
+  #main-content table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #main-content :where(input, select, textarea) {
+    min-height: 48px;
+    font-size: 16px !important;
+  }
+
+  #main-content :where(button, a)[class*="rounded"] {
+    touch-action: manipulation;
+  }
+
+  .gv-btn-primary,
+  .gv-btn-secondary {
+    display: inline-flex;
+    width: 100%;
+    max-width: 100%;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .gv-btn-primary--compact {
+    width: auto;
+  }
+
+  .gv-guide-launcher {
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: calc(5.35rem + env(safe-area-inset-bottom));
+    max-width: calc(100vw - 1.5rem);
+    min-height: 48px;
+    padding-right: 0.9rem;
+    box-shadow: 0 12px 32px rgb(11 11 15 / 0.28);
+  }
+
+  .gv-guide-launcher--footer {
+    bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .gv-mobile-action-bar {
+    bottom: max(0.5rem, env(safe-area-inset-bottom));
+    width: min(calc(100% - 0.75rem), 560px);
+    gap: 0.375rem;
+    padding: 0.375rem;
+  }
+
+  .gv-mobile-action-bar__portal,
+  .gv-mobile-action-bar__primary {
+    min-height: 46px;
+    padding: 0.72rem 0.78rem;
+  }
+
+  .gv-mobile-action-bar__primary {
+    font-size: 0.75rem;
+  }
+
+  .gv-admin-shell :where(input, select, textarea) {
+    min-height: 46px;
+    font-size: 16px !important;
+  }
+
+  .gv-admin-shell :where(button, a) {
+    touch-action: manipulation;
+  }
+
+  .gv-admin-shell :where(.overflow-x-auto) {
+    margin-right: -1rem;
+    margin-left: -1rem;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    scrollbar-gutter: stable;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .gv-admin-shell table {
+    min-width: 680px;
+  }
+}
+
+@media (max-width: 380px) {
+  .gv-guide-launcher {
+    width: 48px;
+    max-width: 48px;
+    padding: 0.35rem;
+  }
+
+  .gv-guide-launcher__icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .gv-guide-launcher__label {
+    display: none;
+  }
+
+  .gv-mobile-action-bar {
+    grid-template-columns: 92px minmax(0, 1fr);
+  }
+}
+
+@supports not (height: 100dvh) {
+  .gv-guide-dialog {
+    height: 100vh;
+    max-height: 100vh;
   }
 }

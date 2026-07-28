@@ -5,9 +5,9 @@ import { ArrowUpRight, ShieldCheck } from "lucide-react";
 import { COMPANY } from "../lib/brand";
 import { GrowVestMark } from "./GrowVestMark";
 
-export function InvestorPortalTransition() {
+export function InvestorPortalTransition({ defaultDestination = COMPANY.investorPortalUrl }) {
   const [visible, setVisible] = useState(false);
-  const [destination, setDestination] = useState(COMPANY.investorPortalUrl);
+  const [destination, setDestination] = useState(defaultDestination);
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export function InvestorPortalTransition() {
       if (!link || event.defaultPrevented) return;
       if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
 
-      const href = link.href || COMPANY.investorPortalUrl;
+      const href = link.href || defaultDestination;
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       event.preventDefault();
@@ -37,7 +37,7 @@ export function InvestorPortalTransition() {
       document.removeEventListener("click", handlePortalClick, true);
       if (timerRef.current) window.clearTimeout(timerRef.current);
     };
-  }, []);
+  }, [defaultDestination]);
 
   if (!visible) return null;
 

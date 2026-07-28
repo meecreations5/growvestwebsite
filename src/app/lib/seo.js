@@ -59,6 +59,12 @@ export const SEO_PAGES = {
     priority: 0.65,
     changeFrequency: "monthly",
   },
+  "/investor-experiences": {
+    title: "Investor Experiences",
+    description: "Read genuine, consent-approved investor experiences about clarity, structure and purposeful financial progress with GrowVest.",
+    priority: 0.72,
+    changeFrequency: "monthly",
+  },
   "/start-here": {
     title: "Start Here",
     description: "Begin your GrowVest journey with a clear and structured planning conversation.",

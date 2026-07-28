@@ -121,6 +121,14 @@ export default function BucketListBuilder() {
                     ...summaryForm,
                     assumedRate,
                     goals: goals.map(({ goalId, label, corpus, years, monthly }) => ({ goalId, label, corpus, years, monthly })),
+                    sourcePage: window.location.pathname,
+                    campaign: {
+                        source: new URLSearchParams(window.location.search).get("utm_source") || "",
+                        medium: new URLSearchParams(window.location.search).get("utm_medium") || "",
+                        campaign: new URLSearchParams(window.location.search).get("utm_campaign") || "",
+                        term: new URLSearchParams(window.location.search).get("utm_term") || "",
+                        content: new URLSearchParams(window.location.search).get("utm_content") || "",
+                    },
                 }),
             });
             const data = await response.json();
@@ -139,7 +147,7 @@ export default function BucketListBuilder() {
       {/* Hero */}
       <section className="relative py-24 lg:py-36 overflow-hidden" style={{ background: BLACK, ...dotGrid, paddingTop: "72px" }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 55% 55% at 50% 40%, rgba(31,78,216,0.14) 0%, transparent 65%)` }}/>
-        <div className="max-w-[900px] mx-auto px-8 text-center relative">
+        <div className="max-w-[900px] mx-auto px-5 sm:px-6 lg:px-8 text-center relative">
           <div className="flex items-center justify-center gap-3 mb-8">
             <div className="h-px w-8" style={{ background: GOLD }}/>
             <span className="text-[11px] font-bold tracking-[0.2em] uppercase" style={{ color: GOLD }}>Bucket List Builder</span>
@@ -157,7 +165,7 @@ export default function BucketListBuilder() {
 
       {/* Builder */}
       <section className="py-16 lg:py-24 bg-[#F4F6F9]">
-        <div className="max-w-[1100px] mx-auto px-8">
+        <div className="max-w-[1100px] mx-auto px-5 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-[1fr_340px] gap-8 items-start">
 
             {/* Goals list */}
@@ -354,7 +362,7 @@ export default function BucketListBuilder() {
 
       {/* CTA */}
       <section className="py-20 bg-white">
-        <div className="max-w-[680px] mx-auto px-8 text-center">
+        <div className="max-w-[680px] mx-auto px-5 sm:px-6 lg:px-8 text-center">
           <h2 className="text-[36px] lg:text-[48px] font-bold text-[#0B0B0F] leading-tight mb-5" style={serif}>
             This Is an Estimate.<br />
             <em style={{ fontStyle: "italic", color: BLUE }}>Your Real Life Needs a Deeper Conversation.</em>

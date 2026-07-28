@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, GraduationCap, Home as HomeIcon, Star, Shield, Plane, TrendingUp, Heart, Globe, Check } from "lucide-react";
+import { ArrowRight, GraduationCap, Home as HomeIcon, Star, Shield, Plane, TrendingUp, Heart, Globe, Check, Target, DollarSign } from "lucide-react";
 import { BLUE, BLACK, GOLD, MGRAY, serif, dotGrid } from "../lib/brand";
 const GOALS = [
     {
@@ -62,14 +62,16 @@ const GOALS = [
         watchOuts: ["Mixing NRE and NRO funds without understanding repatriation limits", "Not updating PAN, Aadhaar, and KYC after becoming an NRI", "Ignoring DTAA (Double Tax Avoidance Agreement) benefits available by country"],
     },
 ];
-export default function GoalLibrary() {
+export default function GoalLibrary({ goals = [] }) {
+    const iconMap = { "graduation-cap": GraduationCap, home: HomeIcon, star: Star, shield: Shield, plane: Plane, "trending-up": TrendingUp, heart: Heart, globe: Globe, target: Target, "dollar-sign": DollarSign };
+    const goalItems = goals.length ? goals.map((item) => ({ ...item, Icon: iconMap[item.iconKey] || Target })) : GOALS;
     const [activeGoal, setActiveGoal] = useState(0);
-    const goal = GOALS[activeGoal];
+    const goal = goalItems[activeGoal] || goalItems[0];
     return (<>
       {/* Hero */}
       <section className="relative min-h-[65vh] flex items-center overflow-hidden" style={{ background: BLACK, ...dotGrid, paddingTop: "72px" }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 55% 55% at 70% 40%, rgba(245,179,1,0.09) 0%, transparent 65%)` }}/>
-        <div className="max-w-[1100px] mx-auto px-8 w-full py-20 lg:py-28 relative">
+        <div className="max-w-[1100px] mx-auto px-5 sm:px-6 lg:px-8 w-full py-20 lg:py-28 relative">
           <div className="max-w-[680px]">
             <div className="flex items-center gap-3 mb-8">
               <div className="h-px w-8" style={{ background: GOLD }}/>
@@ -88,11 +90,11 @@ export default function GoalLibrary() {
 
       {/* Goal Explorer */}
       <section className="py-20 lg:py-28 bg-[#F4F6F9]">
-        <div className="max-w-[1320px] mx-auto px-8">
+        <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-[280px_1fr] gap-6">
             {/* Sidebar */}
             <div className="space-y-2">
-              {GOALS.map(({ Icon, label, color }, i) => (<button type="button" aria-pressed={activeGoal === i} key={label} onClick={() => setActiveGoal(i)} className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-left transition-all" style={{
+              {goalItems.map(({ Icon, label, color }, i) => (<button type="button" aria-pressed={activeGoal === i} key={label} onClick={() => setActiveGoal(i)} className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-left transition-all" style={{
                 background: activeGoal === i ? "white" : "transparent",
                 boxShadow: activeGoal === i ? `0 4px 20px ${color}15` : "none",
                 border: `1.5px solid ${activeGoal === i ? color : "transparent"}`,
@@ -123,12 +125,12 @@ export default function GoalLibrary() {
               </div>
 
               {/* Stats row */}
-              <div className="grid grid-cols-3 divide-x divide-gray-100 border-b border-gray-100">
+              <div className="grid grid-cols-1 divide-y divide-gray-100 border-b border-gray-100 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
                 {[
             { label: "Typical Horizon", value: goal.horizon },
             { label: "Corpus Range", value: goal.typical },
             { label: "Monthly SIP Range", value: goal.monthlySip },
-        ].map(({ label, value }) => (<div key={label} className="px-6 py-5">
+        ].map(({ label, value }) => (<div key={label} className="px-5 py-4 sm:px-6 sm:py-5">
                     <p className="text-[10px] font-bold tracking-widest uppercase mb-1.5" style={{ color: MGRAY }}>{label}</p>
                     <p className="font-bold text-[#0B0B0F] text-[15px]" style={serif}>{value}</p>
                   </div>))}
@@ -180,7 +182,7 @@ export default function GoalLibrary() {
 
       {/* CTA */}
       <section className="py-20 bg-white">
-        <div className="max-w-[720px] mx-auto px-8 text-center">
+        <div className="max-w-[720px] mx-auto px-5 sm:px-6 lg:px-8 text-center">
           <h2 className="text-[36px] lg:text-[48px] font-bold text-[#0B0B0F] leading-tight mb-5" style={serif}>
             Ready to Map Your<br />
             <em style={{ fontStyle: "italic", color: BLUE }}>Actual Goals?</em>
@@ -190,7 +192,7 @@ export default function GoalLibrary() {
             <Link href="/your-goals" className="inline-flex items-center gap-2.5 px-9 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}45` }}>
               Map Your Bucket List <ArrowRight size={17}/>
             </Link>
-            <Link href="/bucket-list-builder" className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-[15px] border border-gray-200 text-gray-600 transition-all hover:border-blue-200 hover:text-blue-700">
+            <Link href="/bucket-list-builder" className="inline-flex items-center gap-2 px-5 sm:px-6 lg:px-8 py-4 rounded-full font-semibold text-[15px] border border-gray-200 text-gray-600 transition-all hover:border-blue-200 hover:text-blue-700">
               Try the Builder Tool
             </Link>
           </div>

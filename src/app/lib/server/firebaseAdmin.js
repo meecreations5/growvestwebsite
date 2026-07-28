@@ -1,5 +1,7 @@
 import { applicationDefault, cert, getApps, initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
+import { getStorage } from "firebase-admin/storage";
 
 function readAdminConfig() {
   const projectId = process.env.FIREBASE_ADMIN_PROJECT_ID || process.env.FIREBASE_PROJECT_ID;
@@ -47,4 +49,12 @@ export function getAdminDb() {
     globalThis.__growvestFirestoreSettingsApplied = true;
   }
   return db;
+}
+
+export function getAdminAuth() {
+  return getAuth(getFirebaseAdminApp());
+}
+
+export function getAdminStorage() {
+  return getStorage(getFirebaseAdminApp());
 }

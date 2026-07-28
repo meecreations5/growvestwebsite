@@ -19,7 +19,7 @@ export default function FamilyWealth() {
       {/* Hero */}
       <section className="relative min-h-[80vh] flex items-center overflow-hidden" style={{ background: BLACK, ...dotGrid, paddingTop: "72px" }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 55% 65% at 20% 50%, rgba(31,78,216,0.15) 0%, transparent 65%), radial-gradient(ellipse 40% 40% at 85% 25%, rgba(245,179,1,0.08) 0%, transparent 60%)` }}/>
-        <div className="max-w-[1320px] mx-auto px-8 w-full py-20 lg:py-32 relative">
+        <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8 w-full py-20 lg:py-32 relative">
           <div className="max-w-[740px]">
             <div className="flex items-center gap-3 mb-8">
               <div className="h-px w-8" style={{ background: GOLD }}/>
@@ -33,10 +33,10 @@ export default function FamilyWealth() {
               GrowVest's family wealth framework coordinates goals, protection, and estate planning across an entire family — not just for one investor in isolation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/contact" className="gv-btn-primary inline-flex items-center gap-2.5 px-8 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}50` }}>
+              <Link href="/contact" className="gv-btn-primary inline-flex items-center gap-2.5 px-5 sm:px-6 lg:px-8 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}50` }}>
                 Begin Your Journey <ArrowRight size={17}/>
               </Link>
-              <Link href="/goal-library" className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-[15px] border transition-all hover:bg-white/5" style={{ borderColor: `${GOLD}45`, color: GOLD }}>
+              <Link href="/goal-library" className="inline-flex items-center gap-2 px-5 sm:px-6 lg:px-8 py-4 rounded-full font-semibold text-[15px] border transition-all hover:bg-white/5" style={{ borderColor: `${GOLD}45`, color: GOLD }}>
                 Explore Goal Types
               </Link>
             </div>
@@ -46,7 +46,7 @@ export default function FamilyWealth() {
 
       {/* Why family needs a plan */}
       <section className="py-24 bg-white">
-        <div className="max-w-[1000px] mx-auto px-8">
+        <div className="max-w-[1000px] mx-auto px-5 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-[1fr_400px] gap-14 items-center">
             <div>
               <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>The Family Problem</p>
@@ -92,7 +92,7 @@ export default function FamilyWealth() {
 
       {/* 6 Pillars */}
       <section className="py-28 lg:py-36 bg-[#F4F6F9]">
-        <div className="max-w-[1320px] mx-auto px-8">
+        <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>The Framework</p>
             <h2 className="text-[36px] lg:text-[50px] font-bold text-[#0B0B0F] leading-tight" style={serif}>
@@ -114,7 +114,7 @@ export default function FamilyWealth() {
       {/* Scenarios */}
       <section className="py-24 relative" style={{ background: BLACK, ...dotGrid }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 55% 55% at 50% 50%, rgba(31,78,216,0.08) 0%, transparent 70%)` }}/>
-        <div className="max-w-[1100px] mx-auto px-8 relative">
+        <div className="max-w-[1100px] mx-auto px-5 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-12">
             <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-4" style={{ color: GOLD }}>Common Scenarios</p>
             <h2 className="text-[34px] lg:text-[46px] font-bold text-white" style={serif}>Which Situation Fits Your Family?</h2>
@@ -131,7 +131,7 @@ export default function FamilyWealth() {
 
       {/* CTA */}
       <section className="py-28 bg-white">
-        <div className="max-w-[720px] mx-auto px-8 text-center">
+        <div className="max-w-[720px] mx-auto px-5 sm:px-6 lg:px-8 text-center">
           <h2 className="text-[40px] lg:text-[54px] font-bold text-[#0B0B0F] leading-tight mb-6" style={serif}>
             Build a Plan That<br />
             <em style={{ fontStyle: "italic", color: BLUE }}>Holds the Whole Family.</em>
@@ -141,7 +141,7 @@ export default function FamilyWealth() {
             <Link href="/contact" className="gv-btn-primary inline-flex items-center gap-2.5 px-9 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}45` }}>
               Begin Your Journey <ArrowRight size={17}/>
             </Link>
-            <Link href="/client-stories" className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-[15px] border border-gray-200 text-gray-600 transition-all hover:border-blue-200 hover:text-blue-700">
+            <Link href="/client-stories" className="inline-flex items-center gap-2 px-5 sm:px-6 lg:px-8 py-4 rounded-full font-semibold text-[15px] border border-gray-200 text-gray-600 transition-all hover:border-blue-200 hover:text-blue-700">
               See Client Stories
             </Link>
           </div>

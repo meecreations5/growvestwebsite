@@ -1,9 +1,10 @@
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { NextResponse } from "next/server";
 import { COMPANY } from "../../lib/brand";
 import { sendTransactionalEmail } from "../../lib/server/brevo";
 import { writeCommunicationLog } from "../../lib/server/communications";
 import { getAdminDb, isFirebaseAdminConfigured } from "../../lib/server/firebaseAdmin";
+import { createLeadActivityForPublicSubmission, normalizePhone } from "../../lib/server/enquiriesRepository";
 import {
   ApiError,
   assertAllowedOrigin,
@@ -47,6 +48,14 @@ function validatePayload(body) {
   const website = cleanText(body.website, 100);
   const assumedRate = Number(body.assumedRate);
   const rawGoals = Array.isArray(body.goals) ? body.goals.slice(0, 10) : [];
+  const sourcePage = cleanText(body.sourcePage, 400);
+  const campaign = {
+    source: cleanText(body.campaign?.source, 120),
+    medium: cleanText(body.campaign?.medium, 120),
+    campaign: cleanText(body.campaign?.campaign, 180),
+    term: cleanText(body.campaign?.term, 180),
+    content: cleanText(body.campaign?.content, 180),
+  };
 
   if (website) return { honeypot: true };
   if (!name || !email || !consent || !EMAIL_PATTERN.test(email)) {
@@ -86,6 +95,8 @@ function validatePayload(body) {
     goals,
     totalMonthly: goals.reduce((sum, goal) => sum + goal.monthly, 0),
     totalGoalValue: goals.reduce((sum, goal) => sum + goal.corpus, 0),
+    sourcePage,
+    campaign,
   };
 }
 
@@ -133,6 +144,7 @@ export async function POST(request) {
       email: payload.email,
       emailLowercase: payload.email,
       phone: payload.phone || "",
+      phoneNormalized: normalizePhone(payload.phone),
       goals: payload.goals,
       assumedAnnualReturn: payload.assumedRate,
       estimatedMonthlyInvestment: payload.totalMonthly,
@@ -141,7 +153,14 @@ export async function POST(request) {
       consentAccepted: true,
       consentAcceptedAt: FieldValue.serverTimestamp(),
       source: "growvest_bucket_list_builder",
+      sourcePage: payload.sourcePage || "/bucket-list-builder",
+      campaign: payload.campaign,
       status: "new",
+      priority: "high",
+      assignedTo: null,
+      assignedToName: "",
+      assignedToEmail: "",
+      firstResponseDueAt: Timestamp.fromDate(new Date(Date.now() + 2 * 60 * 60 * 1000)),
       emailStatus: {
         teamNotification: "pending",
         visitorSummary: "pending",
@@ -153,6 +172,13 @@ export async function POST(request) {
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
     });
+
+    const leadKey = `bucket--${requestId}`;
+    await createLeadActivityForPublicSubmission({
+      leadKey,
+      summary: "Received a new Bucket List summary request.",
+      details: { sourcePage: payload.sourcePage || "/bucket-list-builder", goalCount: payload.goals.length, estimatedMonthlyInvestment: payload.totalMonthly },
+    }).catch(() => {});
 
     const table = `
       <table style="border-collapse:collapse;width:100%;font-family:Arial,sans-serif;font-size:14px">
@@ -187,6 +213,9 @@ export async function POST(request) {
     }).then(async (result) => {
       await writeCommunicationLog(db, {
         requestId,
+        leadKey,
+        entityType: "websiteLead",
+        entityId: requestId,
         type: "bucket_list_team_notification",
         recipient: notificationEmail,
         status: "sent",
@@ -196,6 +225,9 @@ export async function POST(request) {
     }).catch(async (error) => {
       await writeCommunicationLog(db, {
         requestId,
+        leadKey,
+        entityType: "websiteLead",
+        entityId: requestId,
         type: "bucket_list_team_notification",
         recipient: notificationEmail,
         status: "failed",
@@ -222,6 +254,9 @@ export async function POST(request) {
     }).then(async (result) => {
       await writeCommunicationLog(db, {
         requestId,
+        leadKey,
+        entityType: "websiteLead",
+        entityId: requestId,
         type: "bucket_list_visitor_summary",
         recipient: payload.email,
         status: "sent",
@@ -231,6 +266,9 @@ export async function POST(request) {
     }).catch(async (error) => {
       await writeCommunicationLog(db, {
         requestId,
+        leadKey,
+        entityType: "websiteLead",
+        entityId: requestId,
         type: "bucket_list_visitor_summary",
         recipient: payload.email,
         status: "failed",

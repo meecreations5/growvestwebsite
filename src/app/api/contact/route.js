@@ -1,9 +1,10 @@
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { NextResponse } from "next/server";
 import { COMPANY } from "../../lib/brand";
 import { sendTransactionalEmail } from "../../lib/server/brevo";
 import { writeCommunicationLog } from "../../lib/server/communications";
 import { getAdminDb, isFirebaseAdminConfigured } from "../../lib/server/firebaseAdmin";
+import { createLeadActivityForPublicSubmission, normalizePhone } from "../../lib/server/enquiriesRepository";
 import {
   ApiError,
   assertAllowedOrigin,
@@ -41,6 +42,14 @@ function validateForm(body) {
     message: cleanText(body.message, 1200),
     consent: body.consent === true,
     website: cleanText(body.website, 100),
+    sourcePage: cleanText(body.sourcePage, 400),
+    campaign: {
+      source: cleanText(body.campaign?.source, 120),
+      medium: cleanText(body.campaign?.medium, 120),
+      campaign: cleanText(body.campaign?.campaign, 180),
+      term: cleanText(body.campaign?.term, 180),
+      content: cleanText(body.campaign?.content, 180),
+    },
   };
 
   if (form.website) return { honeypot: true, form };
@@ -94,6 +103,7 @@ export async function POST(request) {
       email: form.email,
       emailLowercase: form.email,
       phone: form.phone,
+      phoneNormalized: normalizePhone(form.phone),
       enquiryType: "discovery_conversation",
       serviceArea: form.service || "not_selected",
       preferredSlot: form.slot,
@@ -102,7 +112,14 @@ export async function POST(request) {
       consentAccepted: true,
       consentAcceptedAt: FieldValue.serverTimestamp(),
       source: "growvest_website",
+      sourcePage: form.sourcePage || "/contact",
+      campaign: form.campaign,
       status: "new",
+      priority: "normal",
+      assignedTo: null,
+      assignedToName: "",
+      assignedToEmail: "",
+      firstResponseDueAt: Timestamp.fromDate(new Date(Date.now() + 2 * 60 * 60 * 1000)),
       emailStatus: {
         teamNotification: "pending",
         visitorAcknowledgement: "pending",
@@ -114,6 +131,13 @@ export async function POST(request) {
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
     });
+
+    const leadKey = `contact--${requestId}`;
+    await createLeadActivityForPublicSubmission({
+      leadKey,
+      summary: "Received a new discovery-conversation request from the website.",
+      details: { sourcePage: form.sourcePage || "/contact", serviceArea: form.service || "not_selected" },
+    }).catch(() => {});
 
     const notificationEmail = process.env.GROWVEST_NOTIFICATION_EMAIL || COMPANY.email;
     const detailsHtml = `
@@ -136,6 +160,9 @@ export async function POST(request) {
     }).then(async (result) => {
       await writeCommunicationLog(db, {
         requestId,
+        leadKey,
+        entityType: "websiteLead",
+        entityId: requestId,
         type: "contact_team_notification",
         recipient: notificationEmail,
         status: "sent",
@@ -145,6 +172,9 @@ export async function POST(request) {
     }).catch(async (error) => {
       await writeCommunicationLog(db, {
         requestId,
+        leadKey,
+        entityType: "websiteLead",
+        entityId: requestId,
         type: "contact_team_notification",
         recipient: notificationEmail,
         status: "failed",
@@ -168,6 +198,9 @@ export async function POST(request) {
     }).then(async (result) => {
       await writeCommunicationLog(db, {
         requestId,
+        leadKey,
+        entityType: "websiteLead",
+        entityId: requestId,
         type: "contact_visitor_acknowledgement",
         recipient: form.email,
         status: "sent",
@@ -177,6 +210,9 @@ export async function POST(request) {
     }).catch(async (error) => {
       await writeCommunicationLog(db, {
         requestId,
+        leadKey,
+        entityType: "websiteLead",
+        entityId: requestId,
         type: "contact_visitor_acknowledgement",
         recipient: form.email,
         status: "failed",

@@ -41,10 +41,10 @@ export default function ForNRIs() {
                 GrowVest helps NRIs organise India-linked goals, family priorities and next steps through remote, goal-based conversations. Tax, FEMA and legal matters may require separate qualified advice.
               </p>
               <div className="flex flex-col gap-4 sm:flex-row">
-                <Link href="/contact" className="gv-btn-primary inline-flex items-center justify-center gap-2.5 rounded-full px-8 py-4 text-[15px] font-semibold text-white" style={{ background: BLUE }}>
+                <Link href="/contact" className="gv-btn-primary inline-flex items-center justify-center gap-2.5 rounded-full px-5 sm:px-6 lg:px-8 py-4 text-[15px] font-semibold text-white" style={{ background: BLUE }}>
                   Begin Your Journey <ArrowRight size={17} />
                 </Link>
-                <Link href="/goal-library" className="inline-flex items-center justify-center rounded-full border px-8 py-4 text-[15px] font-semibold" style={{ borderColor: `${GOLD}45`, color: GOLD }}>
+                <Link href="/goal-library" className="inline-flex items-center justify-center rounded-full border px-5 sm:px-6 lg:px-8 py-4 text-[15px] font-semibold" style={{ borderColor: `${GOLD}45`, color: GOLD }}>
                   Explore Goal Library
                 </Link>
               </div>
@@ -111,7 +111,7 @@ export default function ForNRIs() {
 
       <section className="bg-[#F4F6F9] py-20">
         <div className="mx-auto max-w-[1000px] px-5 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { value: "Remote", label: "Conversation Format", color: BLUE },
               { value: "India", label: "Goal Context", color: GOLD },

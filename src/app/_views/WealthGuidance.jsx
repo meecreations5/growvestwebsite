@@ -207,7 +207,7 @@ function Hero() {
         `,
         }}/>
 
-      <div className="max-w-[1320px] mx-auto px-8 w-full py-24 lg:py-32">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8 w-full py-24 lg:py-32">
         <div className="grid lg:grid-cols-[1fr_440px] gap-14 items-center">
 
           <div>
@@ -226,10 +226,10 @@ function Hero() {
               No product pushing. No return promises. Every direction begins with your goals.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href="#services" className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90 hover:-translate-y-0.5" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}50` }}>
+              <a href="#services" className="inline-flex items-center justify-center gap-2.5 px-5 sm:px-6 lg:px-8 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90 hover:-translate-y-0.5" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}50` }}>
                 Explore Guidance Areas <ArrowRight size={17}/>
               </a>
-              <Link href="/your-goals" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-[15px] border transition-all hover:bg-white/5" style={{ borderColor: `${GOLD}45`, color: GOLD }}>
+              <Link href="/your-goals" className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 lg:px-8 py-4 rounded-full font-semibold text-[15px] border transition-all hover:bg-white/5" style={{ borderColor: `${GOLD}45`, color: GOLD }}>
                 Map Your Goals First
               </Link>
             </div>
@@ -267,7 +267,7 @@ function Hero() {
 // ─── SECTION 2: BENTO OVERVIEW ────────────────────────────────────────────────
 function BentoOverview() {
     return (<section id="services" className="py-24 lg:py-32 bg-white">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>All Guidance Areas</p>
           <h2 className="text-[38px] lg:text-[50px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
@@ -279,9 +279,9 @@ function BentoOverview() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Hero card */}
-          <div className="col-span-2 row-span-2 p-8 lg:p-10 rounded-3xl flex flex-col justify-between min-h-[280px] group hover:-translate-y-1 transition-all" style={{ background: `linear-gradient(140deg, ${BLUE}, #1A3FB8)`, boxShadow: `0 8px 40px ${BLUE}35` }}>
+          <div className="col-span-1 row-span-1 sm:col-span-2 sm:row-span-2 p-8 lg:p-10 rounded-3xl flex flex-col justify-between min-h-[280px] group hover:-translate-y-1 transition-all" style={{ background: `linear-gradient(140deg, ${BLUE}, #1A3FB8)`, boxShadow: `0 8px 40px ${BLUE}35` }}>
             <div className="flex items-start justify-between">
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.15)" }}>
                 <Target size={22} color={WHITE}/>
@@ -300,14 +300,14 @@ function BentoOverview() {
           </div>
 
           {/* Remaining 9 services */}
-          {SERVICES.slice(1).map(({ Icon, title, tag, color }) => (<div key={title} className="p-5 lg:p-6 rounded-3xl border hover:border-blue-200 hover:-translate-y-0.5 transition-all group cursor-default" style={{ background: GRAY, borderColor: "rgba(0,0,0,0.06)" }}>
+          {SERVICES.slice(1).map(({ Icon, title, tag, color }) => (<div key={title} className="min-w-0 p-5 lg:p-6 rounded-3xl border hover:border-blue-200 hover:-translate-y-0.5 transition-all group cursor-default" style={{ background: GRAY, borderColor: "rgba(0,0,0,0.06)" }}>
               <div className="flex items-start justify-between mb-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform" style={{ background: `${color}15` }}>
                   <Icon size={17} style={{ color }}/>
                 </div>
                 <span className="text-[9px] font-bold tracking-wider px-2 py-0.5 rounded-full" style={tagStyles[tag]}>{tag}</span>
               </div>
-              <h4 className="font-bold text-[#0B0B0F] text-[13px] leading-snug mb-1.5" style={serif}>{title}</h4>
+              <h4 className="break-normal font-bold text-[#0B0B0F] text-[13px] leading-snug mb-1.5" style={serif}>{title}</h4>
               <div className="mt-3 h-0.5 rounded-full w-0 group-hover:w-full transition-all duration-500" style={{ background: `linear-gradient(90deg, ${GOLD}, transparent)` }}/>
             </div>))}
         </div>
@@ -323,7 +323,7 @@ function ServiceExplorer() {
             background: `radial-gradient(ellipse 55% 55% at 50% 50%, rgba(31,78,216,0.09) 0%, transparent 70%)`,
         }}/>
 
-      <div className="max-w-[1320px] mx-auto px-8 relative">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: GOLD }}>Guidance in Depth</p>
           <h2 className="text-[38px] lg:text-[50px] font-bold text-white leading-tight mb-4" style={serif}>
@@ -415,7 +415,7 @@ function ServiceExplorer() {
 // ─── SECTION 4: PROTECT VS TRANSFORM ─────────────────────────────────────────
 function ProtectTransform() {
     return (<section className="py-28 lg:py-36 bg-[#F4F6F9]">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>Two Dimensions of Guidance</p>
           <h2 className="text-[38px] lg:text-[50px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
@@ -440,7 +440,7 @@ function ProtectTransform() {
               <h3 className="text-[24px] font-bold text-[#0B0B0F] mb-2" style={serif}>Protection-First Guidance</h3>
               <p className="text-[#6B7280] text-[14px] leading-relaxed">Securing your financial foundation before building upward. Without protection, every plan is at risk.</p>
             </div>
-            <div className="bg-white px-8 py-6">
+            <div className="bg-white px-5 sm:px-6 lg:px-8 py-6">
               <ul className="space-y-4">
                 {SERVICES.filter(s => s.tag === "Protect").map(({ Icon, title, tagline, color }) => (<li key={title} className="flex items-start gap-4 py-3 border-b border-gray-50 last:border-0">
                     <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: `${color}12` }}>
@@ -467,7 +467,7 @@ function ProtectTransform() {
               <h3 className="text-[24px] font-bold text-[#0B0B0F] mb-2" style={serif}>Transformation-Led Planning</h3>
               <p className="text-[#6B7280] text-[14px] leading-relaxed">Turning your aspirations into structured, measurable financial progress — from dream home to retirement.</p>
             </div>
-            <div className="bg-white px-8 py-6">
+            <div className="bg-white px-5 sm:px-6 lg:px-8 py-6">
               <ul className="space-y-4">
                 {SERVICES.filter(s => s.tag === "Transform").map(({ Icon, title, tagline, color }) => (<li key={title} className="flex items-start gap-4 py-3 border-b border-gray-50 last:border-0">
                     <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: `${color}12` }}>
@@ -520,7 +520,7 @@ const SUITABILITY_POINTS = [
 ];
 function SuitabilityPromise() {
     return (<section className="py-28 lg:py-36 bg-white">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-[420px_1fr] gap-14 lg:gap-20 items-start">
           <div className="lg:sticky lg:top-24">
             <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>Our Commitment</p>
@@ -566,7 +566,7 @@ function GuidancePrinciples() {
             background: `radial-gradient(ellipse 55% 50% at 30% 50%, rgba(31,78,216,0.10) 0%, transparent 70%)`,
         }}/>
 
-      <div className="max-w-[1100px] mx-auto px-8 relative">
+      <div className="max-w-[1100px] mx-auto px-5 sm:px-6 lg:px-8 relative">
         <div className="mb-14">
           <div className="flex items-center gap-4 mb-10">
             <div className="h-px w-12" style={{ background: `linear-gradient(90deg, transparent, ${GOLD}40)` }}/>
@@ -605,7 +605,7 @@ function WealthGuidanceCTA() {
           {label}
         </div>))}
 
-      <div className="max-w-[800px] mx-auto px-8 text-center relative">
+      <div className="max-w-[800px] mx-auto px-5 sm:px-6 lg:px-8 text-center relative">
         <div className="flex items-center justify-center gap-4 mb-10">
           <div className="h-px w-10" style={{ background: `${GOLD}40` }}/>
           <span className="text-[11px] font-bold tracking-[0.22em] uppercase" style={{ color: GOLD }}>Begin Your Journey</span>

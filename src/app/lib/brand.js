@@ -61,7 +61,8 @@ export const NAV_GROUPS = [
     children: [
       { label: "Families", path: "/family-wealth" },
       { label: "NRIs", path: "/for-nris" },
-      { label: "Client Journeys", path: "/client-stories" },
+      { label: "Investor Experiences", path: "/investor-experiences" },
+      { label: "Illustrative Journeys", path: "/client-stories" },
     ],
   },
   {
@@ -93,6 +94,7 @@ export const NAV = [
   { label: "Insights", path: "/insights" },
   { label: "About Us", path: "/about" },
   { label: "Illustrative Journeys", path: "/client-stories" },
+  { label: "Investor Experiences", path: "/investor-experiences" },
   { label: "Start Here", path: "/start-here" },
   { label: "Goal Library", path: "/goal-library" },
   { label: "Bucket List Builder", path: "/bucket-list-builder" },

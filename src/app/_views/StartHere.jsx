@@ -28,7 +28,7 @@ export default function StartHere() {
       {/* Hero */}
       <section className="relative min-h-[75vh] flex items-center overflow-hidden" style={{ background: BLACK, ...dotGrid, paddingTop: "72px" }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 60% 65% at 30% 50%, rgba(31,78,216,0.15) 0%, transparent 65%)` }}/>
-        <div className="max-w-[1100px] mx-auto px-8 w-full py-20 lg:py-28 relative">
+        <div className="max-w-[1100px] mx-auto px-5 sm:px-6 lg:px-8 w-full py-20 lg:py-28 relative">
           <div className="max-w-[680px]">
             <div className="flex items-center gap-3 mb-8">
               <div className="h-px w-8" style={{ background: GOLD }}/>
@@ -55,7 +55,7 @@ export default function StartHere() {
 
       {/* Is GrowVest for you */}
       <section className="py-28 lg:py-36 bg-white">
-        <div className="max-w-[1000px] mx-auto px-8">
+        <div className="max-w-[1000px] mx-auto px-5 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <div>
               <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>Is This for You?</p>
@@ -82,7 +82,7 @@ export default function StartHere() {
 
       {/* How it works */}
       <section className="py-28 lg:py-36 bg-[#F4F6F9]">
-        <div className="max-w-[1100px] mx-auto px-8">
+        <div className="max-w-[1100px] mx-auto px-5 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>How It Works</p>
             <h2 className="text-[36px] lg:text-[50px] font-bold text-[#0B0B0F] leading-tight" style={serif}>Four Steps to a<br />Goal-Linked Financial Life.</h2>
@@ -107,7 +107,7 @@ export default function StartHere() {
 
       {/* What to expect timeline */}
       <section className="py-28 lg:py-36 bg-white">
-        <div className="max-w-[820px] mx-auto px-8">
+        <div className="max-w-[820px] mx-auto px-5 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>What to Expect</p>
             <h2 className="text-[36px] lg:text-[48px] font-bold text-[#0B0B0F] leading-tight" style={serif}>From First Call to<br />Fully On Track.</h2>
@@ -131,7 +131,7 @@ export default function StartHere() {
 
       {/* Mini FAQ */}
       <section className="py-20 bg-[#F4F6F9]">
-        <div className="max-w-[820px] mx-auto px-8">
+        <div className="max-w-[820px] mx-auto px-5 sm:px-6 lg:px-8">
           <h3 className="text-[24px] font-bold text-[#0B0B0F] mb-8 text-center" style={serif}>Common First Questions</h3>
           <div className="space-y-3">
             {[
@@ -155,7 +155,7 @@ export default function StartHere() {
       {/* CTA */}
       <section className="relative py-36 overflow-hidden" style={{ background: BLACK, ...dotGrid }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 60% 60% at 50% 50%, rgba(31,78,216,0.12) 0%, transparent 70%)` }}/>
-        <div className="max-w-[680px] mx-auto px-8 text-center relative">
+        <div className="max-w-[680px] mx-auto px-5 sm:px-6 lg:px-8 text-center relative">
           <h2 className="text-[44px] lg:text-[60px] font-bold text-white mb-6 leading-[1.04]" style={serif}>
             The First Step is<br />
             <em style={{ color: GOLD, fontStyle: "italic" }}>Always the Goals.</em>

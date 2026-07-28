@@ -14,7 +14,7 @@ function Hero() {
         `,
         }}/>
 
-      <div className="max-w-[1320px] mx-auto px-8 w-full py-24 lg:py-32">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8 w-full py-24 lg:py-32">
         <div className="grid lg:grid-cols-[1fr_420px] gap-14 items-center">
 
           {/* Left */}
@@ -39,10 +39,10 @@ function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href="#three-phases" className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90 hover:-translate-y-0.5" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}50` }}>
+              <a href="#three-phases" className="inline-flex items-center justify-center gap-2.5 px-5 sm:px-6 lg:px-8 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90 hover:-translate-y-0.5" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}50` }}>
                 Explore Our Process <ArrowRight size={17}/>
               </a>
-              <Link href="/your-goals" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-[15px] border transition-all hover:bg-white/5" style={{ borderColor: `${GOLD}45`, color: GOLD }}>
+              <Link href="/your-goals" className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 lg:px-8 py-4 rounded-full font-semibold text-[15px] border transition-all hover:bg-white/5" style={{ borderColor: `${GOLD}45`, color: GOLD }}>
                 Map Your Goals
               </Link>
             </div>
@@ -85,7 +85,7 @@ const PILLARS = [
 ];
 function Philosophy() {
     return (<section className="py-24 lg:py-32 bg-white">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>Our Philosophy</p>
           <h2 className="text-[38px] lg:text-[50px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
@@ -183,7 +183,7 @@ function ThreePhases() {
             background: `radial-gradient(ellipse 55% 60% at 50% 50%, rgba(31,78,216,0.10) 0%, transparent 70%)`,
         }}/>
 
-      <div className="max-w-[1320px] mx-auto px-8 relative">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: GOLD }}>Our Process</p>
           <h2 className="text-[38px] lg:text-[52px] font-bold text-white leading-tight mb-4" style={serif}>
@@ -292,7 +292,7 @@ const STANDARDS = [
 ];
 function GuidanceStandards() {
     return (<section className="py-28 lg:py-36 bg-[#F4F6F9]">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-[420px_1fr] gap-14 lg:gap-20 items-start">
           <div className="lg:sticky lg:top-24">
             <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>How We Hold Ourselves Accountable</p>
@@ -335,7 +335,7 @@ const REVIEW_ITEMS = [
 ];
 function ReviewSystem() {
     return (<section className="py-28 lg:py-36 bg-white">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>The Review System</p>
           <h2 className="text-[38px] lg:text-[50px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
@@ -427,7 +427,7 @@ const DELIVERABLES = [
 ];
 function Deliverables() {
     return (<section className="py-28 lg:py-36 bg-[#F4F6F9]">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>
             What You Receive
@@ -473,7 +473,7 @@ const DIFFS = [
 ];
 function WayComparison() {
     return (<section className="py-28 lg:py-36 bg-white">
-      <div className="max-w-[1100px] mx-auto px-8">
+      <div className="max-w-[1100px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>A Different Standard</p>
           <h2 className="text-[38px] lg:text-[50px] font-bold text-[#0B0B0F] leading-tight" style={serif}>
@@ -482,22 +482,22 @@ function WayComparison() {
         </div>
 
         <div className="rounded-3xl overflow-hidden border border-gray-100" style={{ boxShadow: "0 4px 32px rgba(0,0,0,0.07)" }}>
-          <div className="grid grid-cols-2 border-b border-gray-100">
-            <div className="px-8 py-5 bg-[#F4F6F9]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 border-b border-gray-100">
+            <div className="border-b border-gray-100 px-5 py-4 sm:border-b-0 sm:px-8 sm:py-5 bg-[#F4F6F9]">
               <p className="font-bold text-[#6B7280] text-[14px]" style={serif}>The Usual Way</p>
             </div>
-            <div className="px-8 py-5" style={{ background: `${BLUE}06` }}>
+            <div className="px-5 py-4 sm:px-8 sm:py-5" style={{ background: `${BLUE}06` }}>
               <p className="font-bold text-[#0B0B0F] text-[14px]" style={serif}>The GrowVest Way</p>
             </div>
           </div>
-          {DIFFS.map(([usual, gv], i) => (<div key={i} className="grid grid-cols-2 border-b border-gray-50 last:border-0 hover:bg-blue-50/15 transition-colors">
-              <div className="px-8 py-4 flex items-center gap-3 bg-[#F4F6F9]/30">
+          {DIFFS.map(([usual, gv], i) => (<div key={i} className="grid grid-cols-1 border-b border-gray-50 last:border-0 sm:grid-cols-2 hover:bg-blue-50/15 transition-colors">
+              <div className="flex items-center gap-3 border-b border-gray-100 bg-[#F4F6F9]/30 px-5 py-4 sm:border-b-0 sm:px-8">
                 <div className="w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
                   <span className="text-gray-400 text-[9px]">✕</span>
                 </div>
                 <span className="text-[#9CA3AF] text-[13px]">{usual}</span>
               </div>
-              <div className="px-8 py-4 flex items-center gap-3">
+              <div className="flex items-center gap-3 px-5 py-4 sm:px-8">
                 <Check size={13} style={{ color: BLUE }} className="flex-shrink-0"/>
                 <span className="text-[#0B0B0F] text-[13px] font-medium">{gv}</span>
               </div>
@@ -514,7 +514,7 @@ function GrowVestWayCTA() {
         }}/>
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-px h-28 pointer-events-none" style={{ background: `linear-gradient(to bottom, transparent, ${GOLD}50)` }}/>
 
-      <div className="max-w-[800px] mx-auto px-8 text-center relative">
+      <div className="max-w-[800px] mx-auto px-5 sm:px-6 lg:px-8 text-center relative">
         <div className="flex items-center justify-center gap-4 mb-10">
           <div className="h-px w-10" style={{ background: `${GOLD}40` }}/>
           <span className="text-[11px] font-bold tracking-[0.22em] uppercase" style={{ color: GOLD }}>Experience the GrowVest Way</span>

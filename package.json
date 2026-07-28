@@ -1,6 +1,6 @@
 {
   "name": "growvest-nextjs-app-router",
-  "version": "3.1.0",
+  "version": "8.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "eslint .",
     "check:env": "node scripts/validate-env.mjs",
-    "verify": "npm run lint && npm run build"
+    "verify": "npm run lint && npm run build",
+    "bootstrap:website-admin": "node scripts/bootstrap-website-admin.mjs",
+    "check:routes": "node scripts/check-route-collisions.mjs",
+    "cleanup:legacy-routes": "node scripts/cleanup-legacy-public-routes.mjs --apply",
+    "prebuild": "npm run check:routes"
   },
   "dependencies": {
     "lucide-react": "0.487.0",

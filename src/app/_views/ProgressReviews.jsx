@@ -83,7 +83,7 @@ function Hero() {
         `,
         }}/>
 
-      <div className="max-w-[1320px] mx-auto px-8 w-full py-24 lg:py-32">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8 w-full py-24 lg:py-32">
         <div className="grid lg:grid-cols-[1fr_480px] gap-14 items-center">
 
           {/* Left */}
@@ -103,10 +103,10 @@ function Hero() {
               Not a check-in call. A documented review with real outputs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href="#review-system" className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90 hover:-translate-y-0.5" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}50` }}>
+              <a href="#review-system" className="inline-flex items-center justify-center gap-2.5 px-5 sm:px-6 lg:px-8 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90 hover:-translate-y-0.5" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}50` }}>
                 See How Reviews Work <ArrowRight size={17}/>
               </a>
-              <Link href="/your-goals" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-[15px] border transition-all hover:bg-white/5" style={{ borderColor: `${GOLD}45`, color: GOLD }}>
+              <Link href="/your-goals" className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 lg:px-8 py-4 rounded-full font-semibold text-[15px] border transition-all hover:bg-white/5" style={{ borderColor: `${GOLD}45`, color: GOLD }}>
                 Map Your Goals
               </Link>
             </div>
@@ -186,7 +186,7 @@ const WHY_POINTS = [
 ];
 function WhyReviewsMatter() {
     return (<section className="py-28 lg:py-40 bg-[#F4F6F9]">
-      <div className="max-w-[1100px] mx-auto px-8">
+      <div className="max-w-[1100px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 mb-12">
           <div className="h-px w-12" style={{ background: `linear-gradient(90deg, transparent, ${BLUE}40)` }}/>
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase" style={{ color: MGRAY }}>Why It Matters</p>
@@ -235,7 +235,7 @@ function ReviewExplorer() {
             background: `radial-gradient(ellipse 55% 55% at 50% 50%, rgba(31,78,216,0.09) 0%, transparent 70%)`,
         }}/>
 
-      <div className="max-w-[1320px] mx-auto px-8 relative">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: GOLD }}>The 8-Point Review</p>
           <h2 className="text-[38px] lg:text-[52px] font-bold text-white leading-tight mb-4" style={serif}>
@@ -292,7 +292,7 @@ function ReviewReportMockup() {
     const [activeGoal, setActiveGoal] = useState(0);
     const goal = GOALS_SAMPLE[activeGoal];
     return (<section className="py-28 lg:py-36 bg-white">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>Sample Review</p>
           <h2 className="text-[38px] lg:text-[50px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
@@ -450,7 +450,7 @@ const CADENCE_ITEMS = [
 ];
 function ReviewCadence() {
     return (<section className="py-28 lg:py-36 bg-[#F4F6F9]">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-[400px_1fr] gap-14 lg:gap-20 items-start">
           <div className="lg:sticky lg:top-24">
             <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>Review Cadence</p>
@@ -498,7 +498,7 @@ const OUTCOMES = [
 ];
 function WhatChanges() {
     return (<section className="py-28 lg:py-36 bg-white">
-      <div className="max-w-[1320px] mx-auto px-8">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>Review Outcomes</p>
           <h2 className="text-[38px] lg:text-[50px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
@@ -541,7 +541,7 @@ function BeforeAfter() {
             background: `radial-gradient(ellipse 50% 50% at 25% 50%, rgba(31,78,216,0.09) 0%, transparent 70%)`,
         }}/>
 
-      <div className="max-w-[1100px] mx-auto px-8 relative">
+      <div className="max-w-[1100px] mx-auto px-5 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: GOLD }}>Before vs After</p>
           <h2 className="text-[38px] lg:text-[50px] font-bold text-white leading-tight" style={serif}>
@@ -550,7 +550,7 @@ function BeforeAfter() {
         </div>
 
         <div className="rounded-3xl overflow-hidden border border-white/8" style={{ background: "rgba(255,255,255,0.04)", boxShadow: "0 4px 40px rgba(0,0,0,0.30)" }}>
-          <div className="grid grid-cols-2 border-b border-white/8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 border-b border-white/8">
             <div className="px-8 py-5 border-r border-white/8">
               <div className="flex items-center gap-3">
                 <Clock size={15} className="text-white/30"/>
@@ -564,7 +564,7 @@ function BeforeAfter() {
               </div>
             </div>
           </div>
-          {BEFORE_AFTER.map(([before, after], i) => (<div key={i} className="grid grid-cols-2 border-b border-white/6 last:border-0 hover:bg-white/3 transition-colors">
+          {BEFORE_AFTER.map(([before, after], i) => (<div key={i} className="grid grid-cols-1 border-b border-white/6 last:border-0 sm:grid-cols-2 hover:bg-white/3 transition-colors">
               <div className="px-8 py-4 flex items-center gap-3 border-r border-white/6">
                 <div className="w-4 h-4 rounded-full bg-white/8 flex items-center justify-center flex-shrink-0">
                   <span className="text-white/30 text-[9px]">✕</span>
@@ -592,7 +592,7 @@ function ProgressReviewsCTA() {
           {label}
         </div>))}
 
-      <div className="max-w-[800px] mx-auto px-8 text-center relative">
+      <div className="max-w-[800px] mx-auto px-5 sm:px-6 lg:px-8 text-center relative">
         <div className="flex items-center justify-center gap-4 mb-10">
           <div className="h-px w-10" style={{ background: `${GOLD}40` }}/>
           <span className="text-[11px] font-bold tracking-[0.22em] uppercase" style={{ color: GOLD }}>Begin Your Journey</span>
