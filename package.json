@@ -1,0 +1,34 @@
+{
+  "name": "growvest-nextjs-app-router",
+  "version": "8.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "check:env": "node scripts/validate-env.mjs",
+    "verify": "npm run lint && npm run build",
+    "bootstrap:website-admin": "node scripts/bootstrap-website-admin.mjs",
+    "check:routes": "node scripts/check-route-collisions.mjs",
+    "cleanup:legacy-routes": "node scripts/cleanup-legacy-public-routes.mjs --apply",
+    "prebuild": "npm run check:routes"
+  },
+  "dependencies": {
+    "lucide-react": "0.487.0",
+    "next": "15.5.21",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "firebase-admin": "^13.5.0",
+    "firebase": "11.10.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.12",
+    "eslint": "^9.34.0",
+    "eslint-config-next": "15.5.21",
+    "tailwindcss": "4.1.12"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
