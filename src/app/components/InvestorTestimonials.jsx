@@ -13,17 +13,17 @@ function normaliseQuote(value) {
     .replace(/\s+/g, " ");
 }
 
-function quoteExcerpt(value, limit = 330) {
+function quoteExcerpt(value, limit = 215) {
   const clean = normaliseQuote(value);
   if (clean.length <= limit) return clean;
   const clipped = clean.slice(0, limit);
   const lastSpace = clipped.lastIndexOf(" ");
-  return `${clipped.slice(0, lastSpace > limit * 0.7 ? lastSpace : limit).trim()}…`;
+  return `${clipped.slice(0, lastSpace > limit * 0.72 ? lastSpace : limit).trim()}…`;
 }
 
 function InvestorAvatar({ item }) {
   return (
-    <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full border border-[#DDE4F2] bg-[#EEF3FF]">
+    <div className="h-11 w-11 shrink-0 overflow-hidden rounded-full border border-[#E0E6EF] bg-[#EEF3FF]">
       {item.photo?.url && !item.useInitials ? (
         <img
           src={item.photo.url}
@@ -41,77 +41,82 @@ function InvestorAvatar({ item }) {
   );
 }
 
-export function InvestorTestimonials({ items = [], location = "insights", className = "" }) {
-  const visible = items.filter(
-    (item) => item?.status === "published" && item?.consentConfirmed === true,
+function PreviewCard({ item }) {
+  const journey = JOURNEY_LABELS[item.journeyType] || "GrowVest Journey";
+  const quote = normaliseQuote(item.shortQuote) || quoteExcerpt(item.quote);
+
+  return (
+    <article className="flex min-h-[315px] flex-col rounded-[24px] border border-[#E5E9F0] bg-white p-6 shadow-[0_14px_36px_rgba(31,78,216,.07)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_46px_rgba(31,78,216,.10)]">
+      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F4F7FC] text-[#A8B7D2]">
+        <Quote size={18} strokeWidth={1.8} />
+      </span>
+
+      <blockquote className="mt-6 text-[15px] font-medium leading-7 text-[#252A34]">
+        “{quote}”
+      </blockquote>
+
+      <div className="mt-auto border-t border-[#EDF0F5] pt-5">
+        <div className="flex items-center gap-3">
+          <InvestorAvatar item={item} />
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-extrabold text-[#0B0B0F]">
+              {item.displayName || "A GrowVest Investor"}
+            </p>
+            <p className="mt-1 truncate text-[11px] leading-5 text-[#7A8190]">
+              {journey}{item.city ? ` · ${item.city}` : ""}
+            </p>
+          </div>
+          <ShieldCheck size={14} className="shrink-0 text-[#1F4ED8]" aria-label="Consent verified" />
+        </div>
+      </div>
+    </article>
   );
+}
+
+export function InvestorTestimonials({ items = [], location = "insights", className = "" }) {
+  const visible = items
+    .filter((item) => item?.status === "published" && item?.consentConfirmed === true)
+    .sort((a, b) => Number(Boolean(b.isFeatured)) - Number(Boolean(a.isFeatured)))
+    .slice(0, 3);
 
   if (!visible.length) return null;
 
-  const featured = visible.find((item) => item.isFeatured) || visible[0];
-  const journey = JOURNEY_LABELS[featured.journeyType] || "GrowVest Journey";
-  const featuredQuote = normaliseQuote(featured.shortQuote) || quoteExcerpt(featured.quote, 330);
-  const sectionBackground = location === "insights" ? "bg-white" : "bg-[#F4F6F9]";
+  const sectionBackground = location === "insights" ? "bg-[#F8FAFD]" : "bg-[#F4F6F9]";
 
   return (
-    <section className={`${sectionBackground} py-16 sm:py-20 lg:py-24 ${className}`}>
-      <div className="mx-auto max-w-[1320px] px-5 sm:px-6 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
-          <div>
-            <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#FFF8E4] text-[#B47E00]">
-                <Sparkles size={16} />
-              </span>
-              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#1F4ED8]">
-                Investor Experiences
-              </span>
-            </div>
-            <h2 className="mt-6 max-w-xl font-serif text-4xl font-bold leading-tight text-[#0B0B0F] sm:text-5xl">
-              Real stories from thoughtful financial journeys.
-            </h2>
-            <p className="mt-5 max-w-lg text-[15px] leading-7 text-[#6B7280]">
-              Read genuine experiences shared with consent by people who chose to bring more structure and clarity to their financial decisions.
-            </p>
-            <Link
-              href="/investor-experiences"
-              className="group mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#1F4ED8]"
-            >
-              Explore Investor Experiences
-              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
-
-          <article className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8 lg:p-9">
-            <div className="flex items-center justify-between gap-3">
-              <Quote size={32} strokeWidth={1.35} className="text-[#F5B301]" />
-              <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.12em] text-[#6B7280]">
-                <ShieldCheck size={13} className="text-[#1F4ED8]" /> Consent verified
-              </span>
-            </div>
-
-            <blockquote className="mt-5 font-serif text-[24px] font-bold leading-[1.5] text-[#0B0B0F] sm:text-[29px]">
-              “{featuredQuote}”
-            </blockquote>
-
-            <div className="mt-7 flex items-center gap-4 border-t border-black/[0.07] pt-6">
-              <InvestorAvatar item={featured} />
-              <div className="min-w-0">
-                <p className="truncate text-sm font-extrabold text-[#0B0B0F]">
-                  {featured.displayName || "A GrowVest Investor"}
-                </p>
-                <p className="mt-1 text-xs leading-5 text-[#6B7280]">
-                  {journey}{featured.city ? ` · ${featured.city}` : ""}
-                </p>
-              </div>
-            </div>
-          </article>
+    <section className={`relative overflow-hidden ${sectionBackground} py-16 sm:py-20 lg:py-24 ${className}`}>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1%_100%,rgba(31,78,216,.08),transparent_22%),radial-gradient(circle_at_99%_100%,rgba(245,179,1,.08),transparent_22%)]" />
+      <div className="relative mx-auto max-w-[1240px] px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="inline-flex items-center gap-2 rounded-md border border-[#F5B301]/55 bg-[#FFFDF7] px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#A46F00]">
+            <Sparkles size={12} /> Investor experiences
+          </span>
+          <h2 className="mt-5 font-serif text-4xl font-bold leading-tight text-[#0B0B0F] sm:text-5xl">
+            Trusted experiences, shared with care.
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-[14px] leading-7 text-[#6B7280] sm:text-[15px]">
+            Genuine perspectives from investors who chose to bring more structure, confidence and purpose to their financial journey.
+          </p>
         </div>
 
-        <div className="mt-5 flex items-start gap-2.5 text-[11px] leading-5 text-[#6B7280]">
-          <ShieldCheck size={14} className="mt-0.5 shrink-0 text-[#1F4ED8]" />
-          <p>
-            Individual experiences may vary. Testimonials reflect personal experiences and should not be interpreted as a promise of financial outcomes, returns or future performance.
-          </p>
+        <div className={`mt-10 grid gap-5 md:grid-cols-2 ${visible.length > 2 ? "xl:grid-cols-3" : "xl:mx-auto xl:max-w-[820px]"}`}>
+          {visible.map((item) => <PreviewCard key={item.id} item={item} />)}
+        </div>
+
+        <div className="mt-9 flex flex-col items-center gap-4 text-center">
+          <Link
+            href="/investor-experiences"
+            className="group inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#1F4ED8] px-6 text-sm font-extrabold text-white transition hover:bg-[#173FB4]"
+          >
+            View all investor experiences
+            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+          </Link>
+          <div className="flex max-w-3xl items-start gap-2 text-left text-[10px] leading-5 text-[#7A8190]">
+            <ShieldCheck size={13} className="mt-0.5 shrink-0 text-[#1F4ED8]" />
+            <p>
+              Individual experiences may vary. Testimonials should not be interpreted as a promise of financial outcomes, returns or future performance.
+            </p>
+          </div>
         </div>
       </div>
     </section>

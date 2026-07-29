@@ -2,27 +2,16 @@
 
 Production-oriented GrowVest marketing website built with **Next.js App Router**, **React 19**, **ES6 JavaScript (`.jsx`)**, **Tailwind CSS v4**, **Firebase Analytics**, **Firebase Admin** and **Brevo**.
 
-## Latest release — v19 Team Hierarchy and Social Media Management
+## Latest release — v23 Final Production Readiness
 
-This release extends the protected Website Admin inside the same GrowVest Next.js project:
+GrowVest v23 adds a protected System Readiness workspace, liveness and dependency-readiness endpoints, structured server error diagnostics, request correlation IDs, consent-controlled Web Vitals, production security headers, stricter environment validation, secret scanning, asset checks, accessibility baselines and deployment smoke tests.
 
-- Dynamic team hierarchy at `/admin/team`
-- Verified team profiles, departments, hierarchy levels and public visibility
-- Team photographs through the existing Firebase Storage Media Library
-- Dynamic public team section on `/about`
-- Social account management at `/admin/social-media`
-- Independent placement controls for the footer, About page, Contact page and mobile navigation
-- Organization `sameAs` structured data from published social accounts
-- Server-only Firestore access, role permissions, audit logs and cache invalidation
-- Existing Insights CMS, Microsoft Admin login, Firebase Analytics, lead processing and Brevo features retained
+Open `/admin/system-readiness` as Super Admin and read:
 
-Read:
-
-- `TEAM_SOCIAL_MANAGEMENT_V19.md`
-- `FIRESTORE_RULES_TEAM_SOCIAL_V19.md`
-- `VALIDATION_REPORT_V19.md`
-- `INSIGHTS_CMS_PRODUCTION_V18.md`
-- `FUNCTIONAL_INTEGRATION_V14.md`
+- `PRODUCTION_READINESS_V23.md`
+- `PRODUCTION_DEPLOYMENT_RUNBOOK_V23.md`
+- `BACKUP_RECOVERY_V23.md`
+- `VALIDATION_REPORT_V23.md`
 
 ## Brand foundation
 
@@ -50,7 +39,8 @@ Open `http://localhost:3000`.
 ## Production verification
 
 ```bash
-npm run check:env
+npm run check:source
+npm run check:env -- --production
 npm run lint
 npm run build
 npm start
@@ -80,6 +70,7 @@ Keep it `false` for local, preview, staging and pre-launch deployments. Changing
 |---|---|
 | `NEXT_PUBLIC_SITE_URL` | Canonical public website URL |
 | `NEXT_PUBLIC_INVESTOR_PORTAL_URL` | Secure Investor Portal login URL |
+| `NEXT_PUBLIC_APP_VERSION` | Release identifier shown in health and readiness checks |
 | `NEXT_PUBLIC_ALLOW_INDEXING` | Explicit production indexing switch |
 | `NEXT_PUBLIC_FIREBASE_API_KEY` | Public GrowVest website Firebase API key |
 | `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Firebase authentication domain |
@@ -99,6 +90,7 @@ Keep it `false` for local, preview, staging and pre-launch deployments. Changing
 | `BREVO_REPLY_TO_EMAIL` | Reply-to address |
 | `GROWVEST_NOTIFICATION_EMAIL` | Internal enquiry recipient |
 | `BREVO_NEWSLETTER_LIST_ID` | Numeric Brevo newsletter list ID |
+| `GROWVEST_OBSERVABILITY_WEBHOOK_URL` | Optional server-error alert endpoint |
 
 ## Website Admin endpoints
 
@@ -119,6 +111,8 @@ Keep it `false` for local, preview, staging and pre-launch deployments. Changing
 - `POST /api/bucket-list`
 - `POST /api/newsletter`
 - `GET /api/health`
+- `GET /api/health/live`
+- `GET /api/health/ready`
 
 ## SEO and launch endpoints
 
@@ -248,3 +242,31 @@ See `INVESTOR_EXPERIENCE_UX_NAVIGATION_V22_7.md` and `VALIDATION_REPORT_V22_7.md
 ## v22.8 — Simple Investor Experience Design
 
 Investor testimonial cards and the dedicated Investor Experiences page now use the same simple card language as the rest of the GrowVest website. See `TESTIMONIAL_SIMPLE_DESIGN_V22_8.md`.
+
+
+## v23 — Final Production Readiness
+
+Use `/admin/system-readiness` to review launch-critical configuration and runtime dependencies. Run `npm run readiness` before deployment and `npm run smoke -- https://deployment-url` after deployment. A green technical check does not replace legal, compliance, content, operational or business UAT approval.
+
+## v23.1 Investor Experience reference redesign
+
+Investor testimonial presentation now follows a simple, light, three-card editorial design based on the approved visual reference. See `TESTIMONIAL_REFERENCE_DESIGN_V23_1.md`.
+
+## v23.2.1 — Admin navigation hydration fix
+
+The Admin sidebar now waits for client hydration before rendering permission-filtered navigation. This prevents stale development bundles or permission snapshots from shifting SEO Centre and System Readiness links during hydration. See `HYDRATION_FIX_V23_2_1.md`.
+
+## v23.2.2
+
+SEO Centre runtime compatibility fix: replaces the unavailable Lucide `Sitemap` component with `Network`.
+
+
+## v24 — GrowVest Guide Intelligence & Conversion Upgrade
+
+GrowVest Guide now supports session memory, deterministic intent detection, progressive goal journeys, confidence-aware clarification, contextual WhatsApp handoff with visitor consent, answer feedback and improved Guide analytics.
+
+New public endpoint:
+
+- `POST /api/growvest-guide/feedback`
+
+Merge `FIRESTORE_RULES_GROWVEST_GUIDE_V24.md` before production testing. See `GROWVEST_GUIDE_INTELLIGENCE_V24.md` for the complete workflow, guardrails and acceptance checklist.

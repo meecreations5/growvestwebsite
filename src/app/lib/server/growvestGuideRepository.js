@@ -3,7 +3,7 @@ import { unstable_cache } from "next/cache";
 import { FAQS } from "../../data/faqs";
 import { GOAL_LIBRARY_SEED } from "../../data/websiteContentSeed";
 import { INSIGHTS_SEED } from "../../data/insightsSeed";
-import { GUIDE_CONVERSATION_STATUSES, GUIDE_DEFAULT_SETTINGS, GUIDE_KNOWLEDGE_SEED, GUIDE_STATUSES } from "../../data/growvestGuide";
+import { GUIDE_CONVERSATION_STATUSES, GUIDE_DEFAULT_SETTINGS, GUIDE_FEEDBACK_VALUES, GUIDE_KNOWLEDGE_SEED, GUIDE_STATUSES } from "../../data/growvestGuide";
 import { getAdminDb, isFirebaseAdminConfigured } from "./firebaseAdmin";
 
 const KNOWLEDGE_COLLECTION = "guideKnowledge";
@@ -11,6 +11,7 @@ const SETTINGS_COLLECTION = "guideSettings";
 const CONVERSATIONS_COLLECTION = "guideConversations";
 const MESSAGES_COLLECTION = "guideMessages";
 const UNANSWERED_COLLECTION = "guideUnansweredQuestions";
+const FEEDBACK_COLLECTION = "guideFeedback";
 const AUDIT_COLLECTION = "websiteAuditLogs";
 
 const STOP_WORDS = new Set([
@@ -208,6 +209,12 @@ export function sanitizeGuideSettingsInput(input, { existing = null, actor = nul
     whatsappEnabled: cleanBoolean(input?.whatsappEnabled, fallback.whatsappEnabled),
     whatsappNumber: number || GUIDE_DEFAULT_SETTINGS.whatsappNumber,
     whatsappLabel: cleanText(input?.whatsappLabel || fallback.whatsappLabel, 120),
+    guidedJourneysEnabled: cleanBoolean(input?.guidedJourneysEnabled, fallback.guidedJourneysEnabled),
+    sessionMemoryEnabled: cleanBoolean(input?.sessionMemoryEnabled, fallback.sessionMemoryEnabled),
+    feedbackEnabled: cleanBoolean(input?.feedbackEnabled, fallback.feedbackEnabled),
+    showSources: cleanBoolean(input?.showSources, fallback.showSources),
+    lowConfidenceThreshold: Math.max(0.1, Math.min(0.9, Number(input?.lowConfidenceThreshold ?? fallback.lowConfidenceThreshold ?? 0.35))),
+    sessionRetentionHours: cleanInteger(input?.sessionRetentionHours, fallback.sessionRetentionHours || 24, 1, 168),
     quickPrompts: quickPrompts.length ? quickPrompts : GUIDE_DEFAULT_SETTINGS.quickPrompts,
     maxAnswerSources: cleanInteger(input?.maxAnswerSources, fallback.maxAnswerSources, 1, 5),
     updatedBy: actor?.uid || existing?.updatedBy || "system",
@@ -369,6 +376,23 @@ export function isPersonalAdviceRequest(message) {
   return ADVICE_PATTERNS.some((pattern) => pattern.test(cleanText(message, 800)));
 }
 
+export async function getGuideSessionContext(sessionId) {
+  const id = cleanText(sessionId, 160);
+  if (!id || !isFirebaseAdminConfigured()) return {};
+  const snapshot = await getAdminDb().collection(CONVERSATIONS_COLLECTION).doc(id).get();
+  if (!snapshot.exists) return {};
+  const data = snapshot.data() || {};
+  return {
+    intentId: cleanText(data.intentId, 80),
+    intentLabel: cleanText(data.intentLabel, 120),
+    journeyStage: cleanText(data.journeyStage, 80),
+    timeline: cleanText(data.timeline, 100),
+    planningStatus: cleanText(data.planningStatus, 100),
+    conversationSummary: cleanText(data.conversationSummary, 500),
+  };
+}
+
+
 export async function findGuideAnswer(message, settings = GUIDE_DEFAULT_SETTINGS) {
   const query = cleanText(message, 800).toLowerCase().replace(/\s+/g, " ");
   const queryTokens = unique(tokenize(query));
@@ -422,6 +446,8 @@ export async function recordGuideExchange({ sessionId, message, response, pageUr
   const messageRef = db.collection(MESSAGES_COLLECTION).doc();
   const now = FieldValue.serverTimestamp();
   const userMessage = cleanText(message, 800);
+  const state = response?.stateUpdate || {};
+  const resetState = Boolean(state.reset);
 
   const existingConversation = await conversationRef.get();
   await conversationRef.set({
@@ -432,6 +458,13 @@ export async function recordGuideExchange({ sessionId, message, response, pageUr
     lastMatchedQuestion: response.matchedQuestion || "",
     lastSourceType: response.sourceType || "",
     lastConfidence: Number(response.confidence || 0),
+    intentId: resetState ? "" : cleanText(state.intentId || response.intent?.id || existingConversation.data()?.intentId, 80),
+    intentLabel: resetState ? "" : cleanText(state.intentLabel || response.intent?.label || existingConversation.data()?.intentLabel, 120),
+    journeyStage: resetState ? "" : cleanText(state.journeyStage || existingConversation.data()?.journeyStage, 80),
+    timeline: resetState ? "" : cleanText(state.timeline || existingConversation.data()?.timeline, 100),
+    planningStatus: resetState ? "" : cleanText(state.planningStatus || existingConversation.data()?.planningStatus, 100),
+    conversationSummary: resetState ? "" : cleanText(state.conversationSummary || response.conversationSummary || existingConversation.data()?.conversationSummary, 500),
+    lastNextAction: cleanText(response.nextAction, 80),
     pageUrl: cleanText(pageUrl, 600),
     userAgent: cleanText(context.userAgent, 500),
     referrer: cleanText(context.referrer, 500),
@@ -452,6 +485,14 @@ export async function recordGuideExchange({ sessionId, message, response, pageUr
     matchedQuestion: response.matchedQuestion || "",
     sourceType: response.sourceType || "",
     confidence: Number(response.confidence || 0),
+    intentId: cleanText(state.intentId || response.intent?.id, 80),
+    intentLabel: cleanText(state.intentLabel || response.intent?.label, 120),
+    journeyStage: cleanText(state.journeyStage, 80),
+    timeline: cleanText(state.timeline, 100),
+    planningStatus: cleanText(state.planningStatus, 100),
+    conversationSummary: cleanText(state.conversationSummary || response.conversationSummary, 500),
+    nextAction: cleanText(response.nextAction, 80),
+    quickReplies: Array.isArray(response.quickReplies) ? response.quickReplies.slice(0, 8) : [],
     sources: Array.isArray(response.sources) ? response.sources.slice(0, 5) : [],
     pageUrl: cleanText(pageUrl, 600),
     createdAt: now,
@@ -475,7 +516,37 @@ export async function recordGuideExchange({ sessionId, message, response, pageUr
   return { conversationId, messageId: messageRef.id };
 }
 
-export async function recordGuideHandoff({ sessionId, name = "", phone = "", question = "", pageUrl = "", whatsappUrl = "", targetNumber = "", context = {} }) {
+export async function recordGuideFeedback({ sessionId, messageId, value, comment = "", context = {} }) {
+  const conversationId = cleanText(sessionId, 160);
+  const feedbackValue = GUIDE_FEEDBACK_VALUES.includes(value) ? value : "";
+  if (!conversationId || !messageId || !feedbackValue) {
+    const error = new Error("A valid Guide message and feedback value are required.");
+    error.status = 400;
+    error.code = "GUIDE_FEEDBACK_INVALID";
+    throw error;
+  }
+  if (!isFirebaseAdminConfigured()) return { id: "local", value: feedbackValue };
+  const db = getAdminDb();
+  const reference = db.collection(FEEDBACK_COLLECTION).doc(`${conversationId}--${cleanText(messageId, 180)}`);
+  await reference.set({
+    conversationId,
+    messageId: cleanText(messageId, 180),
+    value: feedbackValue,
+    comment: cleanText(comment, 600),
+    userAgent: cleanText(context.userAgent, 500),
+    referrer: cleanText(context.referrer, 500),
+    updatedAt: FieldValue.serverTimestamp(),
+    createdAt: FieldValue.serverTimestamp(),
+  }, { merge: true });
+  await db.collection(CONVERSATIONS_COLLECTION).doc(conversationId).set({
+    lastFeedback: feedbackValue,
+    lastFeedbackAt: FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp(),
+  }, { merge: true });
+  return { id: reference.id, value: feedbackValue };
+}
+
+export async function recordGuideHandoff({ sessionId, name = "", phone = "", question = "", pageUrl = "", whatsappUrl = "", targetNumber = "", conversationSummary = "", intentId = "", intentLabel = "", timeline = "", planningStatus = "", context = {} }) {
   if (!isFirebaseAdminConfigured()) return { leadId: "local", leadKey: "contact--local" };
   const db = getAdminDb();
   const leadRef = db.collection("websiteLeads").doc();
@@ -496,6 +567,11 @@ export async function recordGuideHandoff({ sessionId, name = "", phone = "", que
     email: "",
     message: cleanText(question, 1000),
     guideConversationId: conversationId,
+    guideConversationSummary: cleanText(conversationSummary, 500),
+    detectedIntent: cleanText(intentId, 80),
+    detectedIntentLabel: cleanText(intentLabel, 120),
+    goalTimeline: cleanText(timeline, 100),
+    planningStatus: cleanText(planningStatus, 100),
     status: "new",
     priority: "normal",
     assignedTo: null,
@@ -520,7 +596,15 @@ export async function recordGuideHandoff({ sessionId, name = "", phone = "", que
     destination: cleanText(targetNumber, 40).replace(/[^0-9]/g, ""),
     visitorPhone: normalizedPhone,
     provider: "click_to_chat",
-    metadata: { conversationId, whatsappUrl: cleanText(whatsappUrl, 1200) },
+    metadata: {
+      conversationId,
+      whatsappUrl: cleanText(whatsappUrl, 1200),
+      conversationSummary: cleanText(conversationSummary, 500),
+      intentId: cleanText(intentId, 80),
+      intentLabel: cleanText(intentLabel, 120),
+      timeline: cleanText(timeline, 100),
+      planningStatus: cleanText(planningStatus, 100),
+    },
     createdAt: now,
   });
 
@@ -529,6 +613,7 @@ export async function recordGuideHandoff({ sessionId, name = "", phone = "", que
       status: "handed_off",
       leadKey,
       leadId: leadRef.id,
+      conversationSummary: cleanText(conversationSummary, 500),
       handedOffAt: now,
       updatedAt: now,
     }, { merge: true });
@@ -602,22 +687,49 @@ export async function resolveUnansweredQuestion(id, input, actor) {
 
 export async function getGuideSummary() {
   if (!isFirebaseAdminConfigured()) {
-    return { knowledge: GUIDE_KNOWLEDGE_SEED.length, publishedKnowledge: GUIDE_KNOWLEDGE_SEED.filter((item) => item.status === "published").length, conversations: 0, needsFollowUp: 0, handoffs: 0, unanswered: 0 };
+    return {
+      knowledge: GUIDE_KNOWLEDGE_SEED.length,
+      publishedKnowledge: GUIDE_KNOWLEDGE_SEED.filter((item) => item.status === "published").length,
+      conversations: 0,
+      needsFollowUp: 0,
+      handoffs: 0,
+      unanswered: 0,
+      answeredRate: 0,
+      handoffRate: 0,
+      helpful: 0,
+      notHelpful: 0,
+      topIntent: "—",
+    };
   }
   const db = getAdminDb();
-  const [knowledgeItems, conversations, unanswered] = await Promise.all([
+  const [knowledgeItems, conversations, unanswered, feedback] = await Promise.all([
     listGuideKnowledge(),
     db.collection(CONVERSATIONS_COLLECTION).limit(500).get(),
     db.collection(UNANSWERED_COLLECTION).limit(500).get(),
+    db.collection(FEEDBACK_COLLECTION).limit(500).get().catch(() => null),
   ]);
   const conversationItems = conversations.docs.map((doc) => doc.data());
   const unansweredItems = unanswered.docs.map((doc) => doc.data());
+  const feedbackItems = feedback?.docs?.map((doc) => doc.data()) || [];
+  const answered = conversationItems.filter((item) => ["answered", "handed_off", "closed"].includes(item.status)).length;
+  const handoffs = conversationItems.filter((item) => item.status === "handed_off").length;
+  const intentCounts = new Map();
+  for (const item of conversationItems) {
+    const label = cleanText(item.intentLabel, 120);
+    if (label) intentCounts.set(label, (intentCounts.get(label) || 0) + 1);
+  }
+  const topIntent = [...intentCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || "—";
   return {
     knowledge: knowledgeItems.length,
     publishedKnowledge: knowledgeItems.filter((item) => item.status === "published" && item.isVisible !== false).length,
     conversations: conversations.size,
     needsFollowUp: conversationItems.filter((item) => item.status === "needs_follow_up").length,
-    handoffs: conversationItems.filter((item) => item.status === "handed_off").length,
+    handoffs,
     unanswered: unansweredItems.filter((item) => item.status === "open").length,
+    answeredRate: conversations.size ? Math.round((answered / conversations.size) * 100) : 0,
+    handoffRate: conversations.size ? Math.round((handoffs / conversations.size) * 100) : 0,
+    helpful: feedbackItems.filter((item) => item.value === "helpful").length,
+    notHelpful: feedbackItems.filter((item) => item.value === "not_helpful").length,
+    topIntent,
   };
 }

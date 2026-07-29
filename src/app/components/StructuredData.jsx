@@ -1,3 +1,7 @@
+function serializeStructuredData(data) {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
 export function StructuredData({ data, id }) {
   if (!data) return null;
 
@@ -5,7 +9,7 @@ export function StructuredData({ data, id }) {
     <script
       id={id}
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: serializeStructuredData(data) }}
     />
   );
 }

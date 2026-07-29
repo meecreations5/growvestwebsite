@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookCheck, MessageCircle, MessageSquareWarning, MessageSquareText, Settings2 } from "lucide-react";
+import { BarChart3, BookCheck, MessageCircle, MessageSquareWarning, MessageSquareText, Settings2, ThumbsUp } from "lucide-react";
 import { requireAdminPage } from "../../../lib/server/adminAuth";
 import { getGuideSettings, getGuideSummary, listGuideConversations, listUnansweredGuideQuestions } from "../../../lib/server/growvestGuideRepository";
 import { AdminPageHeader } from "../../_components/AdminPageHeader";
@@ -25,24 +25,26 @@ export default async function GrowVestGuideAdminPage() {
   const cards = [
     { label: "Published answers", value: summary.publishedKnowledge, icon: BookCheck, color: "#1F4ED8" },
     { label: "Guide conversations", value: summary.conversations, icon: MessageSquareText, color: "#6B7280" },
-    { label: "Needs follow-up", value: summary.needsFollowUp, icon: MessageSquareWarning, color: "#E53935" },
+    { label: "Answered rate", value: `${summary.answeredRate || 0}%`, icon: BarChart3, color: "#1F4ED8" },
     { label: "WhatsApp handoffs", value: summary.handoffs, icon: MessageCircle, color: "#14863E" },
+    { label: "Helpful responses", value: summary.helpful || 0, icon: ThumbsUp, color: "#14863E" },
+    { label: "Needs follow-up", value: summary.needsFollowUp, icon: MessageSquareWarning, color: "#E53935" },
   ];
 
   return (
     <>
       <AdminPageHeader
         title="GrowVest Guide"
-        description="A controlled, approved-content assistant for website questions, unanswered-question capture and WhatsApp handoff."
+        description="A controlled, approved-content assistant with session memory, guided goal journeys, answer feedback and contextual WhatsApp handoff."
         actions={admin.permissions.includes("guide.manage") ? <Link href="/admin/growvest-guide/settings" className="inline-flex items-center gap-2 rounded-xl bg-[#1F4ED8] px-5 py-3 text-sm font-bold text-white"><Settings2 size={17} /> Guide settings</Link> : null}
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {cards.map(({ label, value, icon: Icon, color }) => <div key={label} className="rounded-2xl border border-black/5 bg-white p-5 shadow-sm"><div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: `${color}14`, color }}><Icon size={20} /></div><p className="mt-5 font-serif text-4xl font-bold">{value}</p><p className="mt-1 text-sm text-[#6B7280]">{label}</p></div>)}
       </div>
 
       <div className="mt-6 rounded-2xl border border-black/5 bg-white p-5 shadow-sm">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#1F4ED8]">Public status</p><h2 className="mt-1 font-serif text-2xl font-bold">{settings.isEnabled !== false ? "GrowVest Guide is active" : "GrowVest Guide is disabled"}</h2><p className="mt-2 text-sm text-[#6B7280]">WhatsApp handoff is {settings.whatsappEnabled !== false ? "enabled" : "disabled"}. The Guide uses only published GrowVest answers and website content.</p></div>{admin.permissions.includes("guide.manage") ? <div className="flex flex-wrap gap-2"><Link href="/admin/growvest-guide/knowledge" className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-bold text-[#1F4ED8]">Manage answers</Link><Link href="/admin/growvest-guide/settings" className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-bold text-[#1F4ED8]">Configure Guide</Link></div> : null}</div>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#1F4ED8]">Public status</p><h2 className="mt-1 font-serif text-2xl font-bold">{settings.isEnabled !== false ? "GrowVest Guide is active" : "GrowVest Guide is disabled"}</h2><p className="mt-2 text-sm text-[#6B7280]">WhatsApp handoff is {settings.whatsappEnabled !== false ? "enabled" : "disabled"}. Guided journeys are {settings.guidedJourneysEnabled !== false ? "enabled" : "disabled"}. Most common intent: {summary.topIntent || "—"}.</p></div>{admin.permissions.includes("guide.manage") ? <div className="flex flex-wrap gap-2"><Link href="/admin/growvest-guide/knowledge" className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-bold text-[#1F4ED8]">Manage answers</Link><Link href="/admin/growvest-guide/settings" className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-bold text-[#1F4ED8]">Configure Guide</Link></div> : null}</div>
       </div>
 
       {admin.permissions.includes("guide.conversations") ? <div className="mt-6 grid gap-6 xl:grid-cols-2">

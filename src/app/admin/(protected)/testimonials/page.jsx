@@ -16,6 +16,7 @@ export default async function TestimonialsPage() {
       <Link
         href="/investor-experiences"
         target="_blank"
+        rel="noreferrer noopener"
         className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-bold text-[#1F4ED8]"
       >
         <ExternalLink size={16} /> View public page

@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { BarChart3, BookOpen, Bot, CalendarClock, ChevronDown, FileEdit, FolderTree, HelpCircle, Home, Images, Inbox, LayoutDashboard, LibraryBig, LogOut, Mail, Menu, MessageCircle, MessageSquareQuote, MessageSquareText, Network, PenLine, Settings2, Share2, Tags, Target, Users, PanelsTopLeft } from "lucide-react";
+import { useEffect, useState } from "react";
+import { BarChart3, BookOpen, Bot, CalendarClock, ChevronDown, FileEdit, FolderTree, HelpCircle, Home, Images, Inbox, LayoutDashboard, LibraryBig, LogOut, Mail, Menu, MessageCircle, MessageSquareQuote, MessageSquareText, Network, PenLine, Settings2, Share2, Tags, Target, Users, PanelsTopLeft, SearchCheck, ShieldCheck } from "lucide-react";
 
 const nav = [
   { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -61,6 +61,8 @@ const nav = [
   { label: "Investor Testimonials", href: "/admin/testimonials", icon: MessageSquareQuote, permission: "testimonials.read" },
   { label: "Social Media", href: "/admin/social-media", icon: Share2, permission: "social.read" },
   { label: "Media Library", href: "/admin/media", icon: Images, permission: "media.manage" },
+  { label: "SEO Centre", href: "/admin/seo", icon: SearchCheck, permission: "seo.read" },
+  { label: "System Readiness", href: "/admin/system-readiness", icon: ShieldCheck, permission: "system.read" },
 ];
 
 function AdminLogout() {
@@ -81,6 +83,15 @@ export function AdminShell({ admin, children }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openGroups, setOpenGroups] = useState({ guide: true, enquiries: true, website: true, insights: true });
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  const permissions = Array.isArray(admin?.permissions) ? admin.permissions : [];
+  const hasPermission = (permission) => !permission || permissions.includes(permission);
+  const visibleNav = nav.filter((item) => hasPermission(item.permission));
 
   const sidebar = (
     <div className="flex h-full flex-col bg-[#0B0B0F] text-white">
@@ -96,17 +107,22 @@ export function AdminShell({ admin, children }) {
         <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white/35">Website Admin</p>
       </div>
       <nav className="flex-1 space-y-2 overflow-y-auto px-3 py-5">
-        {nav.filter((item) => !item.permission || admin.permissions.includes(item.permission)).map((item) => {
+        {!hydrated ? (
+          <div aria-hidden="true" className="space-y-2">
+            {Array.from({ length: 9 }).map((_, index) => (
+              <div key={index} className="h-10 animate-pulse rounded-xl bg-white/[0.04]" />
+            ))}
+          </div>
+        ) : visibleNav.map((item) => {
           const Icon = item.icon;
           if (!item.children) {
-            const active = pathname === item.href || (item.href === "/admin/team" && pathname.startsWith("/admin/team/")) || (item.href === "/admin/social-media" && pathname.startsWith("/admin/social-media/")) || (item.href === "/admin/testimonials" && pathname.startsWith("/admin/testimonials/"));
+            const active = pathname === item.href || (item.href === "/admin/team" && pathname.startsWith("/admin/team/")) || (item.href === "/admin/social-media" && pathname.startsWith("/admin/social-media/")) || (item.href === "/admin/testimonials" && pathname.startsWith("/admin/testimonials/")) || (item.href === "/admin/system-readiness" && pathname.startsWith("/admin/system-readiness")) || (item.href === "/admin/seo" && pathname.startsWith("/admin/seo"));
             return (
               <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition ${active ? "bg-[#1F4ED8] text-white" : "text-white/60 hover:bg-white/8 hover:text-white"}`}>
                 <Icon size={17} /> {item.label}
               </Link>
             );
           }
-          if (item.permission && !admin.permissions.includes(item.permission)) return null;
           const groupKey = item.label.toLowerCase().includes("guide") ? "guide" : item.label.toLowerCase().includes("enquiries") ? "enquiries" : item.label.toLowerCase().includes("website") ? "website" : "insights";
           const activeGroup = groupKey === "guide" ? pathname.startsWith("/admin/growvest-guide") : groupKey === "enquiries" ? pathname.startsWith("/admin/enquiries") : groupKey === "website" ? (pathname.startsWith("/admin/website") || pathname.startsWith("/admin/faqs") || pathname.startsWith("/admin/goal-library")) : pathname.startsWith("/admin/insights");
           const groupOpen = openGroups[groupKey] !== false;
@@ -119,7 +135,7 @@ export function AdminShell({ admin, children }) {
               </button>
               {groupOpen && (
                 <div className="mt-1 space-y-1 pl-4">
-                  {item.children.filter((child) => !child.permission || admin.permissions.includes(child.permission)).map((child) => {
+                  {item.children.filter((child) => hasPermission(child.permission)).map((child) => {
                     const ChildIcon = child.icon;
                     const active = pathname === child.href || (child.href === "/admin/insights" && /^\/admin\/insights\/[a-zA-Z0-9_-]+\/edit$/.test(pathname));
                     return (
@@ -135,7 +151,7 @@ export function AdminShell({ admin, children }) {
         })}
       </nav>
       <div className="border-t border-white/10 p-3">
-        <Link href="/" target="_blank" className="mb-2 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/60 transition hover:bg-white/8 hover:text-white"><Home size={17} /> View website</Link>
+        <Link href="/" target="_blank" rel="noreferrer noopener" className="mb-2 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/60 transition hover:bg-white/8 hover:text-white"><Home size={17} /> View website</Link>
         <AdminLogout />
       </div>
     </div>
@@ -150,7 +166,7 @@ export function AdminShell({ admin, children }) {
           <button type="button" aria-label="Open admin navigation" onClick={() => setMobileOpen(true)} className="rounded-lg border border-gray-200 p-2 lg:hidden"><Menu size={20} /></button>
           <div className="hidden lg:block">
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#6B7280]">GrowVest Website</p>
-            <p className="text-sm font-semibold">{pathname.startsWith("/admin/growvest-guide") ? "GrowVest Guide & WhatsApp" : pathname.startsWith("/admin/enquiries") ? "Enquiries & Lead Management" : pathname.startsWith("/admin/website") || pathname.startsWith("/admin/faqs") || pathname.startsWith("/admin/goal-library") ? "Website Content Workspace" : pathname.startsWith("/admin/team") ? "Team & Hierarchy" : pathname.startsWith("/admin/testimonials") ? "Investor Testimonials" : pathname.startsWith("/admin/social-media") ? "Social Media" : pathname.startsWith("/admin/media") ? "Media Library" : "Insights & Blog Workspace"}</p>
+            <p className="text-sm font-semibold">{pathname.startsWith("/admin/growvest-guide") ? "GrowVest Guide & WhatsApp" : pathname.startsWith("/admin/enquiries") ? "Enquiries & Lead Management" : pathname.startsWith("/admin/website") || pathname.startsWith("/admin/faqs") || pathname.startsWith("/admin/goal-library") ? "Website Content Workspace" : pathname.startsWith("/admin/team") ? "Team & Hierarchy" : pathname.startsWith("/admin/testimonials") ? "Investor Testimonials" : pathname.startsWith("/admin/social-media") ? "Social Media" : pathname.startsWith("/admin/media") ? "Media Library" : pathname.startsWith("/admin/seo") ? "SEO Centre" : pathname.startsWith("/admin/system-readiness") ? "Production Readiness" : "Insights & Blog Workspace"}</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block"><p className="text-sm font-semibold">{admin.displayName}</p><p className="text-[11px] capitalize text-[#6B7280]">{admin.role.replaceAll("_", " ")}</p></div>

@@ -140,6 +140,8 @@ export function sanitizeWebsitePageInput(pageKey, input, { existing = null, acto
     seo: {
       title: cleanText(input?.seo?.title || existing?.seo?.title || fallback.seo.title, 180),
       description: cleanText(input?.seo?.description || existing?.seo?.description || fallback.seo.description, 320),
+      canonicalUrl: cleanUrl(input?.seo?.canonicalUrl || existing?.seo?.canonicalUrl || ""),
+      openGraphImage: cleanUrl(input?.seo?.openGraphImage || existing?.seo?.openGraphImage || ""),
       allowIndexing: cleanBoolean(input?.seo?.allowIndexing, existing?.seo?.allowIndexing ?? true),
     },
     updatedBy: actor?.uid || existing?.updatedBy || "system",

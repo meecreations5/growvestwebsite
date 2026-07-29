@@ -227,7 +227,7 @@ export function WebsiteNavigationEditor({ initialItem }) {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link href="/" target="_blank" className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-bold text-[#1F4ED8]">
+          <Link href="/" target="_blank" rel="noreferrer noopener" className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-bold text-[#1F4ED8]">
             <ExternalLink size={15} /> Preview website
           </Link>
           <button type="submit" disabled={busy || !dirty} className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#1F4ED8] px-5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(31,78,216,.18)] disabled:cursor-not-allowed disabled:opacity-50">

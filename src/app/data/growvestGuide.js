@@ -1,5 +1,6 @@
 export const GUIDE_STATUSES = ["draft", "published", "archived"];
 export const GUIDE_CONVERSATION_STATUSES = ["active", "answered", "needs_follow_up", "handed_off", "closed"];
+export const GUIDE_FEEDBACK_VALUES = ["helpful", "not_helpful"];
 
 export const GUIDE_DEFAULT_SETTINGS = {
   key: "global",
@@ -16,10 +17,16 @@ export const GUIDE_DEFAULT_SETTINGS = {
   whatsappEnabled: true,
   whatsappNumber: "918655768940",
   whatsappLabel: "Continue on WhatsApp",
+  guidedJourneysEnabled: true,
+  sessionMemoryEnabled: true,
+  feedbackEnabled: true,
+  showSources: true,
+  lowConfidenceThreshold: 0.35,
+  sessionRetentionHours: 24,
   quickPrompts: [
+    "I want to plan a specific goal",
+    "I am an existing investor",
     "What is GrowVest?",
-    "How does the Bucket List approach work?",
-    "Does GrowVest charge an advisory fee?",
     "How do I start a conversation?",
   ],
   maxAnswerSources: 3,

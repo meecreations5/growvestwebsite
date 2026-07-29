@@ -40,10 +40,16 @@ export const metadata = {
   authors: [{ name: SITE_NAME, url: SITE_URL }],
   creator: SITE_NAME,
   publisher: SITE_NAME,
-  category: "finance",
+  category: "Finance",
   referrer: "origin-when-cross-origin",
-  alternates: { canonical: SITE_URL },
   manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/growvest-icon.svg", type: "image/svg+xml" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
+  },
   appleWebApp: {
     capable: true,
     title: SITE_NAME,

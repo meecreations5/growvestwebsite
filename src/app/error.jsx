@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useEffect } from "react";
 
 export default function ErrorPage({ error, reset }) {
+  const reference = error?.digest || "PAGE-ERROR";
+
   useEffect(() => {
-    console.error(error);
-  }, [error]);
+    console.error("GrowVest page error", { reference, error });
+  }, [error, reference]);
 
   return (
     <section className="flex min-h-[70vh] items-center justify-center bg-[#F4F6F9] px-5 pt-24 text-center">
@@ -16,6 +18,7 @@ export default function ErrorPage({ error, reset }) {
         <p className="mb-7 text-sm leading-relaxed text-gray-600">
           Please try again. You can also return to the homepage or contact GrowVest directly if the issue continues.
         </p>
+        <p className="mb-6 font-mono text-xs text-gray-500">Reference: {reference}</p>
         <div className="flex flex-col justify-center gap-3 sm:flex-row">
           <button type="button" onClick={reset} className="rounded-full bg-blue-700 px-6 py-3 text-sm font-semibold text-white">Try Again</button>
           <Link href="/" className="rounded-full border border-gray-200 px-6 py-3 text-sm font-semibold text-gray-700">Go Home</Link>
