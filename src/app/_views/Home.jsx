@@ -6,7 +6,7 @@ import { HeroPromise } from "../components/HeroPromise";
 import { HomeBucketListPreview } from "../components/HomeBucketListPreview";
 import { GrowVestJourney } from "../components/GrowVestJourney";
 import { InvestorTestimonials } from "../components/InvestorTestimonials";
-import { listCategories, listInsights } from "../lib/server/insightsRepository";
+import { getPublishedCategories, getPublishedInsights } from "../lib/server/insightsRepository";
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 const heroGoals = [
     { Icon: GraduationCap, label: "Child Education", color: GOLD },
@@ -456,10 +456,11 @@ function formatInsightDate(value) {
     return new Intl.DateTimeFormat("en-IN", { month: "short", year: "numeric" }).format(new Date(value));
 }
 async function InsightsPreview() {
-    const [{ items }, categories] = await Promise.all([
-      listInsights({ publicOnly: true, featuredOnly: false, pageSize: 3 }),
-      listCategories(),
+    const [publishedInsights, categories] = await Promise.all([
+      getPublishedInsights(),
+      getPublishedCategories(),
     ]);
+    const items = publishedInsights.slice(0, 3);
     const categoryMap = Object.fromEntries(categories.map((item) => [item.id, item]));
     return (<section className="py-28 lg:py-36 bg-white">
       <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">

@@ -34,7 +34,7 @@ export function CookieConsent() {
 
   return (
     <aside
-      className="fixed inset-x-4 bottom-4 z-[90] mx-auto max-w-[760px] rounded-3xl border border-white/10 bg-[#0B0B0F]/95 p-5 text-white shadow-2xl backdrop-blur-xl sm:p-6"
+      className="gv-cookie-consent fixed inset-x-4 bottom-4 z-[90] mx-auto max-w-[760px] rounded-3xl border border-white/10 bg-[#0B0B0F]/95 p-5 text-white shadow-2xl backdrop-blur-xl sm:p-6"
       aria-label="Analytics preference"
     >
       <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">

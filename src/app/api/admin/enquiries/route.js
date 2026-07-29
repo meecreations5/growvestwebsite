@@ -19,6 +19,7 @@ export async function GET(request) {
       followUp: searchParams.get("followUp") || "all",
       page: Number(searchParams.get("page") || 1),
       pageSize: Number(searchParams.get("pageSize") || 25),
+      cursor: searchParams.get("cursor") || "",
     }));
   } catch (error) {
     return NextResponse.json({ error: error?.message || "Unable to load enquiries." }, { status: error?.status || 500 });

@@ -26,6 +26,8 @@ const requiredServerVariables = [
   "BREVO_DEFAULT_SENDER_EMAIL",
   "BREVO_REPLY_TO_EMAIL",
   "GROWVEST_NOTIFICATION_EMAIL",
+  "GROWVEST_CONVERSION_NOTIFICATION_EMAIL",
+  "BREVO_WEBHOOK_TOKEN",
 ];
 
 const optionalVariables = [
@@ -77,6 +79,7 @@ checkUrl("NEXT_PUBLIC_SITE_URL", production ? { hostname: "growvest.info" } : {}
 checkUrl("NEXT_PUBLIC_INVESTOR_PORTAL_URL");
 checkSecret("FORM_RATE_LIMIT_SALT");
 checkSecret("CRON_SECRET");
+checkSecret("BREVO_WEBHOOK_TOKEN");
 
 if (value("NEXT_PUBLIC_FIREBASE_PROJECT_ID") !== value("FIREBASE_ADMIN_PROJECT_ID")) {
   errors.push("NEXT_PUBLIC_FIREBASE_PROJECT_ID and FIREBASE_ADMIN_PROJECT_ID must reference the same Firebase project.");

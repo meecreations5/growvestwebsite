@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdminRequest } from "../../../../lib/server/adminAuth";
 import { getSocialLink, hideSocialLink, updateSocialLink } from "../../../../lib/server/teamSocialRepository";
 import { assertAllowedOrigin, readJsonBody } from "../../../../lib/server/requestSecurity";
@@ -27,6 +27,9 @@ export async function PATCH(request, { params }) {
     const body = await readJsonBody(request, 40_000);
     const item = await updateSocialLink(id, body, admin);
     revalidateTag("growvest-social");
+    revalidatePath("/", "layout");
+    revalidatePath("/about");
+    revalidatePath("/contact");
     return NextResponse.json({ item });
   } catch (error) {
     return NextResponse.json({ error: error?.message || "Unable to update the social account." }, { status: error?.status || 500 });
@@ -40,6 +43,9 @@ export async function DELETE(request, { params }) {
     const { id } = await params;
     await hideSocialLink(id, admin);
     revalidateTag("growvest-social");
+    revalidatePath("/", "layout");
+    revalidatePath("/about");
+    revalidatePath("/contact");
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: error?.message || "Unable to hide the social account." }, { status: error?.status || 500 });

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Quote, ShieldCheck, Sparkles } from "lucide-react";
 import { TESTIMONIAL_JOURNEY_TYPES } from "../data/testimonials";
+import { OptimizedImage } from "./OptimizedImage";
 
 const JOURNEY_LABELS = Object.fromEntries(
   TESTIMONIAL_JOURNEY_TYPES.map((entry) => [entry.value, entry.label]),
@@ -25,12 +26,14 @@ function InvestorAvatar({ item }) {
   return (
     <div className="h-11 w-11 shrink-0 overflow-hidden rounded-full border border-[#E0E6EF] bg-[#EEF3FF]">
       {item.photo?.url && !item.useInitials ? (
-        <img
+        <OptimizedImage
           src={item.photo.url}
           alt={item.photo.altText || ""}
+          width={44}
+          height={44}
+          sizes="44px"
           className="h-full w-full object-cover"
           style={{ objectPosition: `${item.photo.focalX ?? 50}% ${item.photo.focalY ?? 50}%` }}
-          loading="lazy"
         />
       ) : (
         <div className="flex h-full items-center justify-center text-xs font-extrabold tracking-[0.08em] text-[#1F4ED8]">

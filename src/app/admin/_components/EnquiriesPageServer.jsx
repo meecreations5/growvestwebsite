@@ -8,5 +8,15 @@ export async function EnquiriesPageServer({ title, description, filters = {}, sh
     listEnquiries({ ...filters, pageSize: 25 }),
     listAssignableAdmins(),
   ]);
-  return <EnquiriesWorkspace initialResult={initialResult} initialFilters={filters} assignees={assignees} title={title} description={description} showAnalytics={showAnalytics} canManage={admin.permissions.includes("enquiries.manage")} />;
+  return <EnquiriesWorkspace
+    initialResult={initialResult}
+    initialFilters={filters}
+    assignees={assignees}
+    title={title}
+    description={description}
+    showAnalytics={showAnalytics}
+    canManage={admin.permissions.includes("enquiries.manage")}
+    canAssign={admin.permissions.includes("enquiries.assign")}
+    canAnalytics={admin.permissions.includes("enquiries.analytics")}
+  />;
 }

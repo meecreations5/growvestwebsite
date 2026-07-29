@@ -1,19 +1,33 @@
 import { InsightsDirectory } from "../../components/InsightsDirectory";
 import { StructuredData } from "../../components/StructuredData";
-import { listCategories, listInsights } from "../../lib/server/insightsRepository";
-import { SEO_PAGES, createBreadcrumbSchema, createItemListSchema, createPageMetadata, createWebPageSchema } from "../../lib/seo";
+import {
+  getPublicInsightsPage,
+  getPublishedCategories,
+} from "../../lib/server/insightsRepository";
+import {
+  SEO_PAGES,
+  createBreadcrumbSchema,
+  createItemListSchema,
+  createPageMetadata,
+  createWebPageSchema,
+} from "../../lib/seo";
 import { getPublishedTestimonials } from "../../lib/server/testimonialsRepository";
 
 export const metadata = createPageMetadata("/insights", { rssUrl: "/insights/feed.xml" });
-export const dynamic = "force-dynamic";
+export const revalidate = 900;
 
 export default async function InsightsPage({ searchParams }) {
   const params = await searchParams;
-  const [{ items }, categories, testimonials] = await Promise.all([
-    listInsights({ publicOnly: true, pageSize: 300 }),
-    listCategories(),
+  const category = params?.category || "all";
+  const search = params?.search || "";
+  const page = Math.max(1, Number(params?.page) || 1);
+
+  const [result, categories, testimonials] = await Promise.all([
+    getPublicInsightsPage({ categoryId: category, search, page, pageSize: 9 }),
+    getPublishedCategories(),
     getPublishedTestimonials("showOnInsights"),
   ]);
+
   const pageSchema = createWebPageSchema({
     path: "/insights",
     name: SEO_PAGES["/insights"].title,
@@ -23,7 +37,7 @@ export default async function InsightsPage({ searchParams }) {
   const itemListSchema = createItemListSchema({
     path: "/insights",
     name: "GrowVest Wealth Insights",
-    items: items.slice(0, 50).map((post) => ({
+    items: result.items.map((post) => ({
       name: post.title,
       description: post.excerpt,
       url: `/insights/${post.slug}`,
@@ -40,12 +54,16 @@ export default async function InsightsPage({ searchParams }) {
       <StructuredData id="growvest-insights-list" data={itemListSchema} />
       <StructuredData id="growvest-insights-breadcrumb" data={breadcrumbs} />
       <InsightsDirectory
-        posts={items}
+        posts={result.items}
         categories={categories}
         testimonials={testimonials}
-        initialCategory={params?.category || "all"}
-        initialSearch={params?.search || ""}
-        initialPage={params?.page || 1}
+        featured={result.featured}
+        showFeatured={result.showFeatured}
+        initialCategory={category}
+        initialSearch={search}
+        currentPage={result.page}
+        pageCount={result.pageCount}
+        total={result.total}
       />
     </>
   );

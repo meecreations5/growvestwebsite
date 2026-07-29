@@ -1,5 +1,7 @@
 import { SEO_PAGES, absoluteUrl } from "./lib/seo";
-import { listInsights } from "./lib/server/insightsRepository";
+import { getPublishedInsights } from "./lib/server/insightsRepository";
+
+export const revalidate = 3600;
 
 export default async function sitemap() {
   if (process.env.NEXT_PUBLIC_ALLOW_INDEXING !== "true") return [];
@@ -11,7 +13,7 @@ export default async function sitemap() {
   }));
 
   try {
-    const { items } = await listInsights({ publicOnly: true, pageSize: 1000 });
+    const items = await getPublishedInsights();
     const insightPages = items
       .filter((post) => post.slug && post.seo?.allowIndexing !== false)
       .map((post) => ({

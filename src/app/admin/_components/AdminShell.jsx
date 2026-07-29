@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BarChart3, BookOpen, Bot, CalendarClock, ChevronDown, FileEdit, FolderTree, HelpCircle, Home, Images, Inbox, LayoutDashboard, LibraryBig, LogOut, Mail, Menu, MessageCircle, MessageSquareQuote, MessageSquareText, Network, PenLine, Settings2, Share2, Tags, Target, Users, PanelsTopLeft, SearchCheck, ShieldCheck } from "lucide-react";
+import { BarChart3, BookOpen, Bot, CalendarClock, ChevronDown, FileEdit, FolderTree, HelpCircle, Home, Images, Inbox, LayoutDashboard, LibraryBig, LogOut, Mail, Menu, MessageCircle, MessageSquareQuote, MessageSquareText, Network, PenLine, Settings2, Share2, Tags, Target, Users, PanelsTopLeft, SearchCheck, ShieldCheck, RefreshCw } from "lucide-react";
 
 const nav = [
   { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -29,8 +29,11 @@ const nav = [
       { label: "Newsletter", href: "/admin/enquiries/newsletter", icon: Mail },
       { label: "WhatsApp", href: "/admin/enquiries/whatsapp", icon: MessageCircle },
       { label: "Follow-ups Due", href: "/admin/enquiries/follow-ups", icon: CalendarClock },
+      { label: "Conversion Requests", href: "/admin/enquiries/conversions", icon: Users, permission: "enquiries.convert" },
+      { label: "Lead Analytics", href: "/admin/enquiries/analytics", icon: BarChart3, permission: "enquiries.analytics" },
     ],
   },
+  { label: "Communication Templates", href: "/admin/communication-templates", icon: MessageSquareText, permission: "communicationTemplates.read" },
   {
     label: "Website Content",
     icon: PanelsTopLeft,
@@ -63,6 +66,7 @@ const nav = [
   { label: "Media Library", href: "/admin/media", icon: Images, permission: "media.manage" },
   { label: "SEO Centre", href: "/admin/seo", icon: SearchCheck, permission: "seo.read" },
   { label: "System Readiness", href: "/admin/system-readiness", icon: ShieldCheck, permission: "system.read" },
+  { label: "Cache & Performance", href: "/admin/cache-management", icon: RefreshCw, permission: "system.manage" },
 ];
 
 function AdminLogout() {
@@ -116,7 +120,7 @@ export function AdminShell({ admin, children }) {
         ) : visibleNav.map((item) => {
           const Icon = item.icon;
           if (!item.children) {
-            const active = pathname === item.href || (item.href === "/admin/team" && pathname.startsWith("/admin/team/")) || (item.href === "/admin/social-media" && pathname.startsWith("/admin/social-media/")) || (item.href === "/admin/testimonials" && pathname.startsWith("/admin/testimonials/")) || (item.href === "/admin/system-readiness" && pathname.startsWith("/admin/system-readiness")) || (item.href === "/admin/seo" && pathname.startsWith("/admin/seo"));
+            const active = pathname === item.href || (item.href === "/admin/team" && pathname.startsWith("/admin/team/")) || (item.href === "/admin/social-media" && pathname.startsWith("/admin/social-media/")) || (item.href === "/admin/testimonials" && pathname.startsWith("/admin/testimonials/")) || (item.href === "/admin/system-readiness" && pathname.startsWith("/admin/system-readiness")) || (item.href === "/admin/seo" && pathname.startsWith("/admin/seo")) || (item.href === "/admin/communication-templates" && pathname.startsWith("/admin/communication-templates")) || (item.href === "/admin/cache-management" && pathname.startsWith("/admin/cache-management"));
             return (
               <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition ${active ? "bg-[#1F4ED8] text-white" : "text-white/60 hover:bg-white/8 hover:text-white"}`}>
                 <Icon size={17} /> {item.label}
@@ -137,7 +141,7 @@ export function AdminShell({ admin, children }) {
                 <div className="mt-1 space-y-1 pl-4">
                   {item.children.filter((child) => hasPermission(child.permission)).map((child) => {
                     const ChildIcon = child.icon;
-                    const active = pathname === child.href || (child.href === "/admin/insights" && /^\/admin\/insights\/[a-zA-Z0-9_-]+\/edit$/.test(pathname));
+                    const active = pathname === child.href || (child.href === "/admin/insights" && /^\/admin\/insights\/[a-zA-Z0-9_-]+\/edit$/.test(pathname)) || (child.href === "/admin/enquiries/conversions" && pathname.startsWith("/admin/enquiries/conversions/"));
                     return (
                       <Link key={child.href} href={child.href} onClick={() => setMobileOpen(false)} className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] transition ${active ? "bg-white/10 text-white" : "text-white/45 hover:bg-white/6 hover:text-white/80"}`}>
                         <ChildIcon size={14} /> {child.label}
@@ -166,7 +170,7 @@ export function AdminShell({ admin, children }) {
           <button type="button" aria-label="Open admin navigation" onClick={() => setMobileOpen(true)} className="rounded-lg border border-gray-200 p-2 lg:hidden"><Menu size={20} /></button>
           <div className="hidden lg:block">
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#6B7280]">GrowVest Website</p>
-            <p className="text-sm font-semibold">{pathname.startsWith("/admin/growvest-guide") ? "GrowVest Guide & WhatsApp" : pathname.startsWith("/admin/enquiries") ? "Enquiries & Lead Management" : pathname.startsWith("/admin/website") || pathname.startsWith("/admin/faqs") || pathname.startsWith("/admin/goal-library") ? "Website Content Workspace" : pathname.startsWith("/admin/team") ? "Team & Hierarchy" : pathname.startsWith("/admin/testimonials") ? "Investor Testimonials" : pathname.startsWith("/admin/social-media") ? "Social Media" : pathname.startsWith("/admin/media") ? "Media Library" : pathname.startsWith("/admin/seo") ? "SEO Centre" : pathname.startsWith("/admin/system-readiness") ? "Production Readiness" : "Insights & Blog Workspace"}</p>
+            <p className="text-sm font-semibold">{pathname.startsWith("/admin/growvest-guide") ? "GrowVest Guide & WhatsApp" : pathname.startsWith("/admin/enquiries") ? "Enquiries & Lead Management" : pathname.startsWith("/admin/website") || pathname.startsWith("/admin/faqs") || pathname.startsWith("/admin/goal-library") ? "Website Content Workspace" : pathname.startsWith("/admin/team") ? "Team & Hierarchy" : pathname.startsWith("/admin/testimonials") ? "Investor Testimonials" : pathname.startsWith("/admin/social-media") ? "Social Media" : pathname.startsWith("/admin/media") ? "Media Library" : pathname.startsWith("/admin/seo") ? "SEO Centre" : pathname.startsWith("/admin/system-readiness") ? "Production Readiness" : pathname.startsWith("/admin/cache-management") ? "Cache & Performance" : pathname.startsWith("/admin/communication-templates") ? "Communication Templates" : "Insights & Blog Workspace"}</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block"><p className="text-sm font-semibold">{admin.displayName}</p><p className="text-[11px] capitalize text-[#6B7280]">{admin.role.replaceAll("_", " ")}</p></div>

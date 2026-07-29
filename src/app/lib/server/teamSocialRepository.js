@@ -1,6 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminDb, isFirebaseAdminConfigured } from "./firebaseAdmin";
+import { CACHE_TAGS, PUBLIC_CACHE_TTL } from "./cacheConfig";
 import { SOCIAL_PLATFORMS, TEAM_DEPARTMENTS, TEAM_STATUSES } from "../../data/teamSocial";
 
 const TEAM_COLLECTION = "teamMembers";
@@ -308,13 +309,13 @@ export async function hideSocialLink(id, actor) {
 export const getPublishedTeamMembers = unstable_cache(
   async () => listTeamMembers({ publicOnly: true }),
   ["growvest-published-team-members"],
-  { tags: ["growvest-team"], revalidate: 300 },
+  { tags: [CACHE_TAGS.team], revalidate: PUBLIC_CACHE_TTL.website },
 );
 
 export const getPublishedSocialLinks = unstable_cache(
   async () => listSocialLinks({ publicOnly: true }),
   ["growvest-published-social-links"],
-  { tags: ["growvest-social"], revalidate: 300 },
+  { tags: [CACHE_TAGS.social], revalidate: PUBLIC_CACHE_TTL.website },
 );
 
 export const TEAM_SOCIAL_COLLECTIONS = {

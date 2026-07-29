@@ -1,27 +1,26 @@
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
-import { SiteMotionEffects } from "../components/SiteMotionEffects";
 import { PageTransition } from "../components/PageTransition";
-import { SiteAnalytics } from "../components/SiteAnalytics";
 import { ScrollProgress } from "../components/ScrollProgress";
 import { InvestorPortalTransition } from "../components/InvestorPortalTransition";
-import { MobileActionBar } from "../components/MobileActionBar";
+import { MobileSiteNavigation } from "../components/MobileSiteNavigation";
 import { CookieConsent } from "../components/CookieConsent";
+import { DeferredWebsiteFeatures } from "../components/DeferredWebsiteFeatures";
 import { StructuredData } from "../components/StructuredData";
 import { COMPANY } from "../lib/brand";
 import { ORGANIZATION_ID, SITE_NAME, SITE_URL, WEBSITE_ID, absoluteUrl } from "../lib/seo";
 import { getPublishedSocialLinks } from "../lib/server/teamSocialRepository";
 import { getPublishedWebsiteNavigation, getPublishedWebsiteSettings } from "../lib/server/websiteContentRepository";
-import { getGuideSettings } from "../lib/server/growvestGuideRepository";
-import { GrowVestGuide } from "../components/GrowVestGuide";
-import { WebVitalsReporter } from "../components/WebVitalsReporter";
+import { getPublishedGuideSettings } from "../lib/server/growvestGuideRepository";
+
+export const revalidate = 3600;
 
 export default async function WebsiteLayout({ children }) {
   const [socialLinks, settings, navigation, guideSettings] = await Promise.all([
     getPublishedSocialLinks(),
     getPublishedWebsiteSettings(),
     getPublishedWebsiteNavigation(),
-    getGuideSettings({ publicOnly: true }),
+    getPublishedGuideSettings(),
   ]);
   const company = { ...COMPANY, ...(settings || {}) };
   const socialProfiles = socialLinks.map((item) => item.url).filter(Boolean);
@@ -96,13 +95,10 @@ export default async function WebsiteLayout({ children }) {
       <SiteHeader socialLinks={socialLinks} settings={settings} navigation={navigation} />
       <main id="main-content" className="min-w-0 overflow-x-clip"><PageTransition>{children}</PageTransition></main>
       <SiteFooter socialLinks={socialLinks} settings={settings} navigation={navigation} />
-      <MobileActionBar investorPortalUrl={settings?.investorPortalUrl} primaryCta={navigation?.headerPrimaryCta} />
+      <MobileSiteNavigation socialLinks={socialLinks} settings={settings} navigation={navigation} />
       <InvestorPortalTransition defaultDestination={settings?.investorPortalUrl} />
-      <SiteMotionEffects />
-      <GrowVestGuide settings={guideSettings} />
       <CookieConsent />
-      <SiteAnalytics />
-      <WebVitalsReporter />
+      <DeferredWebsiteFeatures guideSettings={guideSettings} />
       <StructuredData id="growvest-organization-schema" data={structuredData} />
     </>
   );

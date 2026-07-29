@@ -1,7 +1,7 @@
-import { listInsights } from "../../../lib/server/insightsRepository";
+import { getPublishedInsights } from "../../../lib/server/insightsRepository";
 import { SITE_NAME, SITE_URL, absoluteUrl } from "../../../lib/seo";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 900;
 
 function escapeXml(value = "") {
   return String(value)
@@ -13,8 +13,10 @@ function escapeXml(value = "") {
 }
 
 export async function GET() {
-  const { items } = await listInsights({ publicOnly: true, pageSize: 100 });
-  const buildDate = new Date().toUTCString();
+  const items = (await getPublishedInsights()).slice(0, 100);
+  const newestDate = items.find((post) => post.updatedAt || post.publishedAt)?.updatedAt
+    || items.find((post) => post.publishedAt)?.publishedAt;
+  const buildDate = new Date(newestDate || 0).toUTCString();
   const entries = items
     .filter((post) => post.seo?.allowIndexing !== false)
     .map((post) => {
@@ -29,7 +31,7 @@ export async function GET() {
   return new Response(xml, {
     headers: {
       "Content-Type": "application/rss+xml; charset=utf-8",
-      "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600",
+      "Cache-Control": "public, s-maxage=900, stale-while-revalidate=3600",
     },
   });
 }

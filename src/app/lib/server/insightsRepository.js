@@ -1,6 +1,8 @@
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { INSIGHT_AUTHORS_SEED, INSIGHT_CATEGORIES_SEED, INSIGHT_TAGS_SEED, INSIGHTS_SEED } from "../../data/insightsSeed";
 import { getAdminDb, isFirebaseAdminConfigured } from "./firebaseAdmin";
+import { CACHE_TAGS, PUBLIC_CACHE_TTL, insightCacheTag } from "./cacheConfig";
 
 const POST_COLLECTION = "insightsPosts";
 const CATEGORY_COLLECTION = "insightCategories";
@@ -9,6 +11,28 @@ const AUTHOR_COLLECTION = "insightAuthors";
 const AUDIT_COLLECTION = "websiteAuditLogs";
 const REDIRECT_COLLECTION = "websiteRedirects";
 const VERSION_COLLECTION = "insightVersions";
+
+function invalidatePublicInsightCache(...slugs) {
+  revalidateTag(CACHE_TAGS.insights);
+  revalidateTag(CACHE_TAGS.guideSources);
+  for (const slug of new Set(slugs.filter(Boolean).map(slugify))) {
+    revalidateTag(insightCacheTag(slug));
+    revalidatePath(`/insights/${slug}`);
+  }
+  revalidatePath("/");
+  revalidatePath("/insights");
+  revalidatePath("/insights/feed.xml");
+  revalidatePath("/sitemap.xml");
+}
+
+function invalidateInsightTaxonomyCache() {
+  revalidateTag(CACHE_TAGS.insightTaxonomy);
+  revalidateTag(CACHE_TAGS.insights);
+  revalidateTag(CACHE_TAGS.guideSources);
+  revalidatePath("/");
+  revalidatePath("/insights");
+  revalidatePath("/sitemap.xml");
+}
 
 export const POST_STATUSES = [
   "draft",
@@ -324,7 +348,7 @@ export async function getInsightById(id) {
   return snapshot.exists ? serializeInsight(snapshot) : null;
 }
 
-export async function getPublishedInsightBySlug(slug) {
+async function loadPublishedInsightBySlug(slug) {
   const normalized = slugify(slug);
   if (!isFirebaseAdminConfigured()) {
     return INSIGHTS_SEED.find((post) => post.slug === normalized && isPublicPost(post)) || null;
@@ -359,6 +383,7 @@ export async function createInsight(input, actor) {
   await reference.set(payload);
   if (payload.isFeatured && payload.status === "published") await clearOtherFeaturedPosts(reference.id);
   await writeAudit({ actor, action: "insight.created", entityType: "insight", entityId: reference.id, summary: `Created insight: ${payload.title}` });
+  invalidatePublicInsightCache(payload.slug);
   return getInsightById(reference.id);
 }
 
@@ -394,6 +419,7 @@ export async function updateInsight(id, input, actor) {
   await reference.set(payload, { merge: true });
   if (payload.isFeatured && payload.status === "published") await clearOtherFeaturedPosts(id);
   await writeAudit({ actor, action: "insight.updated", entityType: "insight", entityId: id, summary: `Updated insight: ${payload.title}`, details: { previousStatus: existing.status, status: payload.status } });
+  invalidatePublicInsightCache(existing.slug, payload.slug);
   return getInsightById(id);
 }
 
@@ -404,6 +430,7 @@ export async function archiveInsight(id, actor) {
   await createInsightVersion({ postId: id, snapshot: snapshot.data(), actor, reason: "before_archive" });
   await reference.set({ status: "archived", archivedAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp(), updatedBy: actor.uid }, { merge: true });
   await writeAudit({ actor, action: "insight.archived", entityType: "insight", entityId: id, summary: `Archived insight: ${snapshot.data()?.title || id}` });
+  invalidatePublicInsightCache(snapshot.data()?.slug);
 }
 
 export async function listInsightVersions(postId, limit = 30) {
@@ -434,6 +461,7 @@ export async function restoreInsightVersion(postId, versionId, actor) {
     restoredBy: actor.uid,
   }, { merge: true });
   await writeAudit({ actor, action: "insight.version_restored", entityType: "insight", entityId: postId, summary: `Restored a previous version of ${historical.title || current.title}` });
+  invalidatePublicInsightCache(current.slug, payload.slug);
   return getInsightById(postId);
 }
 
@@ -462,12 +490,13 @@ export async function publishDueScheduledInsights(actor = { uid: "cron", display
     published += 1;
     publishedPosts.push({ id: document.id, title: post.title, slug: post.slug, status: "published" });
   }
+  if (publishedPosts.length) invalidatePublicInsightCache(...publishedPosts.map((post) => post.slug));
   return { published, publishedPosts };
 }
 
 export async function getRelatedInsights(post, limit = 3) {
   if (!post) return [];
-  const { items } = await listInsights({ publicOnly: true, pageSize: 300 });
+  const items = await getPublishedInsights();
   const postCategories = new Set(post.categoryIds || []);
   const postTags = new Set(post.tagIds || []);
   return items
@@ -526,8 +555,106 @@ export async function saveTaxonomyItem(collectionName, input, actor, id = null) 
   };
   await reference.set(payload, { merge: true });
   await writeAudit({ actor, action: `${collectionName}.saved`, entityType: collectionName, entityId: reference.id, summary: `Saved ${collectionName}: ${name}` });
+  invalidateInsightTaxonomyCache();
   const saved = await reference.get();
   return { id: saved.id, ...saved.data() };
+}
+
+const getCachedPublishedInsights = unstable_cache(
+  async () => {
+    const { items } = await listInsights({ publicOnly: true, pageSize: 300 });
+    return items;
+  },
+  ["growvest-published-insights-v26"],
+  { tags: [CACHE_TAGS.insights, CACHE_TAGS.guideSources], revalidate: PUBLIC_CACHE_TTL.insightsList },
+);
+
+const getCachedPublishedCategories = unstable_cache(
+  async () => listCategories(),
+  ["growvest-published-insight-categories-v26"],
+  { tags: [CACHE_TAGS.insightTaxonomy], revalidate: PUBLIC_CACHE_TTL.taxonomy },
+);
+
+const getCachedPublishedTags = unstable_cache(
+  async () => listTags(),
+  ["growvest-published-insight-tags-v26"],
+  { tags: [CACHE_TAGS.insightTaxonomy], revalidate: PUBLIC_CACHE_TTL.taxonomy },
+);
+
+const getCachedPublishedAuthors = unstable_cache(
+  async () => listAuthors(),
+  ["growvest-published-insight-authors-v26"],
+  { tags: [CACHE_TAGS.insightTaxonomy], revalidate: PUBLIC_CACHE_TTL.taxonomy },
+);
+
+export async function getPublishedInsights() {
+  return getCachedPublishedInsights();
+}
+
+export async function getPublishedCategories() {
+  return getCachedPublishedCategories();
+}
+
+export async function getPublishedTags() {
+  return getCachedPublishedTags();
+}
+
+export async function getPublishedAuthors() {
+  return getCachedPublishedAuthors();
+}
+
+export function getPublishedInsightBySlug(slug) {
+  const normalized = slugify(slug);
+  return unstable_cache(
+    async () => loadPublishedInsightBySlug(normalized),
+    ["growvest-published-insight-v26", normalized],
+    { tags: [CACHE_TAGS.insights, insightCacheTag(normalized)], revalidate: PUBLIC_CACHE_TTL.insight },
+  )();
+}
+
+export async function getPublicInsightsPage({
+  categoryId = "all",
+  authorId = "",
+  search = "",
+  page = 1,
+  pageSize = 9,
+} = {}) {
+  const allPosts = await getCachedPublishedInsights();
+  const normalizedCategory = String(categoryId || "all");
+  const normalizedAuthor = String(authorId || "");
+  const normalizedSearch = String(search || "").trim().toLowerCase();
+  const requestedPage = Math.max(1, Number(page) || 1);
+  const resolvedPageSize = Math.max(1, Math.min(24, Number(pageSize) || 9));
+  const featured = allPosts.find((post) => post.isFeatured) || allPosts[0] || null;
+  const isDefaultLibrary = normalizedCategory === "all" && !normalizedAuthor && !normalizedSearch;
+  const showFeatured = isDefaultLibrary && requestedPage === 1;
+
+  const matchingPosts = allPosts.filter((post) => {
+    if (normalizedCategory !== "all" && !(post.categoryIds || []).includes(normalizedCategory)) return false;
+    if (normalizedAuthor && post.authorId !== normalizedAuthor) return false;
+    if (!normalizedSearch) return true;
+    return `${post.title} ${post.excerpt} ${(post.tagIds || []).join(" ")}`.toLowerCase().includes(normalizedSearch);
+  });
+
+  const total = matchingPosts.length;
+  const filtered = isDefaultLibrary && featured
+    ? matchingPosts.filter((post) => post.id !== featured.id)
+    : matchingPosts;
+  const libraryTotal = filtered.length;
+  const pageCount = Math.max(1, Math.ceil(libraryTotal / resolvedPageSize));
+  const safePage = Math.min(requestedPage, pageCount);
+  const start = (safePage - 1) * resolvedPageSize;
+
+  return {
+    items: filtered.slice(start, start + resolvedPageSize),
+    featured,
+    showFeatured,
+    total,
+    libraryTotal,
+    page: safePage,
+    pageCount,
+    pageSize: resolvedPageSize,
+  };
 }
 
 async function previewSeedCollection(db, collectionName, seeds) {
@@ -705,6 +832,8 @@ export async function seedInsightsContent(actor, { force = false } = {}) {
       : "Imported missing approved static GrowVest Insights content.",
     details: results,
   });
+  invalidateInsightTaxonomyCache();
+  invalidatePublicInsightCache(...INSIGHTS_SEED.map((post) => post.slug));
   return results;
 }
 

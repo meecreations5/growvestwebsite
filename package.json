@@ -1,6 +1,6 @@
 {
   "name": "growvest-nextjs-app-router",
-  "version": "24.0.0",
+  "version": "26.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -17,13 +17,15 @@
     "check:assets": "node scripts/check-public-assets.mjs",
     "check:a11y": "node scripts/check-accessibility-basics.mjs",
     "check:security": "node scripts/check-security-config.mjs",
-    "check:source": "npm run check:routes && npm run check:imports && npm run check:syntax && npm run check:secrets && npm run check:assets && npm run check:a11y && npm run check:security && npm run check:seo",
+    "check:source": "npm run check:routes && npm run check:imports && npm run check:syntax && npm run check:secrets && npm run check:assets && npm run check:a11y && npm run check:security && npm run check:seo && npm run check:performance && npm run check:mobile",
     "readiness": "npm run check:env -- --production && npm run check:source && npm run lint && npm run build",
     "smoke": "node scripts/smoke-test.mjs",
     "release:verify": "npm run readiness && npm run smoke",
     "check:imports": "node scripts/check-local-imports.mjs",
     "check:syntax": "node scripts/check-jsx-balance.mjs",
-    "check:seo": "node scripts/check-seo-basics.mjs"
+    "check:seo": "node scripts/check-seo-basics.mjs",
+    "check:performance": "node scripts/check-performance-basics.mjs",
+    "check:mobile": "node scripts/check-mobile-ui-basics.mjs"
   },
   "dependencies": {
     "lucide-react": "0.487.0",

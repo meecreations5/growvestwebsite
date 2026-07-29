@@ -174,26 +174,29 @@ export function SiteHeader({ socialLinks = [], navigation = null, settings = nul
 
   useEffect(() => {
     document.body.classList.toggle("gv-mobile-menu-open", mobileOpen);
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    if (!mobileOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
     return () => {
       document.body.classList.remove("gv-mobile-menu-open");
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
     };
   }, [mobileOpen]);
 
-
   useEffect(() => {
-    const media = window.matchMedia("(min-width: 1280px)");
-    const closeDesktopMenu = (event) => {
+    const media = window.matchMedia("(max-width: 767px), (min-width: 1280px)");
+    const closeTabletMenu = (event) => {
       if (event.matches) {
         setMobileOpen(false);
         setMobileGroup(null);
       }
     };
 
-    closeDesktopMenu(media);
-    media.addEventListener?.("change", closeDesktopMenu);
-    return () => media.removeEventListener?.("change", closeDesktopMenu);
+    closeTabletMenu(media);
+    media.addEventListener?.("change", closeTabletMenu);
+    return () => media.removeEventListener?.("change", closeTabletMenu);
   }, []);
 
   useEffect(() => {
@@ -290,23 +293,36 @@ export function SiteHeader({ socialLinks = [], navigation = null, settings = nul
           </Link>
         </div>
 
-        <button
-          type="button"
-          aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
-          aria-expanded={mobileOpen}
-          aria-controls="mobile-navigation"
-          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/10 p-2 text-white transition hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-[#1F4ED8] xl:hidden"
-          onClick={() => setMobileOpen((value) => !value)}
-        >
-          {mobileOpen ? <X size={23} /> : <Menu size={23} />}
-        </button>
+        <div className="flex items-center gap-2 xl:hidden">
+          <a
+            href={investorPortalUrl}
+            aria-label={investorPortalLabel}
+            data-investor-portal="true"
+            data-analytics-event="investor_portal_click"
+            data-analytics-location="mobile_header"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/10 text-white transition hover:border-[#1F4ED8]/60 hover:bg-[#1F4ED8]/10 focus-visible:outline-2 focus-visible:outline-[#1F4ED8] md:hidden"
+          >
+            <LockKeyhole size={18} aria-hidden="true" className="text-[#F5B301]" />
+          </a>
+
+          <button
+            type="button"
+            aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-navigation"
+            className="hidden min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/10 p-2 text-white transition hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-[#1F4ED8] md:inline-flex xl:hidden"
+            onClick={() => setMobileOpen((value) => !value)}
+          >
+            {mobileOpen ? <X size={23} /> : <Menu size={23} />}
+          </button>
+        </div>
       </div>
 
       {mobileOpen && (
         <nav
           id="mobile-navigation"
           aria-label="Mobile navigation"
-          className="gv-mobile-navigation overflow-y-auto overscroll-contain border-t border-white/10 bg-[#0B0B0F] xl:hidden"
+          className="gv-mobile-navigation hidden overflow-y-auto overscroll-contain border-t border-white/10 bg-[#0B0B0F] md:block xl:hidden"
           style={{ maxHeight: `calc(100dvh - ${scrolled ? 60 : 64}px)` }}
         >
           <div className="px-4 pb-[calc(1.75rem+env(safe-area-inset-bottom))] pt-3 sm:px-6">

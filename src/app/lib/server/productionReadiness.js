@@ -1,6 +1,6 @@
 import { getAdminAuth, getAdminDb, getAdminStorage, isFirebaseAdminConfigured } from "./firebaseAdmin";
 
-const RELEASE = process.env.NEXT_PUBLIC_APP_VERSION || "23.0.0";
+const RELEASE = process.env.NEXT_PUBLIC_APP_VERSION || "25.0.0";
 const COMMIT_SHA = process.env.VERCEL_GIT_COMMIT_SHA || process.env.GIT_COMMIT_SHA || "local";
 
 function isPresent(name) {
@@ -128,6 +128,25 @@ export function getStaticProductionChecks() {
         ? "pass"
         : "fail",
       "Brevo is required for enquiry, review and operational notifications.",
+      "Communications",
+    ),
+    check(
+      "brevo-webhook",
+      "Brevo delivery webhook security",
+      secretIsStrong("BREVO_WEBHOOK_TOKEN") ? "pass" : "fail",
+      secretIsStrong("BREVO_WEBHOOK_TOKEN")
+        ? "Transactional delivery events can be authenticated before communication logs are updated."
+        : "BREVO_WEBHOOK_TOKEN must be a unique random value of at least 32 characters.",
+      "Communications",
+      "Configure the same Bearer token in Brevo and the GrowVest production environment.",
+    ),
+    check(
+      "conversion-notification",
+      "Conversion review notifications",
+      isPresent("GROWVEST_CONVERSION_NOTIFICATION_EMAIL") ? "pass" : "warn",
+      isPresent("GROWVEST_CONVERSION_NOTIFICATION_EMAIL")
+        ? "Investor-conversion requests have a dedicated review recipient."
+        : "Conversion notifications will fall back to GROWVEST_NOTIFICATION_EMAIL.",
       "Communications",
     ),
     check(

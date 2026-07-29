@@ -45,30 +45,40 @@ export function hashValue(value) {
 }
 
 function normalizedOrigin(value) {
+  const cleaned = cleanText(value, 300);
+  if (!cleaned) return "";
   try {
-    return new URL(value).origin;
+    const candidate = /^https?:\/\//i.test(cleaned) ? cleaned : `https://${cleaned}`;
+    return new URL(candidate).origin;
   } catch {
     return "";
   }
 }
 
-function allowedOrigins() {
+function allowedOrigins(request) {
+  const forwardedHost = request?.headers?.get("x-forwarded-host") || request?.headers?.get("host");
+  const forwardedProtocol = request?.headers?.get("x-forwarded-proto") || (process.env.NODE_ENV === "production" ? "https" : "http");
+  const requestHostOrigin = forwardedHost ? normalizedOrigin(`${forwardedProtocol}://${forwardedHost}`) : "";
+
   const configured = [
     process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.SITE_URL,
+    ...(process.env.ALLOWED_ORIGINS || "").split(","),
     ...(process.env.ALLOWED_FORM_ORIGINS || "").split(","),
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "",
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "",
+    requestHostOrigin,
   ]
-    .map((value) => normalizedOrigin(cleanText(value, 300)))
+    .map((value) => normalizedOrigin(value))
     .filter(Boolean);
 
   const canonical = normalizedOrigin(process.env.NEXT_PUBLIC_SITE_URL || "https://growvest.info");
   if (canonical) {
     configured.push(canonical);
     const url = new URL(canonical);
-    if (url.hostname.startsWith("www.")) {
-      configured.push(`${url.protocol}//${url.hostname.slice(4)}${url.port ? `:${url.port}` : ""}`);
-    } else {
-      configured.push(`${url.protocol}//www.${url.hostname}${url.port ? `:${url.port}` : ""}`);
-    }
+    configured.push(url.hostname.startsWith("www.")
+      ? `${url.protocol}//${url.hostname.slice(4)}${url.port ? `:${url.port}` : ""}`
+      : `${url.protocol}//www.${url.hostname}${url.port ? `:${url.port}` : ""}`);
   }
 
   if (process.env.NODE_ENV !== "production") {
@@ -79,10 +89,18 @@ function allowedOrigins() {
 }
 
 export function assertAllowedOrigin(request) {
-  const origin = request.headers.get("origin");
-  if (!origin) return;
-  const normalized = normalizedOrigin(origin);
-  if (!normalized || !allowedOrigins().has(normalized)) {
+  const originHeader = request.headers.get("origin");
+  let suppliedOrigin = normalizedOrigin(originHeader);
+
+  if (!suppliedOrigin) {
+    suppliedOrigin = normalizedOrigin(request.headers.get("referer"));
+  }
+
+  // Non-browser server-to-server calls may not send either header. Authentication,
+  // webhook tokens and cron secrets remain responsible for those routes.
+  if (!suppliedOrigin) return;
+
+  if (!allowedOrigins(request).has(suppliedOrigin)) {
     throw new ApiError(403, "This request could not be verified.", "ORIGIN_NOT_ALLOWED");
   }
 }

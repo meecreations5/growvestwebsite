@@ -1,0 +1,23 @@
+"use client";
+
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import { ArrowRight, CheckCircle2, Clock3, Search, UserRoundCheck, XCircle } from "lucide-react";
+
+function label(value) {
+  return String(value || "pending_review").replaceAll("_", " ").replace(/\b\w/g, (character) => character.toUpperCase());
+}
+
+function formatDate(value) {
+  if (!value) return "—";
+  return new Intl.DateTimeFormat("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(value));
+}
+
+export function ConversionWorkspace({ initialResult }) {
+  const [query, setQuery] = useState("");
+  const [status, setStatus] = useState("all");
+  const items = useMemo(() => initialResult.items.filter((item)=>(status==="all"||item.status===status)&&(!query||[item.fullName,item.email,item.phone,item.conversionId].join(" ").toLowerCase().includes(query.toLowerCase()))), [initialResult.items, query, status]);
+  const counts = initialResult.counts || {};
+  const cards = [["Pending review",counts.pending_review||0,Clock3,"#F5B301"],["Approved",counts.approved||0,UserRoundCheck,"#1F4ED8"],["Completed",counts.completed||0,CheckCircle2,"#16A34A"],["Rejected",counts.rejected||0,XCircle,"#E53935"]];
+  return <div><div className="mb-7"><p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#1F4ED8]">Controlled conversion</p><h1 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">Investor conversion requests</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-[#6B7280]">Review qualified leads, match existing investors and track profile creation through to completion.</p></div><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{cards.map(([title,value,Icon,color])=><div key={title} className="rounded-2xl border border-black/5 bg-white p-5 shadow-sm"><div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{background:`${color}14`,color}}><Icon size={19}/></div><p className="mt-4 font-serif text-3xl font-bold">{value}</p><p className="mt-1 text-sm text-[#6B7280]">{title}</p></div>)}</div><div className="mt-7 overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm"><div className="grid gap-3 border-b border-black/5 p-4 sm:grid-cols-[1fr_220px]"><label className="relative"><Search size={16} className="absolute left-3 top-3.5 text-[#6B7280]"/><input value={query} onChange={(event)=>setQuery(event.target.value)} placeholder="Search name, email or conversion reference" className="h-11 w-full rounded-xl border border-gray-200 pl-10 pr-3 text-sm"/></label><select value={status} onChange={(event)=>setStatus(event.target.value)} className="h-11 rounded-xl border border-gray-200 bg-white px-3 text-sm"><option value="all">All conversion statuses</option><option value="pending_review">Pending review</option><option value="approved">Approved</option><option value="onboarding_requested">Onboarding requested</option><option value="completed">Completed</option><option value="rejected">Rejected</option></select></div><div className="overflow-x-auto"><table className="min-w-[920px] w-full text-left"><thead className="bg-[#F8F9FB] text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B7280]"><tr><th className="px-5 py-3">Lead</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Assigned to</th><th className="px-4 py-3">Requested by</th><th className="px-4 py-3">Created</th><th className="px-5 py-3 text-right">Action</th></tr></thead><tbody className="divide-y divide-black/5">{items.map((item)=><tr key={item.id} className="hover:bg-[#F8F9FB]"><td className="px-5 py-4"><p className="font-semibold">{item.fullName}</p><p className="mt-1 text-xs text-[#6B7280]">{item.email||item.phone||item.conversionId}</p></td><td className="px-4 py-4"><span className="rounded-full bg-[#F4F6F9] px-2.5 py-1 text-xs font-semibold text-[#4B5563]">{label(item.status)}</span></td><td className="px-4 py-4 text-sm text-[#6B7280]">{item.assignedToName||"Unassigned"}</td><td className="px-4 py-4 text-sm text-[#6B7280]">{item.requestedByName||"GrowVest team"}</td><td className="px-4 py-4 text-xs text-[#6B7280]">{formatDate(item.createdAt)}</td><td className="px-5 py-4 text-right"><Link href={`/admin/enquiries/conversions/${item.id}`} className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-[#1F4ED8]">Review <ArrowRight size={13}/></Link></td></tr>)}</tbody></table>{!items.length?<div className="py-16 text-center"><Clock3 size={30} className="mx-auto text-[#9CA3AF]"/><h2 className="mt-4 font-serif text-2xl font-bold">No conversion requests match.</h2></div>:null}</div></div></div>;
+}

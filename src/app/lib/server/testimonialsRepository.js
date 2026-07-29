@@ -2,6 +2,7 @@ import { unstable_cache } from "next/cache";
 import { FieldValue } from "firebase-admin/firestore";
 import { TESTIMONIAL_JOURNEY_TYPES, TESTIMONIAL_STATUSES } from "../../data/testimonials";
 import { getAdminDb, isFirebaseAdminConfigured } from "./firebaseAdmin";
+import { CACHE_TAGS, PUBLIC_CACHE_TTL } from "./cacheConfig";
 
 const COLLECTION = "investorTestimonials";
 const AUDIT_COLLECTION = "websiteAuditLogs";
@@ -250,7 +251,7 @@ export async function getTestimonialsSummary() {
 export const getPublishedTestimonials = unstable_cache(
   async (location = "") => listTestimonials({ publicOnly: true, location }),
   ["growvest-published-investor-testimonials"],
-  { tags: ["growvest-testimonials"], revalidate: 300 },
+  { tags: [CACHE_TAGS.testimonials], revalidate: PUBLIC_CACHE_TTL.website },
 );
 
 export const TESTIMONIAL_COLLECTIONS = {

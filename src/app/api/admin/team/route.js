@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdminRequest } from "../../../lib/server/adminAuth";
 import { createTeamMember, listTeamMembers } from "../../../lib/server/teamSocialRepository";
 import { assertAllowedOrigin, readJsonBody } from "../../../lib/server/requestSecurity";
@@ -23,6 +23,7 @@ export async function POST(request) {
     const body = await readJsonBody(request, 80_000);
     const item = await createTeamMember(body, admin);
     revalidateTag("growvest-team");
+    revalidatePath("/about");
     return NextResponse.json({ item }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error?.message || "Unable to create the team profile." }, { status: error?.status || 500 });

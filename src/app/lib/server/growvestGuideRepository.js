@@ -5,6 +5,8 @@ import { GOAL_LIBRARY_SEED } from "../../data/websiteContentSeed";
 import { INSIGHTS_SEED } from "../../data/insightsSeed";
 import { GUIDE_CONVERSATION_STATUSES, GUIDE_DEFAULT_SETTINGS, GUIDE_FEEDBACK_VALUES, GUIDE_KNOWLEDGE_SEED, GUIDE_STATUSES } from "../../data/growvestGuide";
 import { getAdminDb, isFirebaseAdminConfigured } from "./firebaseAdmin";
+import { CACHE_TAGS, PUBLIC_CACHE_TTL } from "./cacheConfig";
+import { syncEnquiryDirectory } from "./enquiriesRepository";
 
 const KNOWLEDGE_COLLECTION = "guideKnowledge";
 const SETTINGS_COLLECTION = "guideSettings";
@@ -329,6 +331,13 @@ export async function getGuideSettings({ publicOnly = false } = {}) {
   return { ...GUIDE_DEFAULT_SETTINGS, ...item };
 }
 
+
+export const getPublishedGuideSettings = unstable_cache(
+  async () => getGuideSettings({ publicOnly: true }),
+  ["growvest-published-guide-settings-v26"],
+  { tags: [CACHE_TAGS.guideSettings], revalidate: PUBLIC_CACHE_TTL.guide },
+);
+
 export async function updateGuideSettings(input, actor) {
   const db = getAdminDb();
   const reference = db.collection(SETTINGS_COLLECTION).doc("global");
@@ -370,7 +379,10 @@ async function loadApprovedSources() {
   return [...curated, ...faqs, ...goals, ...insights].filter((item) => item.question && item.answer);
 }
 
-const getCachedApprovedSources = unstable_cache(loadApprovedSources, ["growvest-guide-approved-sources-v22"], { revalidate: 300, tags: ["growvest-guide-knowledge", "growvest-faqs", "growvest-goal-library", "growvest-guide-sources"] });
+const getCachedApprovedSources = unstable_cache(loadApprovedSources, ["growvest-guide-approved-sources-v26"], {
+  revalidate: PUBLIC_CACHE_TTL.guide,
+  tags: [CACHE_TAGS.guideKnowledge, CACHE_TAGS.faqs, CACHE_TAGS.goalLibrary, CACHE_TAGS.guideSources],
+});
 
 export function isPersonalAdviceRequest(message) {
   return ADVICE_PATTERNS.some((pattern) => pattern.test(cleanText(message, 800)));
@@ -619,6 +631,7 @@ export async function recordGuideHandoff({ sessionId, name = "", phone = "", que
     }, { merge: true });
   }
 
+  await syncEnquiryDirectory(leadKey).catch(() => null);
   return { leadId: leadRef.id, leadKey };
 }
 

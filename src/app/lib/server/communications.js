@@ -42,5 +42,6 @@ export async function writeCommunicationLog(db, {
     sentByName: sentByName || null,
     metadata: metadata || null,
     createdAt: FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp(),
   });
 }

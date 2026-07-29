@@ -1,6 +1,7 @@
-import { unstable_cache, revalidateTag } from "next/cache";
+import { unstable_cache, revalidatePath, revalidateTag } from "next/cache";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminDb, isFirebaseAdminConfigured } from "./firebaseAdmin";
+import { CACHE_TAGS, PUBLIC_CACHE_TTL, pageCacheTag } from "./cacheConfig";
 import {
   FAQ_SEED,
   GOAL_LIBRARY_SEED,
@@ -319,7 +320,8 @@ export async function updateWebsitePage(pageKey, input, actor) {
   const payload = sanitizeWebsitePageInput(pageKey, input, { existing, actor });
   await reference.set(payload, { merge: true });
   await writeAudit({ actor, action: "website.page.updated", entityType: "websitePage", entityId: pageKey, summary: `Updated ${payload.title}.`, details: { status: payload.status } });
-  revalidateTag(`growvest-page-${pageKey}`);
+  revalidateTag(pageCacheTag(pageKey));
+  revalidatePath(pageKey === "home" ? "/" : `/${pageKey}`);
   return getWebsitePage(pageKey);
 }
 
@@ -346,7 +348,8 @@ export async function updateWebsiteSettings(input, actor) {
   const payload = sanitizeWebsiteSettingsInput(input, { existing, actor });
   await reference.set(payload, { merge: true });
   await writeAudit({ actor, action: "website.settings.updated", entityType: "websiteSettings", entityId: "global", summary: "Updated global website settings." });
-  revalidateTag("growvest-website-settings");
+  revalidateTag(CACHE_TAGS.websiteSettings);
+  revalidatePath("/", "layout");
   return getWebsiteSettings();
 }
 
@@ -373,7 +376,8 @@ export async function updateWebsiteNavigation(input, actor) {
   const payload = sanitizeWebsiteNavigationInput(input, { existing, actor });
   await reference.set(payload, { merge: true });
   await writeAudit({ actor, action: "website.navigation.updated", entityType: "websiteNavigation", entityId: "primary", summary: "Updated website navigation and footer links." });
-  revalidateTag("growvest-website-navigation");
+  revalidateTag(CACHE_TAGS.websiteNavigation);
+  revalidatePath("/", "layout");
   return getWebsiteNavigation();
 }
 
@@ -398,7 +402,9 @@ export async function createFaq(input, actor) {
   const payload = sanitizeFaqInput(input, { actor });
   await reference.set(payload);
   await writeAudit({ actor, action: "faq.created", entityType: "faq", entityId: reference.id, summary: `Created FAQ: ${payload.question}` });
-  revalidateTag("growvest-faqs");
+  revalidateTag(CACHE_TAGS.faqs);
+  revalidateTag(CACHE_TAGS.guideSources);
+  revalidatePath("/faqs");
   const snapshot = await reference.get();
   return serialize(snapshot);
 }
@@ -416,7 +422,9 @@ export async function updateFaq(id, input, actor) {
   const payload = sanitizeFaqInput(input, { existing: snapshot.data(), actor });
   await reference.set(payload, { merge: true });
   await writeAudit({ actor, action: "faq.updated", entityType: "faq", entityId: id, summary: `Updated FAQ: ${payload.question}` });
-  revalidateTag("growvest-faqs");
+  revalidateTag(CACHE_TAGS.faqs);
+  revalidateTag(CACHE_TAGS.guideSources);
+  revalidatePath("/faqs");
   const updated = await reference.get();
   return serialize(updated);
 }
@@ -458,7 +466,9 @@ export async function createGoal(input, actor) {
   const payload = sanitizeGoalInput(input, { actor });
   await reference.set(payload);
   await writeAudit({ actor, action: "goal.created", entityType: "goalLibrary", entityId: reference.id, summary: `Created goal: ${payload.label}` });
-  revalidateTag("growvest-goal-library");
+  revalidateTag(CACHE_TAGS.goalLibrary);
+  revalidateTag(CACHE_TAGS.guideSources);
+  revalidatePath("/goal-library");
   const snapshot = await reference.get();
   return serialize(snapshot);
 }
@@ -476,7 +486,9 @@ export async function updateGoal(id, input, actor) {
   const payload = sanitizeGoalInput(input, { existing: snapshot.data(), actor });
   await reference.set(payload, { merge: true });
   await writeAudit({ actor, action: "goal.updated", entityType: "goalLibrary", entityId: id, summary: `Updated goal: ${payload.label}` });
-  revalidateTag("growvest-goal-library");
+  revalidateTag(CACHE_TAGS.goalLibrary);
+  revalidateTag(CACHE_TAGS.guideSources);
+  revalidatePath("/goal-library");
   const updated = await reference.get();
   return serialize(updated);
 }
@@ -586,11 +598,17 @@ export async function seedWebsiteContent(actor, { force = false } = {}) {
 
   await batch.commit();
   await writeAudit({ actor, action: "website.content.seeded", entityType: "websiteContent", entityId: "initial-import", summary: "Imported current GrowVest website content into Firestore.", details: results });
-  ["home", "about"].forEach((key) => revalidateTag(`growvest-page-${key}`));
-  revalidateTag("growvest-website-settings");
-  revalidateTag("growvest-website-navigation");
-  revalidateTag("growvest-faqs");
-  revalidateTag("growvest-goal-library");
+  ["home", "about"].forEach((key) => revalidateTag(pageCacheTag(key)));
+  revalidateTag(CACHE_TAGS.websiteSettings);
+  revalidatePath("/", "layout");
+  revalidateTag(CACHE_TAGS.websiteNavigation);
+  revalidatePath("/", "layout");
+  revalidateTag(CACHE_TAGS.faqs);
+  revalidateTag(CACHE_TAGS.guideSources);
+  revalidatePath("/faqs");
+  revalidateTag(CACHE_TAGS.goalLibrary);
+  revalidateTag(CACHE_TAGS.guideSources);
+  revalidatePath("/goal-library");
   return results;
 }
 
@@ -630,31 +648,31 @@ export async function getWebsiteContentSummary() {
 export const getPublishedWebsitePage = (pageKey) => unstable_cache(
   async () => getWebsitePage(pageKey, { publicOnly: true }),
   [`growvest-published-page-${pageKey}`],
-  { tags: [`growvest-page-${pageKey}`], revalidate: 300 },
+  { tags: [pageCacheTag(pageKey)], revalidate: PUBLIC_CACHE_TTL.website },
 )();
 
 export const getPublishedWebsiteSettings = unstable_cache(
   async () => getWebsiteSettings({ publicOnly: true }),
   ["growvest-published-website-settings"],
-  { tags: ["growvest-website-settings"], revalidate: 300 },
+  { tags: [CACHE_TAGS.websiteSettings], revalidate: PUBLIC_CACHE_TTL.website },
 );
 
 export const getPublishedWebsiteNavigation = unstable_cache(
   async () => getWebsiteNavigation({ publicOnly: true }),
   ["growvest-published-website-navigation"],
-  { tags: ["growvest-website-navigation"], revalidate: 300 },
+  { tags: [CACHE_TAGS.websiteNavigation], revalidate: PUBLIC_CACHE_TTL.website },
 );
 
 export const getPublishedFaqs = unstable_cache(
   async () => listFaqs({ publicOnly: true }),
   ["growvest-published-faqs"],
-  { tags: ["growvest-faqs"], revalidate: 300 },
+  { tags: [CACHE_TAGS.faqs, CACHE_TAGS.guideSources], revalidate: PUBLIC_CACHE_TTL.website },
 );
 
 export const getPublishedGoalLibrary = unstable_cache(
   async () => listGoalLibrary({ publicOnly: true }),
   ["growvest-published-goal-library"],
-  { tags: ["growvest-goal-library"], revalidate: 300 },
+  { tags: [CACHE_TAGS.goalLibrary, CACHE_TAGS.guideSources], revalidate: PUBLIC_CACHE_TTL.website },
 );
 
 export const WEBSITE_CONTENT_COLLECTIONS = {

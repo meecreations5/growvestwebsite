@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdminRequest } from "../../../../lib/server/adminAuth";
 import { archiveTestimonial, getTestimonial, updateTestimonial } from "../../../../lib/server/testimonialsRepository";
 import { assertAllowedOrigin, readJsonBody } from "../../../../lib/server/requestSecurity";
@@ -27,6 +27,10 @@ export async function PATCH(request, { params }) {
     const body = await readJsonBody(request, 80_000);
     const item = await updateTestimonial(id, body, admin);
     revalidateTag("growvest-testimonials");
+    revalidatePath("/");
+    revalidatePath("/about");
+    revalidatePath("/insights");
+    revalidatePath("/investor-experiences");
     return NextResponse.json({ item });
   } catch (error) {
     return NextResponse.json({ error: error?.message || "Unable to update the investor testimonial." }, { status: error?.status || 500 });
@@ -40,6 +44,10 @@ export async function DELETE(request, { params }) {
     const { id } = await params;
     await archiveTestimonial(id, admin);
     revalidateTag("growvest-testimonials");
+    revalidatePath("/");
+    revalidatePath("/about");
+    revalidatePath("/insights");
+    revalidatePath("/investor-experiences");
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: error?.message || "Unable to archive the investor testimonial." }, { status: error?.status || 500 });

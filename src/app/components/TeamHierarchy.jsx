@@ -1,18 +1,20 @@
 import { Linkedin, Mail, Sparkles } from "lucide-react";
 import { TEAM_DEPARTMENTS } from "../data/teamSocial";
 import { BLUE, GOLD, serif } from "../lib/brand";
+import { OptimizedImage } from "./OptimizedImage";
 
 function TeamCard({ member, featured = false }) {
   return (
     <article className={`group overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-[0_18px_48px_rgba(11,11,15,.09)] ${featured ? "lg:grid lg:grid-cols-[0.82fr_1.18fr]" : ""}`}>
       <div className={`relative overflow-hidden bg-[#E9EDF5] ${featured ? "min-h-[340px]" : "aspect-[4/4.3]"}`}>
         {member.photo?.url ? (
-          <img
+          <OptimizedImage
             src={member.photo.url}
             alt={member.photo.altText || member.fullName}
+            fill
+            sizes={featured ? "(max-width: 1023px) 100vw, 38vw" : "(max-width: 639px) 100vw, (max-width: 1279px) 50vw, 33vw"}
             className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
             style={{ objectPosition: `${member.photo.focalX ?? 50}% ${member.photo.focalY ?? 50}%` }}
-            loading="lazy"
           />
         ) : (
           <div className="flex h-full min-h-[280px] items-center justify-center bg-[radial-gradient(circle_at_35%_30%,rgba(31,78,216,.22),transparent_45%),linear-gradient(145deg,#111827,#0B0B0F)]">

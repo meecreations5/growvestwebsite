@@ -8,8 +8,11 @@ export function GrowVestLogo({ className = "", tone = "white", animated = true }
       <img
         src={wordmarkSource}
         alt=""
+        width="160"
+        height="48"
         className="gv-full-logo__wordmark"
         draggable="false"
+        decoding="async"
       />
       <GrowVestMark
         ambient={animated}

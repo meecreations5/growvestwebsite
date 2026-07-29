@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { ArrowRight, Check, Quote, ShieldCheck, Sparkles } from "lucide-react";
 import { TESTIMONIAL_JOURNEY_TYPES } from "../data/testimonials";
 import { serif } from "../lib/brand";
+import { OptimizedImage } from "./OptimizedImage";
 
 const JOURNEY_LABELS = Object.fromEntries(
   TESTIMONIAL_JOURNEY_TYPES.map((entry) => [entry.value, entry.label]),
@@ -29,12 +30,14 @@ function InvestorPortrait({ item }) {
   return (
     <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full border border-[#E0E6EF] bg-[#EEF3FF]">
       {item.photo?.url && !item.useInitials ? (
-        <img
+        <OptimizedImage
           src={item.photo.url}
           alt={item.photo.altText || ""}
+          width={48}
+          height={48}
+          sizes="48px"
           className="h-full w-full object-cover"
           style={{ objectPosition: `${item.photo.focalX ?? 50}% ${item.photo.focalY ?? 50}%` }}
-          loading="lazy"
         />
       ) : (
         <div className="flex h-full items-center justify-center text-xs font-extrabold tracking-[0.08em] text-[#1F4ED8]">

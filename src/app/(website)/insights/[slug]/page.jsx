@@ -4,9 +4,10 @@ import { StructuredData } from "../../../components/StructuredData";
 import {
   getPublishedInsightBySlug,
   getRelatedInsights,
-  listAuthors,
-  listCategories,
-  listTags,
+  getPublishedAuthors,
+  getPublishedCategories,
+  getPublishedInsights,
+  getPublishedTags,
   resolveInsightRedirect,
 } from "../../../lib/server/insightsRepository";
 import {
@@ -19,7 +20,12 @@ import {
   normalizeSeoImage,
 } from "../../../lib/seo";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const posts = await getPublishedInsights();
+  return posts.slice(0, 100).map((post) => ({ slug: post.slug }));
+}
 
 function countArticleWords(blocks = []) {
   return blocks.reduce((total, block) => {
@@ -63,9 +69,9 @@ export default async function InsightPage({ params }) {
   const { slug } = await params;
   const [post, categories, tags, authors] = await Promise.all([
     getPublishedInsightBySlug(slug),
-    listCategories(),
-    listTags(),
-    listAuthors(),
+    getPublishedCategories(),
+    getPublishedTags(),
+    getPublishedAuthors(),
   ]);
 
   if (!post) {

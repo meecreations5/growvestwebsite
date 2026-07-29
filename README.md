@@ -2,16 +2,15 @@
 
 Production-oriented GrowVest marketing website built with **Next.js App Router**, **React 19**, **ES6 JavaScript (`.jsx`)**, **Tailwind CSS v4**, **Firebase Analytics**, **Firebase Admin** and **Brevo**.
 
-## Latest release — v23 Final Production Readiness
+## Latest release — v26.2 Mobile UI and Navigation Optimisation
 
-GrowVest v23 adds a protected System Readiness workspace, liveness and dependency-readiness endpoints, structured server error diagnostics, request correlation IDs, consent-controlled Web Vitals, production security headers, stricter environment validation, secret scanning, asset checks, accessibility baselines and deployment smoke tests.
+GrowVest v26.2 adds a persistent, route-aware phone navigation bar with **Home, Goals, Start, Insights and More**, an accessible navigation sheet above the bar, safe-area-aware fixed-surface spacing, direct phone-header Investor Portal access and coordinated behaviour with the GrowVest Guide and cookie consent. Tablet and desktop navigation remain unchanged.
 
-Open `/admin/system-readiness` as Super Admin and read:
+Read:
 
-- `PRODUCTION_READINESS_V23.md`
-- `PRODUCTION_DEPLOYMENT_RUNBOOK_V23.md`
-- `BACKUP_RECOVERY_V23.md`
-- `VALIDATION_REPORT_V23.md`
+- `MOBILE_UI_NAVIGATION_OPTIMISATION_V26_2.md`
+- `UPDATED_FILES_V26_2.md`
+- `VALIDATION_REPORT_V26_2.md`
 
 ## Brand foundation
 
@@ -270,3 +269,39 @@ New public endpoint:
 - `POST /api/growvest-guide/feedback`
 
 Merge `FIRESTORE_RULES_GROWVEST_GUIDE_V24.md` before production testing. See `GROWVEST_GUIDE_INTELLIGENCE_V24.md` for the complete workflow, guardrails and acceptance checklist.
+
+## GrowVest v25 — Enquiry, Conversion & Communication Completion
+
+v25 completes the lead-management production workflow with:
+
+- normalized `enquiryDirectory` indexing for server-side search, filters and cursor pagination
+- existing-investor and duplicate-enquiry matching
+- controlled conversion review, approval, onboarding and completion
+- approved email and WhatsApp communication templates with version history
+- Brevo transactional delivery-event webhook processing
+- assignee-specific follow-up notifications
+- enquiry analytics and CSV export
+- granular enquiry and communication-template permissions
+
+Admin routes:
+
+```text
+/admin/enquiries/conversions
+/admin/enquiries/analytics
+/admin/communication-templates
+```
+
+Deploy the updated Firestore indexes, merge `FIRESTORE_RULES_ENQUIRY_COMMUNICATIONS_V25.md`, configure `BREVO_WEBHOOK_TOKEN`, and use **Rebuild index** once from `/admin/enquiries` after deployment.
+
+## GrowVest v26.1 — Performance and Cache Foundation
+
+v26.1 adds tagged Firestore caching, mutation-driven revalidation, server-driven Insights pagination, deferred non-critical website JavaScript, optimized public image delivery and a Super Admin cache-management workspace at `/admin/cache-management`.
+
+Run `npm run check:performance` as a focused performance-foundation check. See `PERFORMANCE_CACHE_FOUNDATION_V26_1.md` and `VALIDATION_REPORT_V26_1.md` for the complete cache matrix, test plan and validation limitations.
+
+## GrowVest v26.2 — Mobile UI and Navigation Optimisation
+
+v26.2 replaces the delayed floating phone action bar with a persistent five-destination bottom navigation. The **More** destination opens a CMS-aware navigation sheet above the bar, while safe-area spacing keeps the footer, GrowVest Guide launcher and cookie consent clear of the fixed navigation.
+
+Phones below 768px use the new bottom navigation; tablets retain the established expandable header menu; desktop navigation remains unchanged. Run `npm run check:mobile` for the focused source baseline. See `MOBILE_UI_NAVIGATION_OPTIMISATION_V26_2.md` and `VALIDATION_REPORT_V26_2.md` for the full responsive and accessibility acceptance plan.
+

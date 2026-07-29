@@ -4,7 +4,7 @@ import { COMPANY } from "../../lib/brand";
 import { createOrUpdateBrevoContact } from "../../lib/server/brevo";
 import { writeCommunicationLog } from "../../lib/server/communications";
 import { getAdminDb, isFirebaseAdminConfigured } from "../../lib/server/firebaseAdmin";
-import { createLeadActivityForPublicSubmission } from "../../lib/server/enquiriesRepository";
+import { createLeadActivityForPublicSubmission, syncEnquiryDirectory } from "../../lib/server/enquiriesRepository";
 import {
   ApiError,
   assertAllowedOrigin,
@@ -148,6 +148,7 @@ export async function POST(request) {
       throw error;
     }
 
+    await syncEnquiryDirectory(leadKey).catch(() => null);
     return apiResponse({ ok: true });
   } catch (error) {
     if (error instanceof ApiError) {

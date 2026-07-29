@@ -4,7 +4,7 @@ import { SEO_PAGES, createBreadcrumbSchema, createPageMetadata, createWebPageSch
 import { getPublishedTestimonials } from "../../lib/server/testimonialsRepository";
 
 export const metadata = createPageMetadata("/investor-experiences");
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function InvestorExperiencesPage() {
   const testimonials = await getPublishedTestimonials();

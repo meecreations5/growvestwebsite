@@ -4,7 +4,7 @@ import { COMPANY } from "../../lib/brand";
 import { sendTransactionalEmail } from "../../lib/server/brevo";
 import { writeCommunicationLog } from "../../lib/server/communications";
 import { getAdminDb, isFirebaseAdminConfigured } from "../../lib/server/firebaseAdmin";
-import { createLeadActivityForPublicSubmission, normalizePhone } from "../../lib/server/enquiriesRepository";
+import { createLeadActivityForPublicSubmission, normalizePhone, syncEnquiryDirectory } from "../../lib/server/enquiriesRepository";
 import {
   ApiError,
   assertAllowedOrigin,
@@ -288,6 +288,8 @@ export async function POST(request) {
       status: teamResult.status === "sent" ? "new" : "new_email_attention_required",
       updatedAt: FieldValue.serverTimestamp(),
     });
+
+    await syncEnquiryDirectory(leadKey).catch(() => null);
 
     return apiResponse({
       ok: true,
