@@ -104,6 +104,7 @@ export function MobileSiteNavigation({ socialLinks = [], navigation = null, sett
   const primaryHref = primaryCta.href || "/contact";
   const investorPortalUrl = settings?.investorPortalUrl || COMPANY.investorPortalUrl;
   const investorPortalLabel = navigation?.investorPortalLabel || "Investor Portal";
+  const showInvestorPortal = process.env.NEXT_PUBLIC_SHOW_INVESTOR_PORTAL === "true";
   const activeGroup = groups.find((group) => groupContainsPath(group, pathname)) || null;
   const homeActive = routeMatches(pathname, "/", true);
   const startActive = !homeActive && routeMatches(pathname, primaryHref, true);
@@ -231,23 +232,25 @@ export function MobileSiteNavigation({ socialLinks = [], navigation = null, sett
 
             <div className="gv-mobile-nav-sheet__scroll">
               <div className="gv-mobile-nav-sheet__quick-actions">
-                <a
-                  href={investorPortalUrl}
-                  data-investor-portal="true"
-                  data-analytics-event="investor_portal_click"
-                  data-analytics-location="mobile_bottom_sheet"
-                  className="gv-mobile-nav-sheet__quick-action"
-                  onClick={() => closeMenu()}
-                >
-                  <span className="gv-mobile-nav-sheet__quick-icon" aria-hidden="true">
-                    <LockKeyhole size={17} />
-                  </span>
-                  <span className="min-w-0">
-                    <strong>{investorPortalLabel}</strong>
-                    <small>Secure access</small>
-                  </span>
-                  <ArrowUpRight size={15} aria-hidden="true" />
-                </a>
+                {showInvestorPortal ? (
+                  <a
+                    href={investorPortalUrl}
+                    data-investor-portal="true"
+                    data-analytics-event="investor_portal_click"
+                    data-analytics-location="mobile_bottom_sheet"
+                    className="gv-mobile-nav-sheet__quick-action"
+                    onClick={() => closeMenu()}
+                  >
+                    <span className="gv-mobile-nav-sheet__quick-icon" aria-hidden="true">
+                      <LockKeyhole size={17} />
+                    </span>
+                    <span className="min-w-0">
+                      <strong>{investorPortalLabel}</strong>
+                      <small>Secure access</small>
+                    </span>
+                    <ArrowUpRight size={15} aria-hidden="true" />
+                  </a>
+                ) : null}
 
                 <Link
                   href={primaryHref}

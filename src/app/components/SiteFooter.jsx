@@ -46,6 +46,7 @@ const FOOTER_COLS = [
 
 export function SiteFooter({ socialLinks = [], settings = null, navigation = null }) {
   const company = { ...COMPANY, ...(settings || {}) };
+  const showInvestorPortal = process.env.NEXT_PUBLIC_SHOW_INVESTOR_PORTAL === "true";
   const sourceFooterColumns = navigation?.footerColumns?.length ? navigation.footerColumns : FOOTER_COLS;
   const footerColumns = sourceFooterColumns
     .map((column) => ({
@@ -88,9 +89,11 @@ export function SiteFooter({ socialLinks = [], settings = null, navigation = nul
                 {(company.addressLines || []).map((line) => <span className="block" key={line}>{line}</span>)}
               </address>
               <span className="block">{company.officeHours || "Meetings by appointment"}</span>
-              <a href={company.investorPortalUrl} data-investor-portal="true" data-analytics-event="investor_portal_click" data-analytics-location="footer" className="inline-flex items-center gap-1 font-semibold text-[#F5B301] hover:text-[#FFD35A]">
-                Investor Portal <span aria-hidden="true">↗</span>
-              </a>
+              {showInvestorPortal ? (
+                <a href={company.investorPortalUrl} data-investor-portal="true" data-analytics-event="investor_portal_click" data-analytics-location="footer" className="inline-flex items-center gap-1 font-semibold text-[#F5B301] hover:text-[#FFD35A]">
+                  Investor Portal <span aria-hidden="true">↗</span>
+                </a>
+              ) : null}
             </div>
             <SocialLinks links={socialLinks} location="footer" theme="dark" className="mt-5" />
           </div>

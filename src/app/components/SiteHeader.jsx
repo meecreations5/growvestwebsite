@@ -137,6 +137,7 @@ export function SiteHeader({ socialLinks = [], navigation = null, settings = nul
   const homeLabel = navigation?.homeLabel || "Home";
   const investorPortalLabel = navigation?.investorPortalLabel || "Investor Portal";
   const investorPortalUrl = settings?.investorPortalUrl || COMPANY.investorPortalUrl;
+  const showInvestorPortal = process.env.NEXT_PUBLIC_SHOW_INVESTOR_PORTAL === "true";
   const headerCta = navigation?.headerPrimaryCta || { label: "Begin Your Journey", href: "/contact" };
   const [desktopGroup, setDesktopGroup] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -271,17 +272,19 @@ export function SiteHeader({ socialLinks = [], navigation = null, settings = nul
         </nav>
 
         <div className="hidden items-center gap-2.5 xl:flex">
-          <a
-            href={investorPortalUrl}
-            data-investor-portal="true"
-            data-analytics-event="investor_portal_click"
-            data-analytics-location="desktop_header"
-            className="group inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3.5 py-2.5 text-[12px] font-semibold text-white/80 transition-all hover:border-[#1F4ED8]/60 hover:bg-[#1F4ED8]/[0.10] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1F4ED8]"
-          >
-            <LockKeyhole size={13} aria-hidden="true" className="text-[#F5B301]" />
-            {investorPortalLabel}
-            <ArrowUpRight size={12} aria-hidden="true" className="text-white/35 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-          </a>
+          {showInvestorPortal ? (
+            <a
+              href={investorPortalUrl}
+              data-investor-portal="true"
+              data-analytics-event="investor_portal_click"
+              data-analytics-location="desktop_header"
+              className="group inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3.5 py-2.5 text-[12px] font-semibold text-white/80 transition-all hover:border-[#1F4ED8]/60 hover:bg-[#1F4ED8]/[0.10] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1F4ED8]"
+            >
+              <LockKeyhole size={13} aria-hidden="true" className="text-[#F5B301]" />
+              {investorPortalLabel}
+              <ArrowUpRight size={12} aria-hidden="true" className="text-white/35 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </a>
+          ) : null}
 
           <Link
             href={headerCta.href || "/contact"}
@@ -294,16 +297,18 @@ export function SiteHeader({ socialLinks = [], navigation = null, settings = nul
         </div>
 
         <div className="flex items-center gap-2 xl:hidden">
-          <a
-            href={investorPortalUrl}
-            aria-label={investorPortalLabel}
-            data-investor-portal="true"
-            data-analytics-event="investor_portal_click"
-            data-analytics-location="mobile_header"
-            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/10 text-white transition hover:border-[#1F4ED8]/60 hover:bg-[#1F4ED8]/10 focus-visible:outline-2 focus-visible:outline-[#1F4ED8] md:hidden"
-          >
-            <LockKeyhole size={18} aria-hidden="true" className="text-[#F5B301]" />
-          </a>
+          {showInvestorPortal ? (
+            <a
+              href={investorPortalUrl}
+              aria-label={investorPortalLabel}
+              data-investor-portal="true"
+              data-analytics-event="investor_portal_click"
+              data-analytics-location="mobile_header"
+              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/10 text-white transition hover:border-[#1F4ED8]/60 hover:bg-[#1F4ED8]/10 focus-visible:outline-2 focus-visible:outline-[#1F4ED8] md:hidden"
+            >
+              <LockKeyhole size={18} aria-hidden="true" className="text-[#F5B301]" />
+            </a>
+          ) : null}
 
           <button
             type="button"
@@ -388,18 +393,20 @@ export function SiteHeader({ socialLinks = [], navigation = null, settings = nul
               );
             })}
 
-            <a
-              href={investorPortalUrl}
-              data-investor-portal="true"
-              data-analytics-event="investor_portal_click"
-              data-analytics-location="mobile_menu"
-              onClick={() => setMobileOpen(false)}
-              className="mt-5 flex items-center justify-center gap-2 rounded-full border border-[#1F4ED8]/45 py-3.5 text-center text-[14px] font-semibold text-white"
-            >
-              <LockKeyhole size={15} aria-hidden="true" className="text-[#F5B301]" />
-              {investorPortalLabel}
-              <ArrowUpRight size={14} aria-hidden="true" className="text-white/40" />
-            </a>
+            {showInvestorPortal ? (
+              <a
+                href={investorPortalUrl}
+                data-investor-portal="true"
+                data-analytics-event="investor_portal_click"
+                data-analytics-location="mobile_menu"
+                onClick={() => setMobileOpen(false)}
+                className="mt-5 flex items-center justify-center gap-2 rounded-full border border-[#1F4ED8]/45 py-3.5 text-center text-[14px] font-semibold text-white"
+              >
+                <LockKeyhole size={15} aria-hidden="true" className="text-[#F5B301]" />
+                {investorPortalLabel}
+                <ArrowUpRight size={14} aria-hidden="true" className="text-white/40" />
+              </a>
+            ) : null}
 
             <Link
               href={headerCta.href || "/contact"}
