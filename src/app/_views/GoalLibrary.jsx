@@ -91,6 +91,16 @@ export default function GoalLibrary({ goals = [] }) {
       {/* Goal Explorer */}
       <section className="py-20 lg:py-28 bg-[#F4F6F9]">
         <div className="max-w-[1320px] mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="mx-auto mb-12 max-w-[760px] text-center">
+            <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-4" style={{ color: MGRAY }}>Financial Goal Planning Guide</p>
+            <h2 className="text-[36px] lg:text-[48px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
+              Explore Common Financial Goals<br />
+              <em style={{ fontStyle: "italic", color: BLUE }}>and How to Plan for Them.</em>
+            </h2>
+            <p className="text-[#6B7280] text-[15px] leading-relaxed">
+              Financial goals can be short term, medium term or long term, but each needs a clear target, time horizon and priority. Use the library to understand common goal types, then connect the ones that matter to your own financial roadmap.
+            </p>
+          </div>
           <div className="grid lg:grid-cols-[280px_1fr] gap-6">
             {/* Sidebar */}
             <div className="space-y-2">

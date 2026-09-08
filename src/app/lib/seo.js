@@ -21,9 +21,9 @@ export const SEO_PAGES = {
     changeFrequency: "weekly",
   },
   "/your-goals": {
-    title: "Goal-Based Financial Planning for Life Goals",
+    title: "Financial Planning for Life Goals and Priorities",
     description:
-      "Turn retirement, education, travel, home and family priorities into a structured financial roadmap with thoughtful goal-based planning.",
+      "Explore goal-based financial planning for retirement, education, home, travel, family priorities and other life goals through a structured financial roadmap.",
     priority: 0.85,
     changeFrequency: "monthly",
   },
@@ -84,30 +84,30 @@ export const SEO_PAGES = {
     changeFrequency: "monthly",
   },
   "/goal-library": {
-    title: "Financial Goal Library for Life Planning",
+    title: "Financial Goals: Types, Examples and Planning Guide",
     description:
-      "Explore common financial goals including retirement, education, home, travel, protection and family security, with practical planning context.",
+      "Explore common financial goals, their time horizons and planning considerations across retirement, education, home, travel, protection and family security.",
     priority: 0.75,
     changeFrequency: "monthly",
   },
   "/bucket-list-builder": {
-    title: "Bucket List Builder for Life and Financial Goals",
+    title: "Financial Goal Planner and Bucket List Builder",
     description:
-      "Create a personal bucket list, organise the experiences that matter and connect your aspirations with an educational financial estimate.",
+      "Use GrowVest's educational financial goal planner to map life goals, choose target amounts and timelines, and view an illustrative monthly investment estimate.",
     priority: 0.8,
     changeFrequency: "monthly",
   },
   "/for-nris": {
-    title: "NRI Wealth Planning for India-Linked Goals",
+    title: "NRI Financial Planning for India-Linked Goals",
     description:
-      "Explore goal-linked wealth guidance for NRIs managing family responsibilities, assets and long-term financial priorities connected to India.",
+      "Organise India-linked family, property, retirement and long-term financial goals while living abroad through a structured NRI financial planning conversation.",
     priority: 0.7,
     changeFrequency: "monthly",
   },
   "/family-wealth": {
-    title: "Family Wealth Planning and Financial Continuity",
+    title: "Family Wealth Planning for Goals and Continuity",
     description:
-      "Bring greater clarity to family protection, education, retirement, shared goals and long-term financial continuity through structured planning.",
+      "Coordinate family protection, education, retirement, shared financial goals and long-term continuity through a structured family wealth planning framework.",
     priority: 0.75,
     changeFrequency: "monthly",
   },
@@ -267,7 +267,7 @@ export function createWebPageSchema({
   };
 }
 
-export function createFaqPageSchema(items = []) {
+export function createFaqPageSchema(items = [], { path = "/faqs", name } = {}) {
   const questions = items
     .filter((item) => item?.question && item?.answer)
     .map((item) => ({
@@ -281,12 +281,14 @@ export function createFaqPageSchema(items = []) {
 
   if (!questions.length) return null;
 
+  const url = absoluteUrl(path);
+
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "@id": `${absoluteUrl("/faqs")}#faqpage`,
-    url: absoluteUrl("/faqs"),
-    name: SEO_PAGES["/faqs"].title,
+    "@id": `${url}#faqpage`,
+    url,
+    name: name || SEO_PAGES[path]?.title || `${SITE_NAME} Frequently Asked Questions`,
     inLanguage: SITE_LANGUAGE,
     mainEntity: questions,
   };

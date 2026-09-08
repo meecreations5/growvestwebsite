@@ -39,7 +39,7 @@ function Hero({ content = {} }) {
               {hero.headlineTop || "Your Bucket List"}<br/><em style={{ color: GOLD, fontStyle: "italic" }}>{hero.headlineAccent || "Deserves"}</em><br/>{hero.headlineBottom || "a Financial Roadmap."}
             </h1>
             <p className="gv-hero-intro gv-hero-intro--3 mb-5 max-w-[540px] text-[17px] leading-relaxed text-white/55">
-              {hero.description || "GrowVest helps individuals and families protect what matters today and grow toward what is possible tomorrow through human understanding, disciplined planning and thoughtful financial guidance."}
+              {hero.description || "GrowVest brings goal-based wealth planning to individuals and families by connecting financial decisions with life goals, family security, long-term progress and thoughtful financial guidance."}
             </p>
             <div className="gv-hero-intro gv-hero-intro--4">
               <HeroPromise/>
@@ -121,9 +121,9 @@ function TrustOperatingSystem() {
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>How We Work</p>
           <h2 className="text-[40px] lg:text-[52px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
-            Disciplined by Process.<br />Guided by Purpose. Built on Trust.
+            Goal-Based Wealth Planning<br />Built Around Your Life Goals.
           </h2>
-          <p className="text-[#6B7280] text-[16px] max-w-[540px] mx-auto leading-relaxed">GrowVest brings structure, responsibility, and clarity to every investor journey.</p>
+          <p className="text-[#6B7280] text-[16px] max-w-[620px] mx-auto leading-relaxed">Disciplined by process, guided by purpose and built on trust, GrowVest connects financial decisions with the life goals, family responsibilities and progress that matter to you.</p>
         </div>
         <div className="relative">
           <div className="absolute top-10 left-[calc(16.6%+32px)] right-[calc(16.6%+32px)] h-0.5 hidden lg:block pointer-events-none" style={{ background: `linear-gradient(90deg, ${GOLD}60, ${GOLD}, ${GOLD}60)`, zIndex: 0 }}/>
@@ -246,7 +246,7 @@ const lightTagStyles = {
     Review: { background: "#E8ECF4", color: MGRAY },
 };
 const SERVICES = [
-    { Icon: Target, title: "Goal-Based Investment Planning", desc: "Every investment anchored to your life goals and personal timeline.", tag: "Protect" },
+    { Icon: Target, title: "Goal-Based Wealth Planning", desc: "Every investment anchored to your life goals and personal timeline.", tag: "Protect" },
     { Icon: TrendingUp, title: "SIP & Mutual Fund Guidance", desc: "Structured SIP planning connected to each goal on your roadmap.", tag: "Transform" },
     { Icon: BarChart3, title: "Portfolio Review", desc: "Regular portfolio assessment aligned to your risk profile and goals.", tag: "Review" },
     { Icon: Shield, title: "Insurance Planning", desc: "Protection planning that secures the people and goals that matter most.", tag: "Protect" },
@@ -276,7 +276,7 @@ function WealthGuidanceBento() {
               <span className="text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full" style={{ background: "rgba(245,179,1,0.25)", color: GOLD }}>Protect</span>
             </div>
             <div>
-              <h3 className="text-[24px] lg:text-[28px] font-bold text-white mb-2 leading-snug" style={serif}>Goal-Based Investment Planning</h3>
+              <h3 className="text-[24px] lg:text-[28px] font-bold text-white mb-2 leading-snug" style={serif}>Goal-Based Wealth Planning</h3>
               <p className="text-white/60 text-[14px] leading-relaxed">Every investment decision anchored to your life goals and personal timeline — not a product pitch.</p>
             </div>
           </div>

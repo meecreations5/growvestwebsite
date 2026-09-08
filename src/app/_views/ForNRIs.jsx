@@ -38,7 +38,7 @@ export default function ForNRIs() {
                 Your India Goals<br />Deserve the Same<br /><em style={{ color: GOLD, fontStyle: "italic" }}>Attention as Your Global Ones.</em>
               </h1>
               <p className="mb-10 max-w-[560px] text-[17px] leading-relaxed text-white/70">
-                GrowVest helps NRIs organise India-linked goals, family priorities and next steps through remote, goal-based conversations. Tax, FEMA and legal matters may require separate qualified advice.
+                NRI financial planning at GrowVest begins by organising India-linked goals, family priorities and next steps through remote, goal-based conversations. Tax, FEMA and legal matters may require separate qualified advice.
               </p>
               <div className="flex flex-col gap-4 sm:flex-row">
                 <Link href="/contact" className="gv-btn-primary inline-flex items-center justify-center gap-2.5 rounded-full px-5 sm:px-6 lg:px-8 py-4 text-[15px] font-semibold text-white" style={{ background: BLUE }}>
@@ -75,8 +75,9 @@ export default function ForNRIs() {
           <div className="grid items-start gap-16 lg:grid-cols-[400px_1fr]">
             <div className="lg:sticky lg:top-24">
               <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.22em]" style={{ color: MGRAY }}>The NRI Context</p>
-              <h2 className="mb-5 text-[38px] font-bold leading-tight text-[#0B0B0F] lg:text-[50px]" style={serif}>Six Areas That Often Need More Clarity.</h2>
-              <p className="text-[15px] leading-relaxed text-[#6B7280]">Cross-border financial decisions can involve multiple institutions, documents and professional responsibilities. The first step is knowing which questions need to be addressed.</p>
+              <h2 className="mb-4 text-[38px] font-bold leading-tight text-[#0B0B0F] lg:text-[50px]" style={serif}>NRI Financial Planning for India-Linked Goals.</h2>
+              <p className="mb-4 text-[20px] font-bold leading-snug text-[#374151]" style={serif}>Six areas that often need more clarity.</p>
+              <p className="text-[15px] leading-relaxed text-[#6B7280]">Cross-border financial decisions can involve multiple institutions, documents and professional responsibilities. A structured NRI financial planning conversation starts by separating your India-linked goals, family responsibilities and timelines from the tax, FEMA and legal questions that may need appropriately qualified advice.</p>
             </div>
             <div className="grid gap-5 sm:grid-cols-2">
               {CHALLENGES.map(({ Icon, title, copy }) => (
@@ -130,7 +131,12 @@ export default function ForNRIs() {
       <section className="bg-white py-24 lg:py-28">
         <div className="mx-auto max-w-[720px] px-5 text-center sm:px-6 lg:px-8">
           <h2 className="mb-6 text-[40px] font-bold leading-tight text-[#0B0B0F] lg:text-[54px]" style={serif}>Bring Your India Goals<br /><em style={{ color: BLUE, fontStyle: "italic" }}>into One Clear View.</em></h2>
-          <p className="mb-10 text-[16px] leading-relaxed text-[#6B7280]">Request a remote discovery conversation about the goals, family priorities and professional questions connected to India.</p>
+          <p className="mb-8 text-[16px] leading-relaxed text-[#6B7280]">Request a remote discovery conversation about the goals, family priorities and professional questions connected to India.</p>
+          <div className="mb-9 flex flex-wrap justify-center gap-x-5 gap-y-2 text-[13px] font-semibold">
+            <Link href="/goal-library" className="text-[#1F4ED8] hover:underline">Explore financial goals</Link>
+            <Link href="/family-wealth" className="text-[#1F4ED8] hover:underline">See family wealth planning</Link>
+            <Link href="/progress-reviews" className="text-[#1F4ED8] hover:underline">Understand progress reviews</Link>
+          </div>
           <Link href="/contact" className="gv-btn-primary inline-flex items-center gap-2.5 rounded-full px-9 py-4 text-[15px] font-semibold text-white" style={{ background: BLUE }}>
             Begin Your Journey <ArrowRight size={17} />
           </Link>

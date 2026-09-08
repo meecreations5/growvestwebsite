@@ -30,7 +30,7 @@ export default function FamilyWealth() {
               <em style={{ color: GOLD, fontStyle: "italic" }}>Preserved by Families.</em>
             </h1>
             <p className="text-white/45 text-[17px] leading-relaxed mb-10 max-w-[560px]">
-              GrowVest's family wealth framework coordinates goals, protection, and estate planning across an entire family — not just for one investor in isolation.
+              GrowVest's family wealth planning framework coordinates goals, protection and long-term financial continuity across an entire family — not just for one investor in isolation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/contact" className="gv-btn-primary inline-flex items-center gap-2.5 px-5 sm:px-6 lg:px-8 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}50` }}>
@@ -50,9 +50,10 @@ export default function FamilyWealth() {
           <div className="grid lg:grid-cols-[1fr_400px] gap-14 items-center">
             <div>
               <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>The Family Problem</p>
-              <h2 className="text-[38px] lg:text-[50px] font-bold text-[#0B0B0F] leading-tight mb-6" style={serif}>
-                Most Families Have<br />Portfolios. Not Plans.
+              <h2 className="text-[38px] lg:text-[50px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
+                Family Wealth Planning Across Goals, Protection and Financial Continuity.
               </h2>
+              <p className="mb-6 text-[22px] font-bold leading-snug text-[#374151]" style={serif}>Most families have portfolios. Not plans.</p>
               <div className="space-y-4 text-[#4B5563] text-[15px] leading-relaxed">
                 <p>Individual family members each invest independently — different funds, different advisors, different goals. Nobody has a view of the whole.</p>
                 <p>Goals compete: one member's real estate ambition consumes capital that was silently earmarked for a child's education. A parent's retirement plan is never formalised. Insurance gaps go undetected across the family.</p>
@@ -136,7 +137,12 @@ export default function FamilyWealth() {
             Build a Plan That<br />
             <em style={{ fontStyle: "italic", color: BLUE }}>Holds the Whole Family.</em>
           </h2>
-          <p className="text-[#6B7280] text-[16px] leading-relaxed mb-10">Begin with a family guidance conversation — we will map every member's goals, review your collective protection, and design a plan that serves the whole family, not just one investor.</p>
+          <p className="text-[#6B7280] text-[16px] leading-relaxed mb-7">Begin with a family guidance conversation — we will map every member's goals, review your collective protection, and design a plan that serves the whole family, not just one investor.</p>
+          <div className="mb-9 flex flex-wrap justify-center gap-x-5 gap-y-2 text-[13px] font-semibold">
+            <Link href="/goal-library" className="text-[#1F4ED8] hover:underline">Explore financial goals</Link>
+            <Link href="/for-nris" className="text-[#1F4ED8] hover:underline">Planning for NRI families</Link>
+            <Link href="/progress-reviews" className="text-[#1F4ED8] hover:underline">See progress reviews</Link>
+          </div>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link href="/contact" className="gv-btn-primary inline-flex items-center gap-2.5 px-9 py-4 rounded-full text-white font-semibold text-[15px] transition-all hover:opacity-90" style={{ background: BLUE, boxShadow: `0 8px 32px ${BLUE}45` }}>
               Begin Your Journey <ArrowRight size={17}/>

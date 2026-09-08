@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Plus, Trash2, ArrowRight, GraduationCap, Home as HomeIcon, Star, Shield, Plane, TrendingUp, Heart, Globe, Target, Check, Mail } from "lucide-react";
 import { BLUE, BLACK, GOLD, GRAY, MGRAY, serif, dotGrid } from "../lib/brand";
 import { trackEvent } from "../lib/analytics";
+import { BUCKET_LIST_PLANNER_FAQS } from "../lib/seoContent";
 const GOAL_OPTIONS = [
     { id: "child-education", Icon: GraduationCap, label: "Child Education", color: "#8B5CF6", defaultCorpus: 4000000, defaultYears: 12 },
     { id: "dream-home", Icon: HomeIcon, label: "Dream Home", color: BLUE, defaultCorpus: 3000000, defaultYears: 6 },
@@ -157,8 +158,8 @@ export default function BucketListBuilder() {
             Build Your<br />
             <em style={{ color: GOLD, fontStyle: "italic" }}>Bucket List Plan.</em>
           </h1>
-          <p className="text-white/45 text-[17px] leading-relaxed max-w-[540px] mx-auto">
-            Add your life goals, select a target amount and timeline, and view an illustrative monthly investment estimate based on the assumptions you choose.
+          <p className="text-white/55 text-[17px] leading-relaxed max-w-[620px] mx-auto">
+            Use this financial goal planner to add the life goals that matter to you, choose a target amount and timeline, and view an illustrative monthly investment estimate based on the assumptions you select.
           </p>
         </div>
       </section>
@@ -166,6 +167,16 @@ export default function BucketListBuilder() {
       {/* Builder */}
       <section className="py-16 lg:py-24 bg-[#F4F6F9]">
         <div className="max-w-[1100px] mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="mx-auto mb-12 max-w-[760px] text-center">
+            <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-4" style={{ color: MGRAY }}>Financial Goal Planner</p>
+            <h2 className="text-[36px] lg:text-[48px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
+              Plan for the Life You Want<br />
+              <em style={{ fontStyle: "italic", color: BLUE }}>to Experience.</em>
+            </h2>
+            <p className="text-[#6B7280] text-[15px] leading-relaxed">
+              Start by mapping one or more financial goals. The planner helps you see how target amount, time horizon and assumed return can affect an illustrative monthly contribution, before a deeper conversation considers the rest of your financial picture.
+            </p>
+          </div>
           <div className="grid lg:grid-cols-[1fr_340px] gap-8 items-start">
 
             {/* Goals list */}
@@ -355,6 +366,65 @@ export default function BucketListBuilder() {
                   See the full planning process →
                 </Link>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Planner guidance and SEO support content */}
+      <section className="bg-white py-20 lg:py-28">
+        <div className="mx-auto max-w-[1100px] px-5 sm:px-6 lg:px-8">
+          <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
+            <div>
+              <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em]" style={{ color: MGRAY }}>How to Use the Planner</p>
+              <h2 className="mb-5 text-[34px] font-bold leading-tight text-[#0B0B0F] lg:text-[46px]" style={serif}>
+                From a Life Goal to a
+                <em className="block" style={{ color: BLUE, fontStyle: "italic" }}>Clearer Starting Estimate.</em>
+              </h2>
+              <div className="space-y-4 text-[15px] leading-relaxed text-[#5B6472]">
+                <p>Begin with the goal itself: what you want to fund, roughly how much it may cost and when you expect to need the money. A home purchase, child education, retirement, travel plan or family responsibility can all have very different timelines and priorities.</p>
+                <p>Next, test the assumptions. A longer time horizon generally gives contributions more time to compound, while a larger target amount usually increases the monthly estimate. The return assumption is only an illustration, not a promise of future performance.</p>
+                <p>Finally, look at all selected goals together. The combined estimate can help you identify where priorities may compete. A complete financial plan may then consider inflation, existing assets, cash flow, protection, taxes, liquidity and the relative importance of each goal.</p>
+              </div>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link href="/goal-library" className="rounded-full border border-gray-200 px-5 py-2.5 text-[13px] font-semibold text-[#374151] transition-colors hover:border-blue-200 hover:text-blue-700">Explore Financial Goals</Link>
+                <Link href="/your-goals" className="rounded-full border border-gray-200 px-5 py-2.5 text-[13px] font-semibold text-[#374151] transition-colors hover:border-blue-200 hover:text-blue-700">See Goal-Based Planning</Link>
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-gray-100 bg-[#F4F6F9] p-7 lg:p-9">
+              <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.22em]" style={{ color: BLUE }}>What the Estimate Does and Does Not Mean</p>
+              <div className="space-y-5">
+                {[
+                  ["It shows a starting point", "The calculator translates your selected target, timeline and assumed return into an illustrative monthly contribution."],
+                  ["It does not predict returns", "Investment returns can vary and actual outcomes can be higher or lower than the assumption used in the tool."],
+                  ["It does not replace prioritisation", "Essential goals, protection needs and near-term responsibilities may need to be funded before lower-priority aspirations."],
+                  ["It is not investment advice", "The tool does not recommend a security, product or investment strategy. It is designed for education and early goal mapping."],
+                ].map(([title, copy], index) => (
+                  <div key={title} className="flex gap-4">
+                    <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-[11px] font-bold" style={{ background: `${BLUE}10`, color: BLUE }}>{index + 1}</div>
+                    <div>
+                      <h3 className="mb-1 text-[14px] font-bold text-[#0B0B0F]" style={serif}>{title}</h3>
+                      <p className="text-[13px] leading-relaxed text-[#6B7280]">{copy}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-16 border-t border-gray-100 pt-14">
+            <div className="mx-auto mb-9 max-w-[700px] text-center">
+              <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em]" style={{ color: MGRAY }}>Financial Goal Planner FAQs</p>
+              <h2 className="text-[32px] font-bold leading-tight text-[#0B0B0F] lg:text-[42px]" style={serif}>Questions Before You Use the Estimate.</h2>
+            </div>
+            <div className="mx-auto max-w-[820px] space-y-3">
+              {BUCKET_LIST_PLANNER_FAQS.map(({ question, answer }) => (
+                <details key={question} className="group rounded-2xl border border-gray-100 bg-white px-5 py-4" style={{ boxShadow: "0 2px 14px rgba(0,0,0,0.035)" }}>
+                  <summary className="cursor-pointer list-none pr-6 text-[14px] font-semibold text-[#0B0B0F] marker:hidden">{question}</summary>
+                  <p className="mt-3 text-[13px] leading-relaxed text-[#6B7280]">{answer}</p>
+                </details>
+              ))}
             </div>
           </div>
         </div>

@@ -165,7 +165,7 @@ function GoalsHero() {
             </h1>
 
             <p className="text-white/50 text-[17px] leading-relaxed mb-5 max-w-[520px]">
-              Before any financial direction, GrowVest starts with your life — your responsibilities, your dreams, and your family priorities. Every goal you map becomes a structured wealth milestone.
+              Financial planning for life goals starts with your life — your responsibilities, your dreams and your family priorities. Every goal you map becomes a structured wealth milestone within a clearer financial roadmap.
             </p>
 
             <p className="text-white/30 text-[14px] leading-relaxed mb-10 max-w-[460px]">
@@ -223,11 +223,11 @@ function GoalCategories() {
             Goal Framework
           </p>
           <h2 className="text-[38px] lg:text-[50px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
-            Every Goal Has a Purpose.<br />
-            <em style={{ fontStyle: "italic", color: BLUE }}>Every Purpose Has a Plan.</em>
+            Financial Planning Starts With<br />
+            <em style={{ fontStyle: "italic", color: BLUE }}>the Life Goals That Matter to You.</em>
           </h2>
-          <p className="text-[#6B7280] text-[16px] max-w-[520px] mx-auto leading-relaxed">
-            GrowVest organises your goals into three clear categories — so your wealth strategy is never scattered.
+          <p className="text-[#6B7280] text-[16px] max-w-[620px] mx-auto leading-relaxed">
+            Every goal has a purpose. GrowVest organises retirement, education, home, travel, protection and family priorities into a clear goal-based financial planning framework so your roadmap stays connected to real life.
           </p>
         </div>
 
