@@ -108,7 +108,7 @@ export function InsightsDirectory({
               Clarity for the life<br />you want to <em className="italic" style={{ color: GOLD }}>experience.</em>
             </h1>
             <p className="mt-7 max-w-2xl text-[17px] leading-8 text-white/60">
-              Educational perspectives on goals, financial habits, protection thinking and the meaningful decisions that shape long-term wealth.
+              Financial planning insights on life goals, family wealth, NRI planning, protection thinking and the everyday decisions that shape long-term financial progress.
             </p>
           </div>
         </div>
@@ -173,7 +173,7 @@ export function InsightsDirectory({
           <div className="mb-10 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#1F4ED8]">Explore the library</p>
-              <h2 className="mt-3 font-serif text-4xl font-bold sm:text-5xl">Insights for clearer decisions.</h2>
+              <h2 className="mt-3 font-serif text-4xl font-bold sm:text-5xl">Financial planning insights for clearer decisions.</h2>
               <p className="mt-3 text-sm text-[#6B7280]">{total} published {total === 1 ? "Insight" : "Insights"}</p>
             </div>
             <form onSubmit={submitSearch} className="relative w-full max-w-md">

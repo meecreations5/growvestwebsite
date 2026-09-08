@@ -27,12 +27,12 @@ function Hero() {
             </div>
 
             <h1 className="text-[54px] xl:text-[68px] font-bold text-white mb-7 leading-[1.04]" style={serif}>
-              A Disciplined Way<br />to Build Wealth.<br />
+              A Structured Way<br />to Build Wealth.<br />
               <em style={{ color: GOLD, fontStyle: "italic" }}>A Human Way to Guide It.</em>
             </h1>
 
             <p className="text-white/50 text-[17px] leading-relaxed mb-5 max-w-[520px]">
-              GrowVest follows a structured guidance journey — from understanding your life goals to building a financial roadmap, and then keeping you on track with regular reviews.
+              GrowVest follows a goal-based financial planning process — from understanding your life goals to building a financial roadmap, and then reviewing progress as life changes.
             </p>
             <p className="text-white/28 text-[14px] leading-relaxed mb-10 max-w-[460px]">
               Not a one-time recommendation. Not a product pitch. A thoughtful, ongoing wealth-guidance relationship.
@@ -168,7 +168,7 @@ const PHASES = [
         copy: "A financial journey needs more than a one-time conversation. GrowVest supports regular progress reviews because life, priorities and markets can change.",
         color: "#10B981",
         steps: [
-            { title: "Scheduled Review", copy: "A structured review of goal progress, contribution discipline, material changes and pending actions, based on the cadence agreed for the engagement.", deliverable: "Progress Review Summary" },
+            { title: "Scheduled Review", copy: "A structured review of goal progress, contribution consistency, material changes and pending actions, based on the cadence agreed for the engagement.", deliverable: "Progress Review Summary" },
             { title: "Progress Report", copy: "A comprehensive progress report tied to your bucket list — showing how far each goal has come, what is on track, and what needs attention.", deliverable: "Bucket List Progress Report" },
             { title: "Ongoing Guidance", copy: "A consistent point of contact for goal changes, life events and important planning questions within the agreed service scope.", deliverable: "Guide Access" },
         ],
@@ -407,7 +407,7 @@ function ReviewSystem() {
               <div className="p-4 rounded-2xl" style={{ background: `${BLUE}07`, border: `1px solid ${BLUE}15` }}>
                 <p className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: BLUE }}>Guide Note</p>
                 <p className="text-[#374151] text-[13px] leading-relaxed italic" style={serif}>
-                  "Strong SIP discipline this month. Priority for August: resolve the rebalancing and close the insurance gap conversation."
+                  "SIP contributions stayed consistent this month. Priority for August: resolve the rebalancing and close the insurance gap conversation."
                 </p>
               </div>
             </div>

@@ -1,10 +1,16 @@
 import TheGrowVestWay from "../../_views/TheGrowVestWay";
 import { StructuredData } from "../../components/StructuredData";
-import { createBreadcrumbSchema, createPageMetadata } from "../../lib/seo";
+import { SEO_PAGES, createBreadcrumbSchema, createPageMetadata, createWebPageSchema } from "../../lib/seo";
 
 export const metadata = createPageMetadata("/the-growvest-way");
 
 export default function Page() {
+  const pageSchema = createWebPageSchema({
+    path: "/the-growvest-way",
+    name: SEO_PAGES["/the-growvest-way"].title,
+    description: SEO_PAGES["/the-growvest-way"].description,
+    type: "WebPage",
+  });
   const breadcrumbs = createBreadcrumbSchema([
     { name: "Home", path: "/" },
     { name: "The GrowVest Way", path: "/the-growvest-way" },
@@ -12,6 +18,7 @@ export default function Page() {
 
   return (
     <>
+      <StructuredData id="growvest-way-webpage-schema" data={pageSchema} />
       <StructuredData id="breadcrumb-schema" data={breadcrumbs} />
       <TheGrowVestWay />
     </>

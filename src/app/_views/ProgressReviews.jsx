@@ -97,7 +97,7 @@ function Hero() {
               <em style={{ color: GOLD, fontStyle: "italic" }}>Forgotten.</em>
             </h1>
             <p className="text-white/50 text-[17px] leading-relaxed mb-5 max-w-[520px]">
-              GrowVest offers structured progress reviews that can cover goals, contribution discipline, documents, observations and next actions based on the agreed service cadence.
+              GrowVest's financial plan review framework brings goals, contribution consistency, protection questions, documents, observations and next actions into one structured progress review, based on the agreed service cadence.
             </p>
             <p className="text-white/28 text-[14px] leading-relaxed mb-10 max-w-[460px]">
               Not a check-in call. A documented review with real outputs.
@@ -159,7 +159,7 @@ function Hero() {
                 <div className="p-3.5 rounded-xl" style={{ background: `${BLUE}12`, border: `1px solid ${BLUE}20` }}>
                   <p className="text-[9px] font-bold tracking-widest uppercase mb-1.5" style={{ color: BLUE }}>Guide Note</p>
                   <p className="text-white/50 text-[11px] leading-relaxed italic" style={serif}>
-                    "Strong discipline on SIPs. Priority: resolve the dream home corpus gap before August."
+                    "SIP contributions stayed consistent. Priority: resolve the dream home corpus gap before August."
                   </p>
                 </div>
               </div>
@@ -182,7 +182,7 @@ function Hero() {
 const WHY_POINTS = [
     { heading: "Life changes. Your plan should too.", copy: "Income grows, families expand, goals shift, and markets move. A financial plan that is not reviewed regularly becomes misaligned with the life it is meant to serve." },
     { heading: "Numbers without context mislead.", copy: "A portfolio up 12% means little without context — is it enough for your goal timeline? Is your allocation still right? Reviews provide the context that numbers alone cannot." },
-    { heading: "Accountability requires a witness.", copy: "When your financial journey is reviewed with a guide who understands your goals, you are far more likely to stay disciplined through market noise and life disruptions." },
+    { heading: "Accountability requires a witness.", copy: "When your financial journey is reviewed with a guide who understands your goals, you are far more likely to stay consistent through market noise and life disruptions." },
 ];
 function WhyReviewsMatter() {
     return (<section className="py-28 lg:py-40 bg-[#F4F6F9]">
@@ -360,7 +360,7 @@ function ReviewReportMockup() {
               <div className="p-4 rounded-2xl bg-white" style={{ border: `1px solid ${BLUE}15`, boxShadow: "0 1px 6px rgba(0,0,0,0.04)" }}>
                 <p className="text-[9px] font-bold tracking-widest uppercase mb-1.5" style={{ color: BLUE }}>Guide Note</p>
                 <p className="text-[#374151] text-[12.5px] leading-relaxed italic" style={serif}>
-                  "Solid SIP discipline. Priority for August is the portfolio review and closing the insurance gap conversation."
+                  "SIP contributions stayed consistent. Priority for August is the portfolio review and closing the insurance gap conversation."
                 </p>
               </div>
             </div>
@@ -455,7 +455,7 @@ function ReviewCadence() {
           <div className="lg:sticky lg:top-24">
             <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>Review Cadence</p>
             <h2 className="text-[38px] lg:text-[48px] font-bold text-[#0B0B0F] leading-tight mb-5" style={serif}>
-              Structured Reviews at Every Stage of Your Journey.
+              Financial Plan Reviews at Every Stage of Your Journey.
             </h2>
             <p className="text-[#6B7280] text-[15px] leading-relaxed mb-8">
               GrowVest's review approach is designed to be proactive. Reviews can be scheduled and structured so important goals and actions receive regular attention.

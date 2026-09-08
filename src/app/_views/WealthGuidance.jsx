@@ -19,7 +19,7 @@ const SERVICES = [
     {
         id: "goal-based",
         Icon: Target,
-        title: "Goal-Based Investment Planning",
+        title: "Goal-Based Wealth Planning",
         tag: "Protect",
         color: BLUE,
         tagline: "Every investment anchored to a life goal — not a product shelf.",
@@ -40,7 +40,7 @@ const SERVICES = [
         title: "SIP & Mutual Fund Guidance",
         tag: "Transform",
         color: GOLD,
-        tagline: "Structured SIP discipline connected to each goal — not scattered across funds.",
+        tagline: "Consistent SIP contributions connected to each goal — not scattered across funds.",
         what: "GrowVest ensures your SIP investments are intentional — each SIP tied to a specific goal, appropriate to your risk profile, and reviewed regularly for relevance and performance.",
         howItWorks: [
             "Assess your current SIP structure and goal alignment",
@@ -94,7 +94,7 @@ const SERVICES = [
         title: "Retirement Planning",
         tag: "Transform",
         color: "#10B981",
-        tagline: "Build the corpus for a dignified, independent retirement — with structured discipline.",
+        tagline: "Build the corpus for a dignified, independent retirement — with a consistent long-term approach.",
         what: "GrowVest calculates your retirement corpus requirement based on your current lifestyle, inflation expectations, and expected retirement age — then designs a long-term direction aligned to your risk profile and timeline.",
         howItWorks: [
             "Calculate retirement corpus based on lifestyle and inflation",
@@ -220,7 +220,7 @@ function Hero() {
               <em style={{ color: GOLD, fontStyle: "italic" }}>Planning That Transforms.</em>
             </h1>
             <p className="text-white/50 text-[17px] leading-relaxed mb-5 max-w-[520px]">
-              GrowVest supports investors across ten areas of wealth guidance — from goal mapping and protection questions to tax coordination and portfolio information review — always anchored to life goals and suitability.
+              GrowVest's wealth planning guidance spans ten connected areas — from goal mapping and protection questions to retirement, tax coordination and portfolio information review — always anchored to life goals and suitability.
             </p>
             <p className="text-white/28 text-[14px] leading-relaxed mb-10 max-w-[460px]">
               No product pushing. No return promises. Every direction begins with your goals.
@@ -271,7 +271,7 @@ function BentoOverview() {
         <div className="text-center mb-14">
           <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: MGRAY }}>All Guidance Areas</p>
           <h2 className="text-[38px] lg:text-[50px] font-bold text-[#0B0B0F] leading-tight mb-4" style={serif}>
-            Ten Areas of Wealth Guidance.<br />
+            Ten Areas of Wealth Planning Guidance.<br />
             <em style={{ fontStyle: "italic", color: BLUE }}>One Connected Roadmap.</em>
           </h2>
           <p className="text-[#6B7280] text-[16px] max-w-[520px] mx-auto leading-relaxed">
@@ -290,7 +290,7 @@ function BentoOverview() {
             </div>
             <div>
               <h3 className="text-[26px] lg:text-[30px] font-bold text-white mb-3 leading-snug" style={serif}>
-                Goal-Based Investment Planning
+                Goal-Based Wealth Planning
               </h3>
               <p className="text-white/60 text-[14px] leading-relaxed mb-5">Every investment anchored to your life goals and personal timeline — not a product pitch.</p>
               <div className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ color: GOLD }}>

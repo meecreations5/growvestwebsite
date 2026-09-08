@@ -4,6 +4,14 @@ import { getPublicInsightsPage, getPublishedCategories } from "../../../../lib/s
 
 export const revalidate = 900;
 
+export const metadata = {
+  robots: {
+    index: false,
+    follow: true,
+    googleBot: { index: false, follow: true },
+  },
+};
+
 export default async function CategoryInsightsPage({ params, searchParams }) {
   const [{ slug }, query] = await Promise.all([params, searchParams]);
   const categories = await getPublishedCategories();

@@ -8,6 +8,14 @@ import {
 
 export const revalidate = 900;
 
+export const metadata = {
+  robots: {
+    index: false,
+    follow: true,
+    googleBot: { index: false, follow: true },
+  },
+};
+
 export default async function AuthorInsightsPage({ params, searchParams }) {
   const [{ slug }, query] = await Promise.all([params, searchParams]);
   const [categories, authors] = await Promise.all([

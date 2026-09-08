@@ -28,30 +28,30 @@ export const SEO_PAGES = {
     changeFrequency: "monthly",
   },
   "/the-growvest-way": {
-    title: "The GrowVest Way: A Structured Wealth Journey",
+    title: "Goal-Based Financial Planning Process",
     description:
-      "Explore GrowVest's disciplined process for understanding goals, building a financial roadmap and reviewing progress with clarity and accountability.",
+      "See how GrowVest moves from discovery and goal mapping to a financial roadmap, documented actions and ongoing progress reviews.",
     priority: 0.85,
     changeFrequency: "monthly",
   },
   "/wealth-guidance": {
-    title: "Wealth Guidance for Goals, Protection and Progress",
+    title: "Wealth Planning Guidance for Goals and Protection",
     description:
-      "Explore goal-linked wealth guidance covering planning, protection, diversification, cash flow and long-term financial progress.",
+      "Explore GrowVest wealth planning guidance across life goals, protection, retirement, education, cash flow and ongoing financial progress.",
     priority: 0.85,
     changeFrequency: "monthly",
   },
   "/progress-reviews": {
-    title: "Financial Progress Reviews and Goal Tracking",
+    title: "Financial Plan Review and Goal Tracking",
     description:
-      "Understand GrowVest's structured review framework for tracking goals, changing priorities, protection needs and financial progress over time.",
+      "Review financial goals, changing priorities, protection needs and next actions through GrowVest's structured financial plan review framework.",
     priority: 0.75,
     changeFrequency: "monthly",
   },
   "/insights": {
-    title: "Wealth Planning Insights and Financial Education",
+    title: "Financial Planning Insights for Life Goals",
     description:
-      "Read practical GrowVest perspectives on financial planning, family wealth, protection, portfolio discipline and goal-led progress.",
+      "Read GrowVest insights on financial goals, family wealth, NRI planning, protection, financial habits and long-term progress.",
     priority: 0.8,
     changeFrequency: "weekly",
   },
