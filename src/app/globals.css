@@ -1831,3 +1831,48 @@ canvas {
     transform: translate3d(0, 0.75rem, 0);
   }
 }
+
+/* Investor Experience campaign mobile CTA.
+   It sits above the existing mobile navigation and yields when other fixed surfaces open. */
+.gv-campaign-sticky-cta {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .gv-campaign-sticky-cta {
+    position: fixed;
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: calc(var(--gv-mobile-nav-total) + 0.55rem);
+    left: max(0.75rem, env(safe-area-inset-left));
+    z-index: 57;
+    display: flex;
+    max-width: 520px;
+    margin-inline: auto;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.45rem;
+    border: 1px solid rgb(255 255 255 / 0.10);
+    border-radius: 1.25rem;
+    background: rgb(11 11 15 / 0.94);
+    box-shadow: 0 18px 45px rgb(0 0 0 / 0.30);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transition: opacity 180ms ease, transform 220ms ease;
+  }
+
+  body.gv-mobile-nav-open .gv-campaign-sticky-cta,
+  body[data-growvest-guide-open="true"] .gv-campaign-sticky-cta {
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+@media (max-width: 767px) {
+  body:has(.gv-campaign-sticky-cta) .gv-guide-launcher:not(.gv-guide-launcher--footer) {
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.98);
+  }
+}

@@ -69,6 +69,13 @@ export const SEO_PAGES = {
     priority: 0.65,
     changeFrequency: "monthly",
   },
+  "/investor-experience": {
+    title: "Investor Experience | Your Conscious Wealth Partner",
+    description:
+      "Discover how GrowVest connects investments, milestones, Bucket Lists and the investor experience into a clearer and more connected wealth journey.",
+    priority: 0.9,
+    changeFrequency: "monthly",
+  },
   "/investor-experiences": {
     title: "Investor Experiences with GrowVest",
     description:

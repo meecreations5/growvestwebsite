@@ -95,6 +95,7 @@ function toRangeTimestamp(value, { endOfDay = false } = {}) {
 
 function displaySource(sourceKey, data) {
   if (sourceKey === "contact" && data.enquiryType === "whatsapp") return "WhatsApp";
+  if (sourceKey === "contact" && data.enquiryType === "investor_experience_campaign") return "Investor Experience Campaign";
   if (sourceKey === "contact" && data.source === "admin_manual") return "Manual Lead";
   return ENQUIRY_SOURCES[sourceKey]?.label || "Website Lead";
 }
