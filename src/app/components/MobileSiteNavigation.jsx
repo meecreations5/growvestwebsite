@@ -104,7 +104,7 @@ export function MobileSiteNavigation({ socialLinks = [], navigation = null, sett
   const primaryHref = primaryCta.href || "/contact";
   const investorPortalUrl = settings?.investorPortalUrl || COMPANY.investorPortalUrl;
   const investorPortalLabel = navigation?.investorPortalLabel || "Investor Portal";
-  const showInvestorPortal = process.env.NEXT_PUBLIC_SHOW_INVESTOR_PORTAL === "true";
+  const showInvestorPortal = process.env.NEXT_PUBLIC_SHOW_INVESTOR_PORTAL !== "false";
   const activeGroup = groups.find((group) => groupContainsPath(group, pathname)) || null;
   const homeActive = routeMatches(pathname, "/", true);
   const startActive = !homeActive && routeMatches(pathname, primaryHref, true);

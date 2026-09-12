@@ -137,7 +137,7 @@ export function SiteHeader({ socialLinks = [], navigation = null, settings = nul
   const homeLabel = navigation?.homeLabel || "Home";
   const investorPortalLabel = navigation?.investorPortalLabel || "Investor Portal";
   const investorPortalUrl = settings?.investorPortalUrl || COMPANY.investorPortalUrl;
-  const showInvestorPortal = process.env.NEXT_PUBLIC_SHOW_INVESTOR_PORTAL === "true";
+  const showInvestorPortal = process.env.NEXT_PUBLIC_SHOW_INVESTOR_PORTAL !== "false";
   const headerCta = navigation?.headerPrimaryCta || { label: "Begin Your Journey", href: "/contact" };
   const [desktopGroup, setDesktopGroup] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);

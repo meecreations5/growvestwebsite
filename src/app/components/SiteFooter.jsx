@@ -46,7 +46,7 @@ const FOOTER_COLS = [
 
 export function SiteFooter({ socialLinks = [], settings = null, navigation = null }) {
   const company = { ...COMPANY, ...(settings || {}) };
-  const showInvestorPortal = process.env.NEXT_PUBLIC_SHOW_INVESTOR_PORTAL === "true";
+  const showInvestorPortal = process.env.NEXT_PUBLIC_SHOW_INVESTOR_PORTAL !== "false";
   const sourceFooterColumns = navigation?.footerColumns?.length ? navigation.footerColumns : FOOTER_COLS;
   const footerColumns = sourceFooterColumns
     .map((column) => ({

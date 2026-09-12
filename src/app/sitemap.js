@@ -1,30 +1,16 @@
 import { SEO_PAGES, absoluteUrl } from "./lib/seo";
-import { getPublishedInsights } from "./lib/server/insightsRepository";
 
-export const revalidate = 3600;
+// Keep the public sitemap independent of Firebase, Firestore, or any other
+// runtime data source. Google Search Console must be able to fetch this route
+// quickly and reliably on every request/deployment.
+export const dynamic = "force-static";
 
-export default async function sitemap() {
+export default function sitemap() {
   if (process.env.NEXT_PUBLIC_ALLOW_INDEXING !== "true") return [];
 
-  const staticPages = Object.entries(SEO_PAGES).map(([path, page]) => ({
+  return Object.entries(SEO_PAGES).map(([path, page]) => ({
     url: absoluteUrl(path),
     changeFrequency: page.changeFrequency,
     priority: page.priority,
   }));
-
-  try {
-    const items = await getPublishedInsights();
-    const insightPages = items
-      .filter((post) => post.slug && post.seo?.allowIndexing !== false)
-      .map((post) => ({
-        url: absoluteUrl(`/insights/${post.slug}`),
-        lastModified: post.updatedAt || post.publishedAt || undefined,
-        changeFrequency: "monthly",
-        priority: post.isFeatured ? 0.8 : 0.65,
-      }));
-    return [...staticPages, ...insightPages];
-  } catch (error) {
-    console.warn("[GrowVest SEO] Unable to include dynamic Insights in sitemap.", error?.message || error);
-    return staticPages;
-  }
 }
