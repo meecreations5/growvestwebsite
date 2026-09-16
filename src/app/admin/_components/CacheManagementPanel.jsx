@@ -12,7 +12,7 @@ const PRESETS = [
   {
     key: "insights",
     title: "Insights and SEO feeds",
-    description: "Refreshes the Insights library, article pages, RSS feed and sitemap entries.",
+    description: "Refreshes the Insights library, article pages and RSS feed.",
   },
   {
     key: "people",

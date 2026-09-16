@@ -6,7 +6,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const seoFile = path.join(root, "src/app/lib/seo.js");
 const source = fs.readFileSync(seoFile, "utf8");
 const moduleUrl = new URL(`file://${seoFile}?audit=${Date.now()}`);
-const { SEO_PAGES } = await import(moduleUrl.href);
+const { SEO_PAGES, SITE_URL } = await import(moduleUrl.href);
 const errors = [];
 const warnings = [];
 const seenTitles = new Map();
@@ -41,7 +41,7 @@ for (const [route, page] of Object.entries(SEO_PAGES)) {
 
 const requiredFiles = [
   "src/app/robots.js",
-  "src/app/sitemap.js",
+  "public/sitemap.xml",
   "src/app/opengraph-image.png",
   "src/app/twitter-image.png",
   "src/app/(website)/insights/feed.xml/route.js",
@@ -49,6 +49,23 @@ const requiredFiles = [
 ];
 for (const relative of requiredFiles) {
   if (!fs.existsSync(path.join(root, relative))) errors.push(`${relative}: required SEO asset is missing.`);
+}
+
+const sitemapFile = path.join(root, "public/sitemap.xml");
+if (fs.existsSync(sitemapFile)) {
+  const sitemapSource = fs.readFileSync(sitemapFile, "utf8");
+  if (!sitemapSource.includes('<?xml version="1.0" encoding="UTF-8"?>')) {
+    errors.push("public/sitemap.xml: XML declaration is missing or unexpected.");
+  }
+  if (!sitemapSource.includes('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"')) {
+    errors.push("public/sitemap.xml: sitemap namespace is missing.");
+  }
+  for (const route of Object.keys(SEO_PAGES)) {
+    const url = route === "/" ? `${SITE_URL}/` : `${SITE_URL}${route}`;
+    if (!sitemapSource.includes(`<loc>${url}</loc>`)) {
+      errors.push(`${route}: canonical URL is missing from public/sitemap.xml.`);
+    }
+  }
 }
 
 if (!source.includes("alternates")) errors.push("createPageMetadata must define a canonical alternate.");

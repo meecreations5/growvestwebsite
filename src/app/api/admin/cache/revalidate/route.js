@@ -16,7 +16,7 @@ const PRESETS = {
   },
   insights: {
     tags: [CACHE_TAGS.insights, CACHE_TAGS.insightTaxonomy, CACHE_TAGS.guideSources],
-    paths: ["/", "/insights", "/insights/feed.xml", "/sitemap.xml"],
+    paths: ["/", "/insights", "/insights/feed.xml"],
   },
   people: {
     tags: [CACHE_TAGS.team, CACHE_TAGS.social, CACHE_TAGS.testimonials],

@@ -22,7 +22,6 @@ function invalidatePublicInsightCache(...slugs) {
   revalidatePath("/");
   revalidatePath("/insights");
   revalidatePath("/insights/feed.xml");
-  revalidatePath("/sitemap.xml");
 }
 
 function invalidateInsightTaxonomyCache() {
@@ -31,7 +30,6 @@ function invalidateInsightTaxonomyCache() {
   revalidateTag(CACHE_TAGS.guideSources);
   revalidatePath("/");
   revalidatePath("/insights");
-  revalidatePath("/sitemap.xml");
 }
 
 export const POST_STATUSES = [
