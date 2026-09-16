@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/publish-insights",
+      "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/cron/enquiry-followups",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
