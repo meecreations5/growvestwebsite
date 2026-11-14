@@ -1,16 +1,15 @@
+import { PageContentExtensions } from "../../components/PageContentExtensions";
+import { getSitePageMetadata, getSiteWebPageSchema } from "../../lib/server/sitePageSeo";
 import TheGrowVestWay from "../../_views/TheGrowVestWay";
 import { StructuredData } from "../../components/StructuredData";
-import { SEO_PAGES, createBreadcrumbSchema, createPageMetadata, createWebPageSchema } from "../../lib/seo";
+import { createBreadcrumbSchema } from "../../lib/seo";
 
-export const metadata = createPageMetadata("/the-growvest-way");
+export async function generateMetadata() {
+  return getSitePageMetadata("/the-growvest-way");
+}
 
-export default function Page() {
-  const pageSchema = createWebPageSchema({
-    path: "/the-growvest-way",
-    name: SEO_PAGES["/the-growvest-way"].title,
-    description: SEO_PAGES["/the-growvest-way"].description,
-    type: "WebPage",
-  });
+export default async function Page() {
+  const pageSchema = await getSiteWebPageSchema("/the-growvest-way", "WebPage");
   const breadcrumbs = createBreadcrumbSchema([
     { name: "Home", path: "/" },
     { name: "The GrowVest Way", path: "/the-growvest-way" },
@@ -21,6 +20,7 @@ export default function Page() {
       <StructuredData id="growvest-way-webpage-schema" data={pageSchema} />
       <StructuredData id="breadcrumb-schema" data={breadcrumbs} />
       <TheGrowVestWay />
+      <PageContentExtensions pageKey="the-growvest-way" />
     </>
   );
 }

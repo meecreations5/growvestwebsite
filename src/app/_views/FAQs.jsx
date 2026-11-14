@@ -4,10 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronDown, HelpCircle } from "lucide-react";
 import { BLACK, BLUE, GOLD, MGRAY, serif, dotGrid } from "../lib/brand";
-import { FAQS } from "../data/faqs";
 
 export default function FAQs({ items = [] }) {
-  const faqs = (items.length ? items : FAQS).map((item) => ({ ...item, q: item.q || item.question, a: item.a || item.answer }));
+  const faqs = items.map((item) => ({ ...item, q: item.q || item.question, a: item.a || item.answer }));
   const categories = ["All", ...Array.from(new Set(faqs.map((item) => item.category).filter(Boolean)))];
   const [category, setCategory] = useState("All");
   const [openQuestion, setOpenQuestion] = useState(null);
@@ -65,6 +64,7 @@ export default function FAQs({ items = [] }) {
             </aside>
 
             <div className="space-y-2">
+              {!filtered.length ? <p className="rounded-2xl border border-gray-100 bg-white p-6 text-sm text-[#64748B]">No published questions are available in this category yet.</p> : null}
               {filtered.map((faq, index) => {
                 const open = openQuestion === faq.q;
                 const answerId = `faq-answer-${index}`;

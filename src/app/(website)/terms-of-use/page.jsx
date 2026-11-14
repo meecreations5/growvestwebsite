@@ -1,9 +1,13 @@
+import { PageContentExtensions } from "../../components/PageContentExtensions";
+import { getSitePageMetadata } from "../../lib/server/sitePageSeo";
 import { LegalPage } from "../../components/LegalPage";
 import { StructuredData } from "../../components/StructuredData";
 import { COMPANY } from "../../lib/brand";
-import { createBreadcrumbSchema, createPageMetadata } from "../../lib/seo";
+import { createBreadcrumbSchema } from "../../lib/seo";
 
-export const metadata = createPageMetadata("/terms-of-use");
+export async function generateMetadata() {
+  return getSitePageMetadata("/terms-of-use");
+}
 
 const sections = [
   {
@@ -83,6 +87,7 @@ export default function TermsOfUsePage() {
         introduction="These terms explain the context in which visitors may access GrowVest content, tools, forms and linked services."
         sections={sections}
       />
+      <PageContentExtensions pageKey="terms-of-use" />
     </>
   );
 }

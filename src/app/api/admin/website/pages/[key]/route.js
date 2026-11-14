@@ -21,7 +21,7 @@ export async function GET(request, { params }) {
 export async function PATCH(request, { params }) {
   try {
     assertAllowedOrigin(request);
-    const admin = await requireAdminRequest(request, "website.manage");
+    const admin = await requireAdminRequest(request, "website.page.manage");
     const { key } = await params;
     const body = await readJsonBody(request, 500_000);
     return NextResponse.json({ item: await updateWebsitePage(key, body, admin) });

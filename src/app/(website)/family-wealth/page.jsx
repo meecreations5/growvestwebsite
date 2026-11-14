@@ -1,16 +1,15 @@
+import { PageContentExtensions } from "../../components/PageContentExtensions";
+import { getSitePageMetadata, getSiteWebPageSchema } from "../../lib/server/sitePageSeo";
 import FamilyWealth from "../../_views/FamilyWealth";
 import { StructuredData } from "../../components/StructuredData";
-import { SEO_PAGES, createBreadcrumbSchema, createPageMetadata, createWebPageSchema } from "../../lib/seo";
+import { createBreadcrumbSchema } from "../../lib/seo";
 
-export const metadata = createPageMetadata("/family-wealth");
+export async function generateMetadata() {
+  return getSitePageMetadata("/family-wealth");
+}
 
-export default function Page() {
-  const pageSchema = createWebPageSchema({
-    path: "/family-wealth",
-    name: SEO_PAGES["/family-wealth"].title,
-    description: SEO_PAGES["/family-wealth"].description,
-    type: "WebPage",
-  });
+export default async function Page() {
+  const pageSchema = await getSiteWebPageSchema("/family-wealth", "WebPage");
   const breadcrumbs = createBreadcrumbSchema([
     { name: "Home", path: "/" },
     { name: "Family Wealth Planning", path: "/family-wealth" },
@@ -21,6 +20,7 @@ export default function Page() {
       <StructuredData id="growvest-family-wealth-webpage-schema" data={pageSchema} />
       <StructuredData id="breadcrumb-schema" data={breadcrumbs} />
       <FamilyWealth />
+      <PageContentExtensions pageKey="family-wealth" />
     </>
   );
 }

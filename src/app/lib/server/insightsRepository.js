@@ -128,7 +128,7 @@ function sanitizeBlocks(blocks) {
   if (!Array.isArray(blocks)) return [];
   const allowedTypes = [
     "lead", "paragraph", "heading2", "heading3", "quote", "callout", "list",
-    "disclaimer", "image", "table", "cta", "video", "divider",
+    "disclaimer", "image", "table", "cta", "video", "divider", "faq",
   ];
   return blocks.slice(0, 160).map((block, index) => {
     const type = allowedTypes.includes(block?.type) ? block.type : "paragraph";
@@ -153,7 +153,7 @@ function sanitizeBlocks(blocks) {
       focalX: cleanPercent(block?.focalX),
       focalY: cleanPercent(block?.focalY),
     };
-  }).filter((block) => block.type === "divider" || block.text || block.items.length || block.title || block.url || block.headers.length || block.rows.length);
+  }).filter((block) => (block.type === "faq" ? Boolean(block.title && block.text) : block.type === "divider" || block.text || block.items.length || block.title || block.url || block.headers.length || block.rows.length));
 }
 
 export function sanitizeInsightInput(input, { existing = null, actor = null } = {}) {
@@ -418,6 +418,34 @@ export async function updateInsight(id, input, actor) {
   if (payload.isFeatured && payload.status === "published") await clearOtherFeaturedPosts(id);
   await writeAudit({ actor, action: "insight.updated", entityType: "insight", entityId: id, summary: `Updated insight: ${payload.title}`, details: { previousStatus: existing.status, status: payload.status } });
   invalidatePublicInsightCache(existing.slug, payload.slug);
+  return getInsightById(id);
+}
+
+// SEO-only pathway: published articles retain their editorial approval status.
+// This endpoint cannot change article body, slug, publication or visibility state.
+export async function updateInsightSeo(id, input, actor) {
+  const db = getAdminDb();
+  const reference = db.collection(POST_COLLECTION).doc(id);
+  const current = await reference.get();
+  if (!current.exists) throw Object.assign(new Error("Insight not found."), { status: 404 });
+  const previous = current.data();
+  const seo = {
+    title: cleanText(input?.title, 70),
+    description: cleanText(input?.description, 170),
+    canonicalUrl: cleanUrl(input?.canonicalUrl, { max: 1200 }),
+    openGraphImage: cleanUrl(input?.openGraphImage, { max: 1200 }),
+    allowIndexing: input?.allowIndexing !== false,
+  };
+  await createInsightVersion({ postId: id, snapshot: previous, actor, reason: "before_seo_update" });
+  await reference.set({
+    seo,
+    updatedAt: FieldValue.serverTimestamp(),
+    updatedBy: actor.uid,
+    updatedByName: actor.displayName || "SEO Team",
+  }, { merge: true });
+  await writeAudit({ actor, action: "insight.seo.updated", entityType: "insight", entityId: id,
+    summary: `Updated search metadata for ${previous.title || id}.` });
+  invalidatePublicInsightCache(previous.slug);
   return getInsightById(id);
 }
 

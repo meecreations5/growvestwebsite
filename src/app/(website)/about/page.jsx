@@ -1,3 +1,4 @@
+import { PageContentExtensions } from "../../components/PageContentExtensions";
 import AboutUs from "../../_views/AboutUs";
 import { StructuredData } from "../../components/StructuredData";
 import { SEO_PAGES, createBreadcrumbSchema, createPageMetadata, createWebPageSchema } from "../../lib/seo";
@@ -45,6 +46,7 @@ export default async function Page() {
       <StructuredData id="growvest-about-schema" data={pageSchema} />
       <StructuredData id="growvest-about-breadcrumb" data={breadcrumbs} />
       <AboutUs teamMembers={teamMembers} socialLinks={socialLinks} content={page?.content || {}} settings={settings} testimonials={testimonials} />
+      <PageContentExtensions pageKey="about" />
     </>
   );
 }

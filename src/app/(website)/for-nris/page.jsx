@@ -1,16 +1,15 @@
+import { PageContentExtensions } from "../../components/PageContentExtensions";
+import { getSitePageMetadata, getSiteWebPageSchema } from "../../lib/server/sitePageSeo";
 import ForNRIs from "../../_views/ForNRIs";
 import { StructuredData } from "../../components/StructuredData";
-import { SEO_PAGES, createBreadcrumbSchema, createPageMetadata, createWebPageSchema } from "../../lib/seo";
+import { createBreadcrumbSchema } from "../../lib/seo";
 
-export const metadata = createPageMetadata("/for-nris");
+export async function generateMetadata() {
+  return getSitePageMetadata("/for-nris");
+}
 
-export default function Page() {
-  const pageSchema = createWebPageSchema({
-    path: "/for-nris",
-    name: SEO_PAGES["/for-nris"].title,
-    description: SEO_PAGES["/for-nris"].description,
-    type: "WebPage",
-  });
+export default async function Page() {
+  const pageSchema = await getSiteWebPageSchema("/for-nris", "WebPage");
   const breadcrumbs = createBreadcrumbSchema([
     { name: "Home", path: "/" },
     { name: "NRI Financial Planning", path: "/for-nris" },
@@ -21,6 +20,7 @@ export default function Page() {
       <StructuredData id="growvest-nri-webpage-schema" data={pageSchema} />
       <StructuredData id="breadcrumb-schema" data={breadcrumbs} />
       <ForNRIs />
+      <PageContentExtensions pageKey="for-nris" />
     </>
   );
 }

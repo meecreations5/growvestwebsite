@@ -70,7 +70,7 @@ export const SEO_PAGES = {
     changeFrequency: "monthly",
   },
   "/investor-experience": {
-    title: "Investor Experience | Your Conscious Wealth Partner",
+    title: "Investor Experience & Wealth Journey | GrowVest",
     description:
       "Discover how GrowVest connects investments, milestones, Bucket Lists and the investor experience into a clearer and more connected wealth journey.",
     priority: 0.9,

@@ -1,5 +1,6 @@
 import { notFound, permanentRedirect } from "next/navigation";
 import { InsightArticle } from "../../../components/InsightArticle";
+import { PageContentExtensions } from "../../../components/PageContentExtensions";
 import { StructuredData } from "../../../components/StructuredData";
 import {
   getPublishedInsightBySlug,
@@ -139,6 +140,7 @@ export default async function InsightPage({ params }) {
       <StructuredData id={`insight-${post.id}`} data={articleSchema} />
       <StructuredData id={`insight-breadcrumb-${post.id}`} data={breadcrumbs} />
       <InsightArticle post={post} author={author} categories={categories} relatedPosts={relatedPosts} />
+      <PageContentExtensions pageKey="insights" />
     </>
   );
 }

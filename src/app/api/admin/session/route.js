@@ -6,21 +6,10 @@ import {
 } from "../../../lib/server/adminAuth";
 import { getAdminAuth, getAdminDb } from "../../../lib/server/firebaseAdmin";
 import { assertAllowedOrigin, readJsonBody } from "../../../lib/server/requestSecurity";
+import { ADMIN_SESSION_DURATION_MS, adminSessionCookieOptions } from "../../../lib/server/adminSessionCookie";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-const SESSION_DURATION_MS = 1000 * 60 * 60 * 24 * 5;
-
-function cookieOptions(maxAge = Math.floor(SESSION_DURATION_MS / 1000)) {
-  return {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge,
-  };
-}
 
 function errorResponse(status, error, code = "ADMIN_SESSION_FAILED") {
   return NextResponse.json(
@@ -119,7 +108,7 @@ export async function POST(request) {
     }
 
     const sessionCookie = await auth.createSessionCookie(String(idToken), {
-      expiresIn: SESSION_DURATION_MS,
+      expiresIn: ADMIN_SESSION_DURATION_MS,
     });
 
     const response = NextResponse.json({
@@ -128,10 +117,11 @@ export async function POST(request) {
         uid: decoded.uid,
         email: adminProfile.email || decoded.email || "",
         role: adminProfile.role,
+        requiresPasswordChange: adminProfile.requiresPasswordChange === true,
       },
     });
 
-    response.cookies.set(ADMIN_SESSION_COOKIE, sessionCookie, cookieOptions());
+    response.cookies.set(ADMIN_SESSION_COOKIE, sessionCookie, adminSessionCookieOptions());
     return response;
   } catch (error) {
     const normalized = normalizeServerError(error);
@@ -154,6 +144,6 @@ export async function DELETE(request) {
   }
 
   const response = NextResponse.json({ ok: true });
-  response.cookies.set(ADMIN_SESSION_COOKIE, "", cookieOptions(0));
+  response.cookies.set(ADMIN_SESSION_COOKIE, "", adminSessionCookieOptions(0));
   return response;
 }

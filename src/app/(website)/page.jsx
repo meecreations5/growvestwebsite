@@ -1,3 +1,4 @@
+import { PageContentExtensions } from "../components/PageContentExtensions";
 import Home from "../_views/Home";
 import { StructuredData } from "../components/StructuredData";
 import { SEO_PAGES, createPageMetadata, createWebPageSchema } from "../lib/seo";
@@ -36,6 +37,7 @@ export default async function Page() {
     <>
       <StructuredData id="growvest-homepage-schema" data={webPageSchema} />
       <Home content={page?.content || {}} testimonials={testimonials} />
+      <PageContentExtensions pageKey="home" />
     </>
   );
 }

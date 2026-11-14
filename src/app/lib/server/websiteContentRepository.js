@@ -2,6 +2,8 @@ import { unstable_cache, revalidatePath, revalidateTag } from "next/cache";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminDb, isFirebaseAdminConfigured } from "./firebaseAdmin";
 import { CACHE_TAGS, PUBLIC_CACHE_TTL, pageCacheTag } from "./cacheConfig";
+import { SITE_PAGE_KEYS, pathFromPageKey } from "../sitePages";
+import { getPageFaqDefaults } from "../../data/pageFaqDefaults";
 import {
   FAQ_SEED,
   GOAL_LIBRARY_SEED,
@@ -43,6 +45,14 @@ function cleanUrl(value, { allowInternal = true } = {}) {
   } catch {
     return "";
   }
+}
+
+function cleanSeoUrl(value) {
+  const url = cleanUrl(value);
+  if (!url) return "";
+  if (url.startsWith("/") && !url.startsWith("//")) return url;
+  try { return ["http:", "https:"].includes(new URL(url).protocol) ? url : ""; }
+  catch { return ""; }
 }
 
 function cleanArray(value, maxItems = 100, maxLength = 1000) {
@@ -127,6 +137,24 @@ export function sanitizeWebsitePageInput(pageKey, input, { existing = null, acto
   }
   const status = WEBSITE_PAGE_STATUSES.includes(input?.status) ? input.status : existing?.status || "draft";
   const content = cleanObject(input?.content || existing?.content || fallback.content);
+  // Page FAQs use an explicit, validated document schema. An empty array is an
+  // intentional override (do not silently restore starter FAQs after deletion).
+  const submittedFaqs = input?.content?.pageFaqs ?? existing?.content?.pageFaqs ?? getPageFaqDefaults(pageKey);
+  if (Array.isArray(submittedFaqs)) {
+    content.pageFaqs = submittedFaqs.slice(0, 10).map((faq, index) => ({
+      id: cleanText(faq?.id, 100) || `faq-${index}`,
+      question: cleanText(faq?.question, 280),
+      answer: cleanText(faq?.answer, 5000),
+      status: faq?.status === "draft" ? "draft" : "published",
+      isVisible: cleanBoolean(faq?.isVisible, true),
+    }));
+    const incompletePublished = content.pageFaqs.find((faq) => faq.status === "published" && (!faq.question || !faq.answer));
+    if (incompletePublished) {
+      const error = new Error("Every published page FAQ needs both a question and an answer. Save unfinished FAQs as Draft.");
+      error.status = 400;
+      throw error;
+    }
+  }
   const contentSize = JSON.stringify(content).length;
   if (contentSize > 450_000) {
     const error = new Error("This page content is too large. Reduce the content and try again.");
@@ -135,15 +163,16 @@ export function sanitizeWebsitePageInput(pageKey, input, { existing = null, acto
   }
   return {
     pageKey,
+    path: pathFromPageKey(pageKey),
     title: cleanText(input?.title || existing?.title || fallback.title, 180),
     status,
     content,
     seo: {
       title: cleanText(input?.seo?.title || existing?.seo?.title || fallback.seo.title, 180),
       description: cleanText(input?.seo?.description || existing?.seo?.description || fallback.seo.description, 320),
-      canonicalUrl: cleanUrl(input?.seo?.canonicalUrl || existing?.seo?.canonicalUrl || ""),
-      openGraphImage: cleanUrl(input?.seo?.openGraphImage || existing?.seo?.openGraphImage || ""),
-      allowIndexing: cleanBoolean(input?.seo?.allowIndexing, existing?.seo?.allowIndexing ?? true),
+      canonicalUrl: cleanSeoUrl(input?.seo?.canonicalUrl ?? existing?.seo?.canonicalUrl ?? ""),
+      openGraphImage: cleanSeoUrl(input?.seo?.openGraphImage ?? existing?.seo?.openGraphImage ?? ""),
+      allowIndexing: pageKey === "thank-you" ? false : cleanBoolean(input?.seo?.allowIndexing, existing?.seo?.allowIndexing ?? true),
     },
     updatedBy: actor?.uid || existing?.updatedBy || "system",
     updatedByName: actor?.displayName || existing?.updatedByName || "System",
@@ -246,6 +275,8 @@ export function sanitizeFaqInput(input, { existing = null, actor = null } = {}) 
     displayOrder: cleanInteger(input?.displayOrder, existing?.displayOrder || 0, 0, 9999),
     status,
     isVisible: cleanBoolean(input?.isVisible, existing?.isVisible ?? true),
+    pageKeys: Array.from(new Set((Array.isArray(input?.pageKeys) ? input.pageKeys : existing?.pageKeys || [])
+      .filter((key) => typeof key === "string" && SITE_PAGE_KEYS.includes(key)))).slice(0, 30),
     updatedBy: actor?.uid || existing?.updatedBy || "system",
     updatedByName: actor?.displayName || existing?.updatedByName || "System",
     updatedAt: FieldValue.serverTimestamp(),
@@ -283,13 +314,28 @@ export function sanitizeGoalInput(input, { existing = null, actor = null } = {})
   };
 }
 
+function withPageFaqDefaults(pageKey, page) {
+  if (!page) return null;
+  // Existing Firebase page documents predate the page-level FAQ feature. Do
+  // not require a destructive reset or rewrite: hydrate missing content only.
+  const stored = page.content || {};
+  return {
+    ...page,
+    content: {
+      ...WEBSITE_PAGE_DEFAULTS[pageKey]?.content,
+      ...stored,
+      pageFaqs: Array.isArray(stored.pageFaqs) ? stored.pageFaqs : getPageFaqDefaults(pageKey),
+    },
+  };
+}
+
 export async function listWebsitePages() {
   if (!isFirebaseAdminConfigured()) return Object.values(WEBSITE_PAGE_DEFAULTS);
   try {
     const snapshot = await getAdminDb().collection(PAGE_COLLECTION).limit(50).get();
     const items = snapshot.docs.map(serialize);
     const byKey = new Map(items.map((item) => [item.pageKey || item.id, item]));
-    return Object.keys(WEBSITE_PAGE_DEFAULTS).map((key) => byKey.get(key) || WEBSITE_PAGE_DEFAULTS[key]);
+    return Object.keys(WEBSITE_PAGE_DEFAULTS).map((key) => withPageFaqDefaults(key, byKey.get(key) || WEBSITE_PAGE_DEFAULTS[key]));
   } catch (error) {
     console.warn("[GrowVest Website Content] Unable to read managed pages; using approved fallbacks.", error?.message || error);
     return Object.values(WEBSITE_PAGE_DEFAULTS);
@@ -304,7 +350,7 @@ export async function getWebsitePage(pageKey, { publicOnly = false } = {}) {
     if (!snapshot.exists) return fallback;
     const item = serialize(snapshot);
     if (publicOnly && item.status !== "published") return fallback;
-    return item;
+    return withPageFaqDefaults(pageKey, item);
   } catch (error) {
     console.warn(`[GrowVest Website Content] Unable to read page ${pageKey}; using approved fallback.`, error?.message || error);
     return fallback;
@@ -321,7 +367,13 @@ export async function updateWebsitePage(pageKey, input, actor) {
   await reference.set(payload, { merge: true });
   await writeAudit({ actor, action: "website.page.updated", entityType: "websitePage", entityId: pageKey, summary: `Updated ${payload.title}.`, details: { status: payload.status } });
   revalidateTag(pageCacheTag(pageKey));
-  revalidatePath(pageKey === "home" ? "/" : `/${pageKey}`);
+  revalidatePath(pathFromPageKey(pageKey) || "/");
+  if (pageKey === "insights") {
+    // Shared Insights questions are also rendered on article and archive routes.
+    revalidatePath("/insights/[slug]", "page");
+    revalidatePath("/insights/category/[slug]", "page");
+    revalidatePath("/insights/author/[slug]", "page");
+  }
   return getWebsitePage(pageKey);
 }
 
@@ -388,7 +440,7 @@ export async function listFaqs({ publicOnly = false } = {}) {
     const snapshot = await getAdminDb().collection(FAQ_COLLECTION).limit(500).get();
     const items = snapshot.docs.map(serialize);
     const filtered = publicOnly ? items.filter((item) => item.status === "published" && item.isVisible !== false) : items;
-    if (!filtered.length && publicOnly) return fallback;
+    if (!items.length && publicOnly) return fallback;
     return filtered.sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0) || a.question.localeCompare(b.question));
   } catch (error) {
     console.warn("[GrowVest Website Content] Unable to read FAQs; using approved fallbacks.", error?.message || error);
@@ -405,6 +457,7 @@ export async function createFaq(input, actor) {
   revalidateTag(CACHE_TAGS.faqs);
   revalidateTag(CACHE_TAGS.guideSources);
   revalidatePath("/faqs");
+  revalidatePath("/", "layout");
   const snapshot = await reference.get();
   return serialize(snapshot);
 }
@@ -425,6 +478,7 @@ export async function updateFaq(id, input, actor) {
   revalidateTag(CACHE_TAGS.faqs);
   revalidateTag(CACHE_TAGS.guideSources);
   revalidatePath("/faqs");
+  revalidatePath("/", "layout");
   const updated = await reference.get();
   return serialize(updated);
 }
@@ -598,7 +652,7 @@ export async function seedWebsiteContent(actor, { force = false } = {}) {
 
   await batch.commit();
   await writeAudit({ actor, action: "website.content.seeded", entityType: "websiteContent", entityId: "initial-import", summary: "Imported current GrowVest website content into Firestore.", details: results });
-  ["home", "about"].forEach((key) => revalidateTag(pageCacheTag(key)));
+  SITE_PAGE_KEYS.forEach((key) => revalidateTag(pageCacheTag(key)));
   revalidateTag(CACHE_TAGS.websiteSettings);
   revalidatePath("/", "layout");
   revalidateTag(CACHE_TAGS.websiteNavigation);

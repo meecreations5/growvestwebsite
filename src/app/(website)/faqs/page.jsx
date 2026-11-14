@@ -1,18 +1,17 @@
+import { PageContentExtensions } from "../../components/PageContentExtensions";
+import { getSitePageMetadata, getSiteWebPageSchema } from "../../lib/server/sitePageSeo";
 import FAQs from "../../_views/FAQs";
 import { StructuredData } from "../../components/StructuredData";
-import { SEO_PAGES, createBreadcrumbSchema, createFaqPageSchema, createPageMetadata, createWebPageSchema } from "../../lib/seo";
+import { createBreadcrumbSchema, createFaqPageSchema } from "../../lib/seo";
 import { getPublishedFaqs } from "../../lib/server/websiteContentRepository";
 
-export const metadata = createPageMetadata("/faqs");
+export async function generateMetadata() {
+  return getSitePageMetadata("/faqs");
+}
 
 export default async function Page() {
   const items = await getPublishedFaqs();
-  const pageSchema = createWebPageSchema({
-    path: "/faqs",
-    name: SEO_PAGES["/faqs"].title,
-    description: SEO_PAGES["/faqs"].description,
-    type: "WebPage",
-  });
+  const pageSchema = await getSiteWebPageSchema("/faqs", "WebPage");
   const faqSchema = createFaqPageSchema(items);
   const breadcrumbs = createBreadcrumbSchema([
     { name: "Home", path: "/" },
@@ -25,6 +24,7 @@ export default async function Page() {
       <StructuredData id="growvest-faq-content-schema" data={faqSchema} />
       <StructuredData id="growvest-faq-breadcrumb-schema" data={breadcrumbs} />
       <FAQs items={items} />
+      <PageContentExtensions pageKey="faqs" includeFaqs={false} />
     </>
   );
 }

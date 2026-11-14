@@ -12,7 +12,7 @@ import { MediaUploadField } from "./MediaUploadField";
 const BLOCK_TYPES = [
   ["lead", "Lead paragraph"], ["heading2", "Heading 2"], ["heading3", "Heading 3"],
   ["paragraph", "Paragraph"], ["quote", "Quote"], ["callout", "Callout"],
-  ["list", "Bullet list"], ["image", "Image"], ["table", "Table"],
+  ["list", "Bullet list"], ["faq", "FAQ question & answer"], ["image", "Image"], ["table", "Table"],
   ["cta", "Call to action"], ["video", "Video embed"], ["divider", "Divider"],
   ["disclaimer", "Disclosure"],
 ];
@@ -130,6 +130,8 @@ function BlockEditor({ block, index, updateBlock, moveBlock, removeBlock }) {
       {block.type === "callout" && <div className="space-y-3"><input value={block.title || ""} onChange={(event) => updateBlock(index, { title: event.target.value })} placeholder="Callout title" className="h-10 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm font-semibold outline-none focus:border-[#1F4ED8]" /><textarea rows="5" value={block.text || ""} onChange={(event) => updateBlock(index, { text: event.target.value })} placeholder="Callout content" className={textAreaClass} /></div>}
 
       {block.type === "list" && <textarea rows="6" value={(block.items || []).join("\n")} onChange={(event) => updateBlock(index, { items: event.target.value.split("\n") })} placeholder="One list item per line" className={textAreaClass} />}
+
+      {block.type === "faq" && <div className="space-y-3"><input value={block.title || ""} onChange={(event) => updateBlock(index, { title: event.target.value })} maxLength={180} placeholder="FAQ question" className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm font-semibold outline-none focus:border-[#1F4ED8]" /><textarea rows="5" value={block.text || ""} onChange={(event) => updateBlock(index, { text: event.target.value })} placeholder="Visitor-friendly answer" className={textAreaClass} /><p className="text-xs text-[#6B7280]">This FAQ appears within the published article. Add each question and answer as a separate block.</p></div>}
 
       {block.type === "image" && (
         <div className="space-y-3">

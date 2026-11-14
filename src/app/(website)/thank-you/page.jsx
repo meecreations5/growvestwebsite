@@ -1,13 +1,12 @@
+import { PageContentExtensions } from "../../components/PageContentExtensions";
 import Link from "next/link";
 import { ArrowRight, Check, ListChecks } from "lucide-react";
 import { BLACK, BLUE, GOLD, serif, dotGrid } from "../../lib/brand";
-import { createPageMetadata } from "../../lib/seo";
+import { getSitePageMetadata } from "../../lib/server/sitePageSeo";
 
-export const metadata = createPageMetadata("/thank-you", {
-  title: "Thank You | GrowVest",
-  description: "Thank you for reaching out to GrowVest. A member of the GrowVest team will connect with you.",
-  allowIndexing: false,
-});
+export async function generateMetadata() {
+  return getSitePageMetadata("/thank-you", { allowIndexing: false });
+}
 
 const NEXT_STEPS = [
   "We understand your request.",
@@ -17,6 +16,7 @@ const NEXT_STEPS = [
 
 export default function Page() {
   return (
+    <>
     <section className="relative min-h-[78vh] overflow-hidden py-24" style={{ background: BLACK, ...dotGrid, paddingTop: "132px" }}>
       <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 55% 60% at 50% 46%, rgba(31,78,216,0.17) 0%, transparent 68%), radial-gradient(ellipse 28% 30% at 82% 20%, rgba(245,179,1,0.07) 0%, transparent 70%)" }} />
       <div className="relative mx-auto max-w-[880px] px-5 text-center sm:px-6 lg:px-8">
@@ -49,5 +49,7 @@ export default function Page() {
         </div>
       </div>
     </section>
+    <PageContentExtensions pageKey="thank-you" />
+    </>
   );
 }

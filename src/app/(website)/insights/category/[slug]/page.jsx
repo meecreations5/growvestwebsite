@@ -1,3 +1,4 @@
+import { PageContentExtensions } from "../../../../components/PageContentExtensions";
 import { notFound } from "next/navigation";
 import { InsightsDirectory } from "../../../../components/InsightsDirectory";
 import { getPublicInsightsPage, getPublishedCategories } from "../../../../lib/server/insightsRepository";
@@ -26,6 +27,7 @@ export default async function CategoryInsightsPage({ params, searchParams }) {
   });
 
   return (
+    <>
     <InsightsDirectory
       posts={result.items}
       categories={categories}
@@ -37,5 +39,7 @@ export default async function CategoryInsightsPage({ params, searchParams }) {
       pageCount={result.pageCount}
       total={result.total}
     />
+    <PageContentExtensions pageKey="insights" />
+    </>
   );
 }

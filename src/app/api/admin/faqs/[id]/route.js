@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export async function PATCH(request, { params }) {
   try {
     assertAllowedOrigin(request);
-    const admin = await requireAdminRequest(request, "website.manage");
+    const admin = await requireAdminRequest(request, "website.faq.manage");
     const body = await readJsonBody(request, 25_000);
     const { id } = await params;
     return NextResponse.json({ item: await updateFaq(id, body, admin) });
@@ -21,7 +21,7 @@ export async function PATCH(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     assertAllowedOrigin(request);
-    const admin = await requireAdminRequest(request, "website.manage");
+    const admin = await requireAdminRequest(request, "website.faq.manage");
     const { id } = await params;
     return NextResponse.json({ item: await archiveFaq(id, admin) });
   } catch (error) {

@@ -1,3 +1,4 @@
+import { PageContentExtensions } from "../../../../components/PageContentExtensions";
 import { notFound } from "next/navigation";
 import { InsightsDirectory } from "../../../../components/InsightsDirectory";
 import {
@@ -33,6 +34,7 @@ export default async function AuthorInsightsPage({ params, searchParams }) {
   });
 
   return (
+    <>
     <InsightsDirectory
       posts={result.items}
       categories={categories}
@@ -43,5 +45,7 @@ export default async function AuthorInsightsPage({ params, searchParams }) {
       pageCount={result.pageCount}
       total={result.total}
     />
+    <PageContentExtensions pageKey="insights" />
+    </>
   );
 }

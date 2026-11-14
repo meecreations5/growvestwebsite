@@ -28,7 +28,7 @@ export default async function InsightsAdminPage({ searchParams }) {
   return (
     <>
       <AdminPageHeader title="Insights & Blog" description="Create educational content, move it through review and publish it with controlled SEO and disclosure settings." actions={actions} />
-      <InsightsTable {...result} status={status} search={search} canArchive={admin.permissions.includes("insights.delete")} />
+      <InsightsTable {...result} status={status} search={search} canArchive={admin.permissions.includes("insights.delete")} canEdit={admin.permissions.includes("insights.update")} canViewHistory={admin.permissions.includes("insights.versions")} />
     </>
   );
 }

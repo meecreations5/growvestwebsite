@@ -1,9 +1,12 @@
 import { COMPANY, NAV_GROUPS } from "../lib/brand";
 import { FAQS } from "./faqs";
+import { SEO_PAGES } from "../lib/seo";
+import { SITE_PAGES } from "../lib/sitePages";
+import { getPageFaqDefaults } from "./pageFaqDefaults";
 
 export const WEBSITE_PAGE_STATUSES = ["draft", "published", "archived"];
 
-export const WEBSITE_PAGE_DEFAULTS = {
+const CORE_WEBSITE_PAGE_DEFAULTS = {
   home: {
     pageKey: "home",
     title: "Homepage",
@@ -136,6 +139,34 @@ export const WEBSITE_PAGE_DEFAULTS = {
   },
 };
 
+
+// Every indexable, fixed public route now has a managed page record. Existing
+// Homepage/About visual content remains unchanged. Other templates retain their
+// existing designed copy, with a separate optional managed supporting section.
+export const WEBSITE_PAGE_DEFAULTS = Object.fromEntries(SITE_PAGES.map(({ key, path, label }) => {
+  const existing = CORE_WEBSITE_PAGE_DEFAULTS[key];
+  const seo = SEO_PAGES[path] || {};
+  return [key, {
+    pageKey: key,
+    path,
+    title: existing?.title || label,
+    status: "published",
+    seo: {
+      title: existing?.seo?.title || seo.title || "Thank You | GrowVest",
+      description: existing?.seo?.description || seo.description || "Your enquiry has been submitted to GrowVest.",
+      allowIndexing: key === "thank-you" ? false : existing?.seo?.allowIndexing !== false,
+      canonicalUrl: "",
+      openGraphImage: "",
+    },
+    content: {
+      ...(existing?.content || {}),
+      seoSection: { enabled: false, heading: "", body: "" },
+      faqSection: { enabled: true, heading: "Questions you may have", introduction: "" },
+      pageFaqs: getPageFaqDefaults(key),
+    },
+  }];
+}));
+
 export const WEBSITE_SETTINGS_DEFAULT = {
   key: "global",
   status: "published",
@@ -211,6 +242,7 @@ export const FAQ_SEED = FAQS.map((item, index) => ({
   displayOrder: index,
   status: "published",
   isVisible: true,
+  pageKeys: [],
 }));
 
 export const GOAL_LIBRARY_SEED = [

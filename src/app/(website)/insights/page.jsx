@@ -1,3 +1,5 @@
+import { PageContentExtensions } from "../../components/PageContentExtensions";
+import { getSitePageMetadata, getSiteWebPageSchema } from "../../lib/server/sitePageSeo";
 import { InsightsDirectory } from "../../components/InsightsDirectory";
 import { StructuredData } from "../../components/StructuredData";
 import {
@@ -13,7 +15,9 @@ import {
 } from "../../lib/seo";
 import { getPublishedTestimonials } from "../../lib/server/testimonialsRepository";
 
-export const metadata = createPageMetadata("/insights", { rssUrl: "/insights/feed.xml" });
+export async function generateMetadata() {
+  return getSitePageMetadata("/insights", { rssUrl: "/insights/feed.xml" });
+}
 export const revalidate = 900;
 
 export default async function InsightsPage({ searchParams }) {
@@ -28,12 +32,7 @@ export default async function InsightsPage({ searchParams }) {
     getPublishedTestimonials("showOnInsights"),
   ]);
 
-  const pageSchema = createWebPageSchema({
-    path: "/insights",
-    name: SEO_PAGES["/insights"].title,
-    description: SEO_PAGES["/insights"].description,
-    type: "CollectionPage",
-  });
+  const pageSchema = await getSiteWebPageSchema("/insights", "CollectionPage");
   const itemListSchema = createItemListSchema({
     path: "/insights",
     name: "GrowVest Wealth Insights",
@@ -65,6 +64,7 @@ export default async function InsightsPage({ searchParams }) {
         pageCount={result.pageCount}
         total={result.total}
       />
+      <PageContentExtensions pageKey="insights" />
     </>
   );
 }

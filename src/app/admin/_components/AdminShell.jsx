@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BarChart3, BookOpen, Bot, CalendarClock, ChevronDown, FileEdit, FolderTree, HelpCircle, Home, Images, Inbox, LayoutDashboard, LibraryBig, LogOut, Mail, Menu, MessageCircle, MessageSquareQuote, MessageSquareText, Network, PenLine, Settings2, Share2, Tags, Target, Users, PanelsTopLeft, SearchCheck, ShieldCheck, RefreshCw } from "lucide-react";
+import { BarChart3, BookOpen, Bot, CalendarClock, ChevronDown, FileEdit, FolderTree, HelpCircle, Home, Images, Inbox, LayoutDashboard, LibraryBig, LogOut, Mail, Menu, MessageCircle, MessageSquareQuote, MessageSquareText, Network, PenLine, Settings2, Share2, Tags, Target, Users, PanelsTopLeft, SearchCheck, ShieldCheck, RefreshCw, UserRoundCog } from "lucide-react";
 
 const nav = [
   { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -40,23 +40,25 @@ const nav = [
     permission: "website.read",
     children: [
       { label: "Overview", href: "/admin/website", icon: PanelsTopLeft },
-      { label: "Homepage", href: "/admin/website/home", icon: Home, permission: "website.manage" },
-      { label: "About GrowVest", href: "/admin/website/about", icon: FileEdit, permission: "website.manage" },
+      { label: "All Website Pages", href: "/admin/website/pages", icon: FileEdit, permission: "website.page.manage" },
+      { label: "Homepage", href: "/admin/website/home", icon: Home, permission: "website.page.manage" },
+      { label: "About GrowVest", href: "/admin/website/about", icon: FileEdit, permission: "website.page.manage" },
       { label: "Global Settings", href: "/admin/website/settings", icon: Settings2, permission: "website.manage" },
       { label: "Navigation & Footer", href: "/admin/website/navigation", icon: FolderTree, permission: "website.manage" },
-      { label: "FAQs", href: "/admin/faqs", icon: HelpCircle, permission: "website.manage" },
+      { label: "FAQs by Page", href: "/admin/faqs", icon: HelpCircle, permission: "website.faq.manage" },
       { label: "Goal Library", href: "/admin/goal-library", icon: LibraryBig, permission: "website.manage" },
     ],
   },
   {
     label: "Insights & Blog",
     icon: BookOpen,
+    permission: "insights.read",
     children: [
-      { label: "All Insights", href: "/admin/insights", icon: FileEdit },
-      { label: "Add New Insight", href: "/admin/insights/new", icon: PenLine },
-      { label: "Categories", href: "/admin/insights/categories", icon: FolderTree },
-      { label: "Tags", href: "/admin/insights/tags", icon: Tags },
-      { label: "Authors", href: "/admin/insights/authors", icon: Users },
+      { label: "All Insights", href: "/admin/insights", icon: FileEdit, permission: "insights.read" },
+      { label: "Add New Insight", href: "/admin/insights/new", icon: PenLine, permission: "insights.create" },
+      { label: "Categories", href: "/admin/insights/categories", icon: FolderTree, permission: "taxonomy.manage" },
+      { label: "Tags", href: "/admin/insights/tags", icon: Tags, permission: "taxonomy.manage" },
+      { label: "Authors", href: "/admin/insights/authors", icon: Users, permission: "authors.manage" },
       { label: "Analytics", href: "/admin/insights/analytics", icon: BarChart3, permission: "insights.analytics" },
     ],
   },
@@ -65,6 +67,7 @@ const nav = [
   { label: "Social Media", href: "/admin/social-media", icon: Share2, permission: "social.read" },
   { label: "Media Library", href: "/admin/media", icon: Images, permission: "media.manage" },
   { label: "SEO Centre", href: "/admin/seo", icon: SearchCheck, permission: "seo.read" },
+  { label: "User Management", href: "/admin/users", icon: UserRoundCog, permission: "admins.manage" },
   { label: "System Readiness", href: "/admin/system-readiness", icon: ShieldCheck, permission: "system.read" },
   { label: "Cache & Performance", href: "/admin/cache-management", icon: RefreshCw, permission: "system.manage" },
 ];
@@ -141,7 +144,7 @@ export function AdminShell({ admin, children }) {
                 <div className="mt-1 space-y-1 pl-4">
                   {item.children.filter((child) => hasPermission(child.permission)).map((child) => {
                     const ChildIcon = child.icon;
-                    const active = pathname === child.href || (child.href === "/admin/insights" && /^\/admin\/insights\/[a-zA-Z0-9_-]+\/edit$/.test(pathname)) || (child.href === "/admin/enquiries/conversions" && pathname.startsWith("/admin/enquiries/conversions/"));
+                    const active = pathname === child.href || (child.href === "/admin/website/pages" && pathname.startsWith("/admin/website/pages/")) || (child.href === "/admin/insights" && /^\/admin\/insights\/[a-zA-Z0-9_-]+\/edit$/.test(pathname)) || (child.href === "/admin/enquiries/conversions" && pathname.startsWith("/admin/enquiries/conversions/"));
                     return (
                       <Link key={child.href} href={child.href} onClick={() => setMobileOpen(false)} className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] transition ${active ? "bg-white/10 text-white" : "text-white/45 hover:bg-white/6 hover:text-white/80"}`}>
                         <ChildIcon size={14} /> {child.label}
@@ -170,7 +173,7 @@ export function AdminShell({ admin, children }) {
           <button type="button" aria-label="Open admin navigation" onClick={() => setMobileOpen(true)} className="rounded-lg border border-gray-200 p-2 lg:hidden"><Menu size={20} /></button>
           <div className="hidden lg:block">
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#6B7280]">GrowVest Website</p>
-            <p className="text-sm font-semibold">{pathname.startsWith("/admin/growvest-guide") ? "GrowVest Guide & WhatsApp" : pathname.startsWith("/admin/enquiries") ? "Enquiries & Lead Management" : pathname.startsWith("/admin/website") || pathname.startsWith("/admin/faqs") || pathname.startsWith("/admin/goal-library") ? "Website Content Workspace" : pathname.startsWith("/admin/team") ? "Team & Hierarchy" : pathname.startsWith("/admin/testimonials") ? "Investor Testimonials" : pathname.startsWith("/admin/social-media") ? "Social Media" : pathname.startsWith("/admin/media") ? "Media Library" : pathname.startsWith("/admin/seo") ? "SEO Centre" : pathname.startsWith("/admin/system-readiness") ? "Production Readiness" : pathname.startsWith("/admin/cache-management") ? "Cache & Performance" : pathname.startsWith("/admin/communication-templates") ? "Communication Templates" : "Insights & Blog Workspace"}</p>
+            <p className="text-sm font-semibold">{pathname.startsWith("/admin/growvest-guide") ? "GrowVest Guide & WhatsApp" : pathname.startsWith("/admin/enquiries") ? "Enquiries & Lead Management" : pathname.startsWith("/admin/website") || pathname.startsWith("/admin/faqs") || pathname.startsWith("/admin/goal-library") ? "Website Content Workspace" : pathname.startsWith("/admin/team") ? "Team & Hierarchy" : pathname.startsWith("/admin/testimonials") ? "Investor Testimonials" : pathname.startsWith("/admin/social-media") ? "Social Media" : pathname.startsWith("/admin/media") ? "Media Library" : pathname.startsWith("/admin/users") ? "User Management" : pathname.startsWith("/admin/seo") ? "SEO Centre" : pathname.startsWith("/admin/system-readiness") ? "Production Readiness" : pathname.startsWith("/admin/cache-management") ? "Cache & Performance" : pathname.startsWith("/admin/communication-templates") ? "Communication Templates" : "Insights & Blog Workspace"}</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block"><p className="text-sm font-semibold">{admin.displayName}</p><p className="text-[11px] capitalize text-[#6B7280]">{admin.role.replaceAll("_", " ")}</p></div>

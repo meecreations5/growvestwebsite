@@ -1,17 +1,16 @@
+import { PageContentExtensions } from "../../components/PageContentExtensions";
+import { getSitePageMetadata, getSiteWebPageSchema } from "../../lib/server/sitePageSeo";
 import BucketListBuilder from "../../_views/BucketListBuilder";
 import { StructuredData } from "../../components/StructuredData";
-import { SEO_PAGES, createBreadcrumbSchema, createFaqPageSchema, createPageMetadata, createWebPageSchema } from "../../lib/seo";
+import { createBreadcrumbSchema, createFaqPageSchema } from "../../lib/seo";
 import { BUCKET_LIST_PLANNER_FAQS } from "../../lib/seoContent";
 
-export const metadata = createPageMetadata("/bucket-list-builder");
+export async function generateMetadata() {
+  return getSitePageMetadata("/bucket-list-builder");
+}
 
-export default function Page() {
-  const pageSchema = createWebPageSchema({
-    path: "/bucket-list-builder",
-    name: SEO_PAGES["/bucket-list-builder"].title,
-    description: SEO_PAGES["/bucket-list-builder"].description,
-    type: "WebPage",
-  });
+export default async function Page() {
+  const pageSchema = await getSiteWebPageSchema("/bucket-list-builder", "WebPage");
   const faqSchema = createFaqPageSchema(BUCKET_LIST_PLANNER_FAQS, {
     path: "/bucket-list-builder",
     name: "Financial Goal Planner Frequently Asked Questions",
@@ -27,6 +26,7 @@ export default function Page() {
       <StructuredData id="growvest-bucket-list-builder-faq-schema" data={faqSchema} />
       <StructuredData id="breadcrumb-schema" data={breadcrumbs} />
       <BucketListBuilder />
+      <PageContentExtensions pageKey="bucket-list-builder" />
     </>
   );
 }

@@ -1,9 +1,13 @@
+import { PageContentExtensions } from "../../components/PageContentExtensions";
+import { getSitePageMetadata } from "../../lib/server/sitePageSeo";
 import { LegalPage } from "../../components/LegalPage";
 import { StructuredData } from "../../components/StructuredData";
 import { COMPANY } from "../../lib/brand";
-import { createBreadcrumbSchema, createPageMetadata } from "../../lib/seo";
+import { createBreadcrumbSchema } from "../../lib/seo";
 
-export const metadata = createPageMetadata("/privacy-policy");
+export async function generateMetadata() {
+  return getSitePageMetadata("/privacy-policy");
+}
 
 const sections = [
   {
@@ -89,6 +93,7 @@ export default function PrivacyPolicyPage() {
         introduction="This policy explains how GrowVest handles information submitted through the public website and optional analytics preferences."
         sections={sections}
       />
+      <PageContentExtensions pageKey="privacy-policy" />
     </>
   );
 }

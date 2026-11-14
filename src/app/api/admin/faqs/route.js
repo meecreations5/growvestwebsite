@@ -18,7 +18,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     assertAllowedOrigin(request);
-    const admin = await requireAdminRequest(request, "website.manage");
+    const admin = await requireAdminRequest(request, "website.faq.manage");
     const body = await readJsonBody(request, 25_000);
     return NextResponse.json({ item: await createFaq(body, admin) }, { status: 201 });
   } catch (error) {

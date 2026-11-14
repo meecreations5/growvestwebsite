@@ -1,18 +1,17 @@
+import { PageContentExtensions } from "../../components/PageContentExtensions";
+import { getSitePageMetadata, getSiteWebPageSchema } from "../../lib/server/sitePageSeo";
 import GoalLibrary from "../../_views/GoalLibrary";
 import { StructuredData } from "../../components/StructuredData";
-import { SEO_PAGES, createBreadcrumbSchema, createItemListSchema, createPageMetadata, createWebPageSchema } from "../../lib/seo";
+import { createBreadcrumbSchema, createItemListSchema } from "../../lib/seo";
 import { getPublishedGoalLibrary } from "../../lib/server/websiteContentRepository";
 
-export const metadata = createPageMetadata("/goal-library");
+export async function generateMetadata() {
+  return getSitePageMetadata("/goal-library");
+}
 
 export default async function Page() {
   const goals = await getPublishedGoalLibrary();
-  const pageSchema = createWebPageSchema({
-    path: "/goal-library",
-    name: SEO_PAGES["/goal-library"].title,
-    description: SEO_PAGES["/goal-library"].description,
-    type: "CollectionPage",
-  });
+  const pageSchema = await getSiteWebPageSchema("/goal-library", "CollectionPage");
   const itemListSchema = createItemListSchema({
     path: "/goal-library",
     name: "GrowVest Financial Goal Library",
@@ -33,6 +32,7 @@ export default async function Page() {
       <StructuredData id="growvest-goal-library-items" data={itemListSchema} />
       <StructuredData id="growvest-goal-library-breadcrumb" data={breadcrumbs} />
       <GoalLibrary goals={goals} />
+      <PageContentExtensions pageKey="goal-library" />
     </>
   );
 }

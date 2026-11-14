@@ -17,7 +17,7 @@ import {
   EyeOff,
   LoaderCircle,
   LockKeyhole,
-  Mail,
+  UserRound,
   ShieldCheck,
 } from "lucide-react";
 import { getFirebaseClientApp } from "../../lib/firebaseClient";
@@ -77,8 +77,8 @@ function matchesCode(code, expected) {
   return code === expected || code.endsWith(`/${expected}`) || code.includes(expected);
 }
 
-export function AdminLogin() {
-  const [email, setEmail] = useState("");
+export function AdminLogin({ passwordUpdated = false }) {
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [busyMethod, setBusyMethod] = useState("");
@@ -137,9 +137,9 @@ export function AdminLogin() {
   }
 
   async function finishSignIn(auth, user) {
-    await createAdminSession(user);
+    const session = await createAdminSession(user);
     await signOut(auth).catch(() => null);
-    window.location.replace("/admin/dashboard");
+    window.location.replace(session.admin?.requiresPasswordChange ? "/admin/change-password" : "/admin/dashboard");
   }
 
   async function handleMicrosoftSignIn() {
@@ -162,8 +162,8 @@ export function AdminLogin() {
         tenant: MICROSOFT_TENANT_ID,
       };
 
-      if (email.trim()) {
-        customParameters.login_hint = email.trim();
+      if (identifier.trim().includes("@")) {
+        customParameters.login_hint = identifier.trim();
       }
 
       provider.setCustomParameters(customParameters);
@@ -235,9 +235,26 @@ export function AdminLogin() {
     let stage = "signing_in_with_password";
 
     try {
+      const loginValue = identifier.trim();
+      if (!loginValue.includes("@")) {
+        stage = "signing_in_with_username";
+        const response = await fetch("/api/admin/login/password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: loginValue, password }),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          const reason = new Error(result.error || "Unable to sign in with this username.");
+          reason.status = response.status;
+          throw reason;
+        }
+        window.location.replace(result.redirectTo === "/admin/change-password" ? result.redirectTo : "/admin/dashboard");
+        return;
+      }
       const auth = getConfiguredAuth();
       await setPersistence(auth, inMemoryPersistence);
-      const credential = await signInWithEmailAndPassword(auth, email.trim(), password);
+      const credential = await signInWithEmailAndPassword(auth, loginValue, password);
       stage = "creating_admin_session";
       await finishSignIn(auth, credential.user);
     } catch (loginError) {
@@ -254,7 +271,7 @@ export function AdminLogin() {
         matchesCode(details.code, "wrong-password") ||
         matchesCode(details.code, "user-not-found")
       ) {
-        setError("The email or password is not correct.");
+        setError("The email, username or password is not correct.");
       } else if (matchesCode(details.code, "account-exists-with-different-credential")) {
         setError("This account uses Microsoft sign-in. Choose Continue with Microsoft above.");
       } else if (details.stage === "creating_admin_session") {
@@ -273,22 +290,17 @@ export function AdminLogin() {
     setError("");
     setMessage("");
 
-    if (!email.trim()) {
-      setError("Enter your admin email first, then choose Reset password.");
+    if (!identifier.trim().includes("@")) {
+      setError("Enter your account email address to reset your password, even if you usually sign in with a username.");
       return;
     }
 
     try {
       const auth = getConfiguredAuth();
-      await sendPasswordResetEmail(auth, email.trim());
+      await sendPasswordResetEmail(auth, identifier.trim());
       setMessage("A password reset email has been requested for this address.");
-    } catch (resetError) {
-      const details = normalizeLoginError(resetError, "requesting_password_reset");
-      if (matchesCode(details.code, "user-not-found")) {
-        setError("No email-and-password account was found. Try Continue with Microsoft.");
-      } else {
-        setError(details.message || "Unable to request a password reset.");
-      }
+    } catch {
+      setError("Unable to request the reset email. Check your address and try again, or contact an administrator.");
     }
   }
 
@@ -389,26 +401,26 @@ export function AdminLogin() {
 
             <div className="my-7 flex items-center gap-4" aria-hidden="true">
               <span className="h-px flex-1 bg-[#E6E9EF]" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9AA1AE]">or use email</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9AA1AE]">or use username / email</span>
               <span className="h-px flex-1 bg-[#E6E9EF]" />
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label htmlFor="admin-email" className="mb-2 block text-sm font-semibold text-[#1F2937]">
-                  Email address
+                  Username or email
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B7280]" size={18} />
+                  <UserRound className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B7280]" size={18} />
                   <input
                     id="admin-email"
-                    type="email"
-                    autoComplete="email"
+                    type="text"
+                    autoComplete="username"
                     required
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
+                    value={identifier}
+                    onChange={(event) => setIdentifier(event.target.value)}
                     className="h-12 w-full rounded-xl border border-gray-200 bg-white pl-11 pr-4 text-sm outline-none transition focus:border-[#1F4ED8] focus:ring-4 focus:ring-[#1F4ED8]/10"
-                    placeholder="connect@growvest.info"
+                    placeholder="rahul.seo or connect@growvest.info"
                   />
                 </div>
               </div>
@@ -449,6 +461,9 @@ export function AdminLogin() {
                 </div>
               </div>
 
+              {passwordUpdated && !error && !message && (
+                <p role="status" className="rounded-xl border border-green-100 bg-green-50 px-4 py-3 text-sm leading-5 text-green-800">Password updated. Sign in with your new password.</p>
+              )}
               {error && (
                 <p role="alert" className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm leading-5 text-red-700">
                   {error}

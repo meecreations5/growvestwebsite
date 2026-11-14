@@ -9,14 +9,16 @@ export const ADMIN_ROLES = [
   "content_editor",
   "content_reviewer",
   "seo_manager",
+  "viewer",
 ];
 
 const ROLE_PERMISSIONS = {
-  super_admin: ["insights.read", "insights.create", "insights.update", "insights.review", "insights.publish", "insights.delete", "insights.versions", "insights.analytics", "media.manage", "taxonomy.manage", "authors.manage", "team.read", "team.manage", "testimonials.read", "testimonials.manage", "social.read", "social.manage", "website.read", "website.manage", "website.publish", "enquiries.read", "enquiries.manage", "enquiries.assign", "enquiries.communicate", "enquiries.convert", "enquiries.analytics", "communicationTemplates.read", "communicationTemplates.manage", "guide.read", "guide.manage", "guide.conversations", "seo.read", "seo.manage", "system.read", "system.manage", "admins.manage"],
-  website_admin: ["insights.read", "insights.create", "insights.update", "insights.review", "insights.publish", "insights.delete", "insights.versions", "insights.analytics", "media.manage", "taxonomy.manage", "authors.manage", "team.read", "team.manage", "testimonials.read", "testimonials.manage", "social.read", "social.manage", "website.read", "website.manage", "website.publish", "enquiries.read", "enquiries.manage", "enquiries.assign", "enquiries.communicate", "enquiries.convert", "enquiries.analytics", "communicationTemplates.read", "communicationTemplates.manage", "guide.read", "guide.manage", "guide.conversations", "seo.read", "seo.manage"],
+  super_admin: ["insights.read", "insights.create", "insights.update", "insights.review", "insights.publish", "insights.delete", "insights.versions", "insights.analytics", "media.manage", "taxonomy.manage", "authors.manage", "team.read", "team.manage", "testimonials.read", "testimonials.manage", "social.read", "social.manage", "website.read", "website.manage", "website.page.manage", "website.faq.manage", "website.publish", "enquiries.read", "enquiries.manage", "enquiries.assign", "enquiries.communicate", "enquiries.convert", "enquiries.analytics", "communicationTemplates.read", "communicationTemplates.manage", "guide.read", "guide.manage", "guide.conversations", "seo.read", "seo.manage", "system.read", "system.manage", "admins.manage"],
+  website_admin: ["insights.read", "insights.create", "insights.update", "insights.review", "insights.publish", "insights.delete", "insights.versions", "insights.analytics", "media.manage", "taxonomy.manage", "authors.manage", "team.read", "team.manage", "testimonials.read", "testimonials.manage", "social.read", "social.manage", "website.read", "website.manage", "website.page.manage", "website.faq.manage", "website.publish", "enquiries.read", "enquiries.manage", "enquiries.assign", "enquiries.communicate", "enquiries.convert", "enquiries.analytics", "communicationTemplates.read", "communicationTemplates.manage", "guide.read", "guide.manage", "guide.conversations", "seo.read", "seo.manage"],
   content_editor: ["insights.read", "insights.create", "insights.update", "insights.versions", "media.manage", "website.read", "testimonials.read", "guide.read", "guide.manage"],
   content_reviewer: ["insights.read", "insights.update", "insights.review", "insights.publish", "insights.versions", "insights.analytics", "website.read", "testimonials.read", "enquiries.read", "communicationTemplates.read", "guide.read", "guide.conversations", "seo.read"],
-  seo_manager: ["insights.read", "insights.update", "insights.analytics", "media.manage", "website.read", "website.manage", "seo.read", "seo.manage"],
+  seo_manager: ["insights.read", "insights.create", "insights.update", "insights.analytics", "media.manage", "website.read", "website.page.manage", "website.faq.manage", "seo.read", "seo.manage"],
+  viewer: ["insights.read", "website.read", "seo.read"],
 };
 
 function normalizeAdmin(uid, authClaims, profile = {}) {
@@ -28,9 +30,14 @@ function normalizeAdmin(uid, authClaims, profile = {}) {
     role,
     permissions: Array.from(new Set([
       ...(ROLE_PERMISSIONS[role] || []),
-      ...(Array.isArray(profile.permissions) ? profile.permissions : []),
+      // The SEO role must remain least-privilege even if old profiles contain custom grants.
+      ...((["seo_manager", "viewer"].includes(role) ? [] : (Array.isArray(profile.permissions) ? profile.permissions : []))
+        .filter((permission) => permission !== "admins.manage" || role === "super_admin")),
     ])),
     isActive: profile.isActive !== false,
+    username: profile.username || "",
+    authMethod: profile.authMethod || "microsoft",
+    requiresPasswordChange: profile.requiresPasswordChange === true,
   };
 }
 
@@ -55,6 +62,7 @@ export async function getAdminSession() {
 export async function requireAdminPage(permission = "insights.read") {
   const admin = await getAdminSession();
   if (!admin) redirect("/admin/login");
+  if (admin.requiresPasswordChange) redirect("/admin/change-password");
   if (permission && !admin.permissions.includes(permission)) redirect("/admin/access-denied");
   return admin;
 }
@@ -66,6 +74,12 @@ export async function requireAdminRequest(request, permission = "insights.read")
     const error = new Error("Your admin session is unavailable or has expired.");
     error.status = 401;
     error.code = "ADMIN_UNAUTHENTICATED";
+    throw error;
+  }
+  if (admin.requiresPasswordChange) {
+    const error = new Error("Change your initial password before accessing the admin workspace.");
+    error.status = 403;
+    error.code = "ADMIN_PASSWORD_CHANGE_REQUIRED";
     throw error;
   }
   if (permission && !admin.permissions.includes(permission)) {

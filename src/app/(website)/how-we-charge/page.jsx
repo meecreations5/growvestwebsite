@@ -1,8 +1,12 @@
+import { PageContentExtensions } from "../../components/PageContentExtensions";
+import { getSitePageMetadata } from "../../lib/server/sitePageSeo";
 import HowWeCharge from "../../_views/HowWeCharge";
 import { StructuredData } from "../../components/StructuredData";
-import { createBreadcrumbSchema, createPageMetadata } from "../../lib/seo";
+import { createBreadcrumbSchema } from "../../lib/seo";
 
-export const metadata = createPageMetadata("/how-we-charge");
+export async function generateMetadata() {
+  return getSitePageMetadata("/how-we-charge");
+}
 
 export default function Page() {
   const breadcrumbs = createBreadcrumbSchema([
@@ -14,6 +18,7 @@ export default function Page() {
     <>
       <StructuredData id="breadcrumb-schema" data={breadcrumbs} />
       <HowWeCharge />
+      <PageContentExtensions pageKey="how-we-charge" />
     </>
   );
 }
